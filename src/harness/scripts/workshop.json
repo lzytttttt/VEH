@@ -1,0 +1,152 @@
+{
+  "scenario": "workshop",
+  "title": "实训车间 · 普通车削加工基础",
+  "duration": 220,
+  "frames": [
+    { "t": 0, "snapshot": "实训车间·学生穿戴工服护目镜·安全宣导", "metrics": { "students_present": 16, "safety_gear": 1 } },
+    { "t": 20, "snapshot": "教师讲解车床结构与各部件功能", "metrics": { "attention": 0.9, "demo_active": 1 } },
+    { "t": 50, "snapshot": "教师示范外圆车削·讲解走刀量", "metrics": { "attention": 0.92, "demo_active": 1 } },
+    { "t": 80, "snapshot": "学生分组实操·教师巡视", "metrics": { "attention": 0.82, "practice_active": 1 } },
+    { "t": 120, "snapshot": "第2组工件尺寸超差·纠正", "metrics": { "attention": 0.85, "correction_active": 1 } },
+    { "t": 160, "snapshot": "工件测量·游标卡尺使用", "metrics": { "attention": 0.88, "measurement_active": 1 } },
+    { "t": 200, "snapshot": "清理切屑·关闭车床", "metrics": { "attention": 0.72, "cleanup_active": 1 } },
+    { "t": 215, "snapshot": "课堂总结·作品展示", "metrics": { "attention": 0.85, "summary": 1 } }
+  ],
+  "transcript": [
+    { "t": 5, "speaker": "teacher", "text": "今天学习普通车削加工，重点：安全操作规范和外圆车削。" },
+    { "t": 22, "speaker": "teacher", "text": "车床主轴、刀架、尾座、丝杠，要熟悉每个部件作用。" },
+    { "t": 55, "speaker": "teacher", "text": "外圆车刀主偏角 75 度，走刀量 0.2 mm/r，切削深度 1 mm。" },
+    { "t": 85, "speaker": "teacher", "text": "各组开始实操，注意卡盘必须卡紧工件。" },
+    { "t": 125, "speaker": "teacher", "text": "第2组工件跳动 0.1 mm，超差！重新装夹。" },
+    { "t": 165, "speaker": "teacher", "text": "用游标卡尺测量，先归零再读数。" },
+    { "t": 205, "speaker": "teacher", "text": "切屑用铁钩清理，绝不能用手！" },
+    { "t": 217, "speaker": "teacher", "text": "总结：今天作品合格率 75%，下次提高。" }
+  ],
+  "analysisScript": [
+    { "type": "frame_ref", "content": "frame-0", "timestamp": 0, "label": "安全准备" },
+    { "type": "text", "content": "VLM 识别到 16 名实训学生，", "timestamp": 2 },
+    { "type": "text", "content": "工服护目镜全部穿戴到位。", "timestamp": 3 },
+    { "type": "metric", "content": "1.0", "timestamp": 5, "label": "安全合规率" },
+    { "type": "event", "content": "安全宣导完成", "timestamp": 6, "confidence": 0.96, "label": "safety_pass" },
+    { "type": "event", "content": "课堂开始", "timestamp": 7, "confidence": 0.95, "label": "session_start" },
+    { "type": "frame_ref", "content": "frame-20", "timestamp": 20, "label": "结构讲解" },
+    { "type": "text", "content": "教师讲解车床结构，", "timestamp": 21 },
+    { "type": "text", "content": "重点强调主轴与刀架配合。", "timestamp": 22 },
+    { "type": "wiki", "content": "知识节点：车床结构", "timestamp": 23, "wikiNodeId": "k1" },
+    { "type": "metric", "content": "0.9", "timestamp": 25, "label": "抬头率" },
+    { "type": "frame_ref", "content": "frame-50", "timestamp": 50, "label": "加工示范" },
+    { "type": "text", "content": "教师示范外圆车削，", "timestamp": 51 },
+    { "type": "text", "content": "讲解走刀量与切削深度。", "timestamp": 52 },
+    { "type": "wiki", "content": "知识节点：外圆车削", "timestamp": 53, "wikiNodeId": "k2" },
+    { "type": "metric", "content": "0.92", "timestamp": 55, "label": "示范质量" },
+    { "type": "event", "content": "加工示范启动", "timestamp": 50, "confidence": 0.94, "label": "demo" },
+    { "type": "frame_ref", "content": "frame-80", "timestamp": 80, "label": "学生实操" },
+    { "type": "text", "content": "学生分组实操，", "timestamp": 81 },
+    { "type": "text", "content": "教师巡视关注安全与精度。", "timestamp": 82 },
+    { "type": "metric", "content": "0.82", "timestamp": 85, "label": "实操专注度" },
+    { "type": "event", "content": "学生实操启动", "timestamp": 80, "confidence": 0.92, "label": "practice" },
+    { "type": "student", "content": "陈浩装夹规范", "timestamp": 85, "studentId": "s1", "label": "规范" },
+    { "type": "frame_ref", "content": "frame-120", "timestamp": 120, "label": "错误纠正" },
+    { "type": "text", "content": "第 2 组工件跳动超差（0.1mm），", "timestamp": 121 },
+    { "type": "text", "content": "教师要求重新装夹。", "timestamp": 122 },
+    { "type": "metric", "content": "0.85", "timestamp": 125, "label": "纠错响应度" },
+    { "type": "event", "content": "工件超差纠正", "timestamp": 120, "confidence": 0.9, "label": "correction" },
+    { "type": "wiki", "content": "知识节点：装夹要点", "timestamp": 123, "wikiNodeId": "k3" },
+    { "type": "student", "content": "赵磊工件超差被纠正", "timestamp": 122, "studentId": "s2", "label": "超差" },
+    { "type": "frame_ref", "content": "frame-160", "timestamp": 160, "label": "工件测量" },
+    { "type": "text", "content": "学生使用游标卡尺测量，", "timestamp": 161 },
+    { "type": "text", "content": "教师强调归零与读数规范。", "timestamp": 162 },
+    { "type": "wiki", "content": "知识节点：游标卡尺", "timestamp": 163, "wikiNodeId": "k4" },
+    { "type": "metric", "content": "0.88", "timestamp": 165, "label": "测量准确率" },
+    { "type": "frame_ref", "content": "frame-200", "timestamp": 200, "label": "清理切屑" },
+    { "type": "text", "content": "进入清理阶段，", "timestamp": 201 },
+    { "type": "text", "content": "严禁用手清理切屑。", "timestamp": 202 },
+    { "type": "event", "content": "安全清理", "timestamp": 200, "confidence": 0.91, "label": "cleanup" },
+    { "type": "frame_ref", "content": "frame-215", "timestamp": 215, "label": "总结展示" },
+    { "type": "text", "content": "教师进行作品展示与点评，", "timestamp": 216 },
+    { "type": "text", "content": "整体合格率 75%。", "timestamp": 217 },
+    { "type": "metric", "content": "0.75", "timestamp": 218, "label": "作品合格率" },
+    { "type": "event", "content": "课堂总结", "timestamp": 215, "confidence": 0.94, "label": "summary" }
+  ],
+  "students": [
+    {
+      "id": "s1", "name": "陈浩", "avatarColor": "#008000",
+      "timeline": [
+        { "t": 0, "attention": 0.9, "state": "准备", "note": "护具齐全" },
+        { "t": 80, "attention": 0.92, "state": "实操", "note": "装夹规范" },
+        { "t": 160, "attention": 0.95, "state": "测量", "note": "尺寸精准" },
+        { "t": 215, "attention": 0.88, "state": "展示", "note": "作品优秀" }
+      ],
+      "feedback": "全流程操作规范，工件精度高（误差 0.02mm）。建议学习数控车床编程，向高级技工方向发展。可作为车间示范标杆。"
+    },
+    {
+      "id": "s2", "name": "赵磊", "avatarColor": "#808000",
+      "timeline": [
+        { "t": 0, "attention": 0.85, "state": "准备", "note": "规范" },
+        { "t": 80, "attention": 0.7, "state": "实操", "note": "装夹松动" },
+        { "t": 120, "attention": 0.78, "state": "纠正", "note": "重新装夹" },
+        { "t": 160, "attention": 0.82, "state": "测量", "note": "尺寸达标" }
+      ],
+      "feedback": "工件跳动超差源于装夹不到位，经纠正后达到要求。建议反复练习三爪卡盘的装夹力度，强化基础操作稳定性。"
+    },
+    {
+      "id": "s3", "name": "王磊", "avatarColor": "#000080",
+      "timeline": [
+        { "t": 0, "attention": 0.88, "state": "准备", "note": "认真" },
+        { "t": 80, "attention": 0.85, "state": "实操", "note": "稳定" },
+        { "t": 160, "attention": 0.9, "state": "测量", "note": "数据正确" },
+        { "t": 215, "attention": 0.85, "state": "展示", "note": "合格作品" }
+      ],
+      "feedback": "操作稳定，测量读数准确。建议尝试阶梯轴加工，提升复杂工件的工艺规划能力。"
+    }
+  ],
+  "wiki": {
+    "nodes": [
+      {
+        "id": "k1", "title": "车床基本结构",
+        "category": "机械加工·车床",
+        "summary": "普通车床由主轴箱、刀架、尾座、床身、丝杠、光杠等组成。",
+        "details": "主轴箱：传递动力与变速；刀架：装夹车刀并能纵向横向进给；尾座：支撑长工件或装钻头；床身：所有部件的基础；丝杠：车螺纹用；光杠：一般车削进给用。",
+        "related": ["k2", "k3"],
+        "classroomRefs": [{ "t": 22, "type": "讲解", "label": "结构讲解" }]
+      },
+      {
+        "id": "k2", "title": "外圆车削",
+        "category": "机械加工·车削",
+        "summary": "用车刀切除工件外圆表面多余材料，是车削最基本工序。",
+        "details": "外圆车刀常用主偏角 75 度或 90 度。切削三要素：切削速度 v（m/min）、进给量 f（mm/r）、切削深度 ap（mm）。本课参数：v=80 m/min，f=0.2 mm/r，ap=1 mm。",
+        "related": ["k1", "k3"],
+        "classroomRefs": [{ "t": 53, "type": "示范", "label": "外圆车削示范" }]
+      },
+      {
+        "id": "k3", "title": "工件装夹要点",
+        "category": "机械加工·装夹",
+        "summary": "三爪卡盘装夹要保证工件跳动 < 0.05mm，伸出长度适当。",
+        "details": "三爪自定心卡盘适合圆形工件，装夹时：1) 工件伸出长度尽量短（<3 倍直径）；2) 卡爪卡紧力均匀；3) 用百分表校验跳动 < 0.05mm；4) 重型工件需用尾座顶针支撑。",
+        "related": ["k1", "k2"],
+        "classroomRefs": [{ "t": 123, "type": "纠错", "label": "工件超差纠正" }]
+      },
+      {
+        "id": "k4", "title": "游标卡尺使用",
+        "category": "机械加工·测量",
+        "summary": "游标卡尺用于测量内外径、深度，精度 0.02mm。",
+        "details": "使用前必须归零，读数：主尺整毫米 + 游标尺对齐格数 × 0.02。测量时量爪贴紧工件但不能过紧。读数视线垂直尺面避免视差。",
+        "related": [],
+        "classroomRefs": [{ "t": 163, "type": "讲解", "label": "游标卡尺讲解" }]
+      }
+    ],
+    "assistantScript": [
+      { "q": "车床由哪些部件组成？", "a": "普通车床主要由主轴箱、刀架、尾座、床身、丝杠、光杠组成。主轴箱传递动力并变速，刀架装夹车刀完成进给，尾座支撑长工件，床身是基础，丝杠车螺纹用，光杠一般进给用。" },
+      { "q": "切削三要素是什么？", "a": "切削三要素是：切削速度 v（m/min）、进给量 f（mm/r）、切削深度 ap（mm）。本课参数为 v=80 m/min，f=0.2 mm/r，ap=1 mm。", "keywords": ["切削", "要素"] },
+      { "q": "为什么工件会跳动超差？", "a": "跳动超差通常是装夹不到位造成的：1) 三爪卡盘卡紧力不均；2) 工件伸出过长；3) 卡爪磨损。应重新装夹并用百分表校验，保证跳动 < 0.05 mm。", "keywords": ["跳动", "装夹"] },
+      { "q": "游标卡尺怎么读数？", "a": "先读主尺上的整毫米数，再看游标尺上与主尺对齐的刻度线，格数 × 0.02 即为小数部分。两者相加即为测量值。", "keywords": ["游标", "读数"] }
+    ]
+  },
+  "metrics": {
+    "teaching": 0.9,
+    "engagement": 0.83,
+    "interaction": 0.78,
+    "compliance": 0.95,
+    "innovation": 0.7
+  }
+}

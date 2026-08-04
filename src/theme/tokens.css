@@ -1,0 +1,50 @@
+/* Win95 主题变量 */
+:root {
+  /* 主色板 */
+  --win-teal: #008080;
+  --win-gray: #c0c0c0;
+  --win-darkgray: #808080;
+  --win-navy: #000080;
+  --win-navy-light: #1084d0;
+  --win-black: #000000;
+  --win-white: #ffffff;
+  --win-yellow: #ffff80;
+  --win-green: #008000;
+  --win-red: #ff0000;
+  --win-olive: #808000;
+
+  /* 按钮四向阴影色 */
+  --win-btn-face: #c0c0c0;
+  --win-btn-shadow: #808080;
+  --win-btn-highlight: #ffffff;
+  --win-btn-darkshadow: #000000;
+  --win-btn-light: #dfdfdf;
+
+  /* 字号 */
+  --win-fs-xs: 11px;
+  --win-fs-sm: 12px;
+  --win-fs-base: 13px;
+  --win-fs-md: 14px;
+  --win-fs-lg: 16px;
+  --win-fs-xl: 18px;
+
+  /* 字重 */
+  --win-fw-bold: 700;
+  --win-fw-normal: 400;
+
+  /* 间距 */
+  --win-sp-1: 2px;
+  --win-sp-2: 4px;
+  --win-sp-3: 8px;
+  --win-sp-4: 12px;
+  --win-sp-5: 16px;
+
+  /* 任务栏高度 */
+  --win-taskbar-h: 34px;
+  /* 标题栏高度（经典 18px 观感） */
+  --win-titlebar-h: 20px;
+
+  /* 字体栈 */
+  --win-font: 'Pixelated MS Sans Serif', 'MS Sans Serif', Tahoma, 'Microsoft YaHei', Arial, sans-serif;
+  --win-font-mono: 'Lucida Console', 'Courier New', 'Microsoft YaHei', monospace;
+}

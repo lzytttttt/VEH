@@ -1,0 +1,141 @@
+{
+  "scenario": "pe",
+  "title": "高二体育 · 篮球运球技术",
+  "duration": 150,
+  "frames": [
+    { "t": 0, "snapshot": "操场整队·体育委员报数", "metrics": { "students_present": 32, "noise_level": 0.6 } },
+    { "t": 15, "snapshot": "教师示范原地运球·学生围观", "metrics": { "attention": 0.85, "demo_active": 1 } },
+    { "t": 30, "snapshot": "学生分组练习·教师巡视纠正", "metrics": { "attention": 0.7, "practice_active": 1 } },
+    { "t": 60, "snapshot": "运球过障碍接力赛", "metrics": { "attention": 0.92, "competition_active": 1 } },
+    { "t": 90, "snapshot": "教师分组点评·错误纠正", "metrics": { "attention": 0.88, "correction_active": 1 } },
+    { "t": 120, "snapshot": "拉伸放松·课堂总结", "metrics": { "attention": 0.78, "cooldown": 1 } },
+    { "t": 145, "snapshot": "下课·归还器材", "metrics": { "attention": 0.4, "dismiss": 1 } }
+  ],
+  "transcript": [
+    { "t": 3, "speaker": "teacher", "text": "集合！今天学习篮球原地运球和行进间运球技术。" },
+    { "t": 16, "speaker": "teacher", "text": "看示范：五指自然张开，用指根以上部位触球，手腕发力下压。" },
+    { "t": 35, "speaker": "teacher", "text": "分组练习，注意重心降低，球控制在腰部以下。" },
+    { "t": 65, "speaker": "teacher", "text": "接力赛开始，第二组明显领先，节奏控制好。" },
+    { "t": 95, "speaker": "teacher", "text": "李伟同学运球时用手掌拍球，应该用指根部位。" },
+    { "t": 122, "speaker": "teacher", "text": "今天大家掌握得不错，课后多练指力。" }
+  ],
+  "analysisScript": [
+    { "type": "frame_ref", "content": "frame-0", "timestamp": 0, "label": "集合整队" },
+    { "type": "text", "content": "VLM 识别到 32 名学生集合，", "timestamp": 2 },
+    { "type": "text", "content": "体育委员报数流程规范。", "timestamp": 3 },
+    { "type": "event", "content": "课堂开始", "timestamp": 4, "confidence": 0.95, "label": "session_start" },
+    { "type": "frame_ref", "content": "frame-15", "timestamp": 15, "label": "动作示范" },
+    { "type": "text", "content": "教师示范原地运球技术，", "timestamp": 16 },
+    { "type": "text", "content": "动作标准度评分 0.92。", "timestamp": 17 },
+    { "type": "metric", "content": "0.92", "timestamp": 18, "label": "动作标准度" },
+    { "type": "event", "content": "动作示范", "timestamp": 15, "confidence": 0.94, "label": "demo_start" },
+    { "type": "wiki", "content": "知识节点：运球姿势", "timestamp": 20, "wikiNodeId": "k1" },
+    { "type": "frame_ref", "content": "frame-30", "timestamp": 30, "label": "分组练习" },
+    { "type": "text", "content": "学生进入分组练习，", "timestamp": 31 },
+    { "type": "text", "content": "教师开始巡视纠正个别动作。", "timestamp": 32 },
+    { "type": "metric", "content": "0.7", "timestamp": 35, "label": "练习专注度" },
+    { "type": "event", "content": "分组练习启动", "timestamp": 30, "confidence": 0.9, "label": "practice" },
+    { "type": "student", "content": "张明运球姿势标准", "timestamp": 35, "studentId": "s1", "label": "优秀" },
+    { "type": "student", "content": "李伟用手掌拍球，需纠正", "timestamp": 38, "studentId": "s2", "label": "需纠正", "confidence": 0.85 },
+    { "type": "frame_ref", "content": "frame-60", "timestamp": 60, "label": "接力竞赛" },
+    { "type": "text", "content": "运球过障碍接力赛开始，", "timestamp": 61 },
+    { "type": "text", "content": "学生参与度大幅提升。", "timestamp": 62 },
+    { "type": "metric", "content": "0.92", "timestamp": 65, "label": "参与度" },
+    { "type": "event", "content": "竞赛启动", "timestamp": 60, "confidence": 0.93, "label": "competition" },
+    { "type": "wiki", "content": "知识节点：行进间运球", "timestamp": 65, "wikiNodeId": "k2" },
+    { "type": "frame_ref", "content": "frame-90", "timestamp": 90, "label": "错误纠正" },
+    { "type": "text", "content": "教师集中点评共性问题，", "timestamp": 91 },
+    { "type": "text", "content": "重点纠正手掌拍球的错误动作。", "timestamp": 92 },
+    { "type": "metric", "content": "0.88", "timestamp": 95, "label": "纠错覆盖率" },
+    { "type": "event", "content": "集中纠错", "timestamp": 90, "confidence": 0.91, "label": "correction" },
+    { "type": "wiki", "content": "知识节点：常见错误", "timestamp": 95, "wikiNodeId": "k3" },
+    { "type": "frame_ref", "content": "frame-120", "timestamp": 120, "label": "拉伸放松" },
+    { "type": "text", "content": "进入拉伸放松阶段，", "timestamp": 121 },
+    { "type": "text", "content": "运动强度逐步下降。", "timestamp": 122 },
+    { "type": "metric", "content": "0.4", "timestamp": 125, "label": "运动强度" },
+    { "type": "event", "content": "课堂总结", "timestamp": 122, "confidence": 0.93, "label": "summary" },
+    { "type": "frame_ref", "content": "frame-145", "timestamp": 145, "label": "下课" },
+    { "type": "event", "content": "下课", "timestamp": 146, "confidence": 0.96, "label": "session_end" }
+  ],
+  "students": [
+    {
+      "id": "s1", "name": "陈浩", "avatarColor": "#008000",
+      "timeline": [
+        { "t": 0, "attention": 0.8, "state": "集合", "note": "整齐" },
+        { "t": 30, "attention": 0.9, "state": "练习", "note": "姿势标准" },
+        { "t": 60, "attention": 0.95, "state": "竞赛", "note": "节奏优秀" },
+        { "t": 90, "attention": 0.88, "state": "听讲", "note": "主动示范" }
+      ],
+      "feedback": "运球技术动作标准（评分 0.9+），节奏感强，建议尝试更复杂的胯下运球或背后运球进阶训练。可作为班级示范标杆。"
+    },
+    {
+      "id": "s2", "name": "李伟", "avatarColor": "#808000",
+      "timeline": [
+        { "t": 0, "attention": 0.75, "state": "集合", "note": "队伍松散" },
+        { "t": 30, "attention": 0.65, "state": "练习", "note": "用手掌拍球" },
+        { "t": 60, "attention": 0.82, "state": "竞赛", "note": "进步明显" },
+        { "t": 90, "attention": 0.85, "state": "听讲", "note": "认真纠正" }
+      ],
+      "feedback": "存在用手掌拍球的错误动作，经过教师纠错后竞赛环节有所改善。建议课后增加 50 次指力练习，强化正确触球部位记忆。"
+    },
+    {
+      "id": "s3", "name": "王芳", "avatarColor": "#000080",
+      "timeline": [
+        { "t": 0, "attention": 0.78, "state": "集合", "note": "认真" },
+        { "t": 30, "attention": 0.85, "state": "练习", "note": "稳定" },
+        { "t": 60, "attention": 0.9, "state": "竞赛", "note": "积极配合" },
+        { "t": 90, "attention": 0.88, "state": "听讲", "note": "笔记心得" }
+      ],
+      "feedback": "练习稳定，竞赛环节配合意识强。建议加强行进间运球的速度变化训练，提升实战应用能力。"
+    }
+  ],
+  "wiki": {
+    "nodes": [
+      {
+        "id": "k1", "title": "原地运球姿势",
+        "category": "篮球·基本技术",
+        "summary": "五指自然张开，用指根以上部位触球，手腕发力下压，球控制在腰部以下。",
+        "details": "标准姿势：双脚与肩同宽，膝盖微曲降低重心，目视前方而非看球。运球时手臂伸展与回缩配合，球的反弹高度应在膝盖与腰部之间。",
+        "related": ["k2", "k3"],
+        "classroomRefs": [{ "t": 16, "type": "示范", "label": "教师示范原地运球" }]
+      },
+      {
+        "id": "k2", "title": "行进间运球",
+        "category": "篮球·基本技术",
+        "summary": "运球行进时，球的落点在身体侧前方，便于控制和变向。",
+        "details": "行进间运球要把球控制在身体侧前方，根据速度调整运球高度：快攻时推球向前；正常推进时运球至腰高。变向时配合非运球脚的蹬地。",
+        "related": ["k1", "k3"],
+        "classroomRefs": [{ "t": 60, "type": "竞赛", "label": "运球过障碍接力" }]
+      },
+      {
+        "id": "k3", "title": "常见错误：手掌拍球",
+        "category": "篮球·错误纠正",
+        "summary": "用手掌击球而非指根触球，导致球的方向与力度不可控。",
+        "details": "错误原因：手腕僵硬、五指未张开、对球的控制意识弱。纠正方法：1. 重新学习触球部位；2. 反复慢速运球体会指根感觉；3. 增加指力训练。",
+        "related": ["k1", "k2"],
+        "classroomRefs": [{ "t": 95, "type": "纠错", "label": "李伟错误纠正" }]
+      },
+      {
+        "id": "k4", "title": "运动强度控制",
+        "category": "体育·运动学",
+        "summary": "课堂运动强度按心率与主观疲劳感分级，避免过低或过载。",
+        "details": "中学体育课适宜心率范围 120-180 次/分。课程设计应包含热身-主练习-放松三阶段，避免强度突变。本课强度从 0.6 渐升至 0.92，曲线合理。",
+        "related": [],
+        "classroomRefs": [{ "t": 122, "type": "放松", "label": "拉伸阶段" }]
+      }
+    ],
+    "assistantScript": [
+      { "q": "为什么不能用掌心拍球？", "a": "用手掌拍球时，接触面积大但方向控制差，球容易乱跑。正确做法是五指自然张开，用指根以上部位触球，配合手腕发力下压，能精准控制球的方向与高度。" },
+      { "q": "运球时重心为什么不能高？", "a": "降低重心（屈膝、腰背微前倾）能让运球更稳定，便于变向和加速。重心过高时球容易暴露在防守者面前，且不利于身体平衡。", "keywords": ["重心", "运球"] },
+      { "q": "如何纠正用手掌拍球？", "a": "三步：1) 重新体会指根触球的感觉；2) 慢速运球不要求节奏，先求正确；3) 加入指力训练（捏力球、抓毛巾）。", "keywords": ["纠正", "掌"] },
+      { "q": "课堂运动强度怎么算？", "a": "通过心率（120-180 次/分为适宜区间）和主观疲劳感综合评估。本课强度从集合阶段 0.6 渐升至竞赛 0.92，结束时降至 0.4，曲线合理。", "keywords": ["强度", "心率"] }
+    ]
+  },
+  "metrics": {
+    "teaching": 0.86,
+    "engagement": 0.9,
+    "interaction": 0.82,
+    "compliance": 0.88,
+    "innovation": 0.8
+  }
+}

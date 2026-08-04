@@ -1,0 +1,442 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* ============================================================
+     Win95 标准"双层"边框（外框 + 内框），采用纯 box-shadow 实现
+     外层: 上左 highlight(#fff) / 下右 darkshadow(#000)
+     内层: 上左 light(#dfdfdf) / 下右 shadow(#808080)
+     ============================================================ */
+
+  /* Win95 凸起按钮 */
+  .win-button {
+    @apply bg-win-gray text-black;
+    border: none;
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-highlight),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-light);
+    padding: 4px 12px;
+    font-size: var(--win-fs-base);
+    font-family: var(--win-font);
+    min-width: 60px;
+    min-height: 23px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: none;
+  }
+  .win-button:active,
+  .win-button.is-pressed {
+    box-shadow:
+      inset 1px 1px var(--win-btn-darkshadow),
+      inset -1px -1px var(--win-btn-highlight),
+      inset 2px 2px var(--win-btn-shadow),
+      inset -2px -2px var(--win-btn-light);
+  }
+  .win-button:active > *,
+  .win-button.is-pressed > * {
+    transform: translate(1px, 1px);
+  }
+  .win-button:focus {
+    outline: 1px dotted var(--win-black);
+    outline-offset: -5px;
+  }
+  /* 默认按钮：黑色外框（Win95 标志性样式） */
+  .win-button.is-default {
+    outline: 1px solid var(--win-black);
+    outline-offset: 0;
+  }
+  .win-button:disabled {
+    color: var(--win-btn-shadow);
+    text-shadow: 1px 1px var(--win-btn-highlight);
+    cursor: not-allowed;
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-highlight),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-light);
+  }
+
+  /* Win95 凹陷面板（内容区/输入框底） */
+  .win-sunken {
+    box-shadow:
+      inset 1px 1px var(--win-btn-darkshadow),
+      inset -1px -1px var(--win-btn-highlight),
+      inset 2px 2px var(--win-btn-shadow),
+      inset -2px -2px var(--win-btn-light);
+    background: var(--win-white);
+  }
+
+  /* Win95 凸起面板 */
+  .win-raised {
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-highlight),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-light);
+    background: var(--win-gray);
+  }
+
+  /* 细凸起边框（单圈，菜单/工具条用） */
+  .win-raised-thin {
+    box-shadow:
+      inset -1px -1px var(--win-btn-shadow),
+      inset 1px 1px var(--win-btn-highlight);
+    background: var(--win-gray);
+  }
+
+  /* 细凹陷边框（状态栏格等） */
+  .win-sunken-thin {
+    box-shadow:
+      inset 1px 1px var(--win-btn-shadow),
+      inset -1px -1px var(--win-btn-highlight);
+  }
+
+  /* 窗口容器：灰面 + 3px 内边距（经典窗口框） */
+  .win-window {
+    background: var(--win-gray);
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-light),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-highlight);
+    padding: 3px;
+  }
+
+  /* 标题栏 */
+  .win-titlebar {
+    height: var(--win-titlebar-h);
+    background: linear-gradient(90deg, var(--win-navy) 0%, var(--win-navy-light) 100%);
+    color: var(--win-white);
+    font-weight: var(--win-fw-bold);
+    font-size: var(--win-fs-sm);
+    letter-spacing: 0.5px;
+    padding: 0 2px 0 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    cursor: move;
+  }
+  .win-titlebar.is-inactive {
+    background: linear-gradient(90deg, #7b7b7b 0%, #b5b5b5 100%);
+    color: var(--win-btn-light);
+  }
+
+  /* 标题栏按钮（16x14，经典尺寸） */
+  .win-titlebar-btn {
+    @apply bg-win-gray text-black;
+    border: none;
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-highlight),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-light);
+    width: 16px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--win-font);
+    padding: 0;
+  }
+  .win-titlebar-btn:active {
+    box-shadow:
+      inset 1px 1px var(--win-btn-darkshadow),
+      inset -1px -1px var(--win-btn-highlight),
+      inset 2px 2px var(--win-btn-shadow),
+      inset -2px -2px var(--win-btn-light);
+  }
+  .win-titlebar-btn:active > .win-glyph {
+    transform: translate(1px, 1px);
+  }
+
+  /* ---- 标题栏字形（纯 CSS 绘制，还原像素感） ---- */
+  .win-glyph {
+    display: block;
+    position: relative;
+    pointer-events: none;
+  }
+  /* 最小化：左下角短横 */
+  .win-glyph-min {
+    width: 6px;
+    height: 2px;
+    background: var(--win-black);
+    align-self: flex-end;
+    margin: 0 0 2px 1px;
+  }
+  /* 最大化：厚顶边框方框 */
+  .win-glyph-max {
+    width: 9px;
+    height: 8px;
+    border: 1px solid var(--win-black);
+    border-top-width: 2px;
+  }
+  /* 还原：两个错开的方框 */
+  .win-glyph-restore {
+    width: 9px;
+    height: 8px;
+  }
+  .win-glyph-restore::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 4px;
+    border: 1px solid var(--win-black);
+    border-top-width: 2px;
+    background: var(--win-gray);
+  }
+  .win-glyph-restore::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    height: 4px;
+    border: 1px solid var(--win-black);
+    border-top-width: 2px;
+    background: var(--win-gray);
+  }
+  /* 关闭：X */
+  .win-glyph-close {
+    width: 8px;
+    height: 8px;
+    background:
+      linear-gradient(
+        45deg,
+        transparent 42%,
+        var(--win-black) 42%,
+        var(--win-black) 58%,
+        transparent 58%
+      ),
+      linear-gradient(
+        -45deg,
+        transparent 42%,
+        var(--win-black) 42%,
+        var(--win-black) 58%,
+        transparent 58%
+      );
+  }
+
+  /* 50% 抖动棋盘格（按下态/选中态纹理） */
+  .win-dither {
+    background-image:
+      linear-gradient(45deg, rgba(255, 255, 255, 0.55) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255, 255, 255, 0.55) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.55) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.55) 75%);
+    background-size: 2px 2px;
+    background-position: 0 0, 0 1px, 1px -1px, -1px 0;
+  }
+
+  /* 分隔线（菜单/工具条凹槽） */
+  .win-separator-h {
+    height: 0;
+    border-top: 1px solid var(--win-btn-shadow);
+    border-bottom: 1px solid var(--win-btn-highlight);
+  }
+  .win-separator-v {
+    width: 0;
+    border-left: 1px solid var(--win-btn-shadow);
+    border-right: 1px solid var(--win-btn-highlight);
+  }
+
+  /* 字段集/分组框 */
+  .win-fieldset {
+    box-shadow:
+      inset 1px 1px var(--win-btn-shadow),
+      inset -1px -1px var(--win-btn-highlight);
+    padding: 10px 8px 8px;
+    position: relative;
+    margin-top: 8px;
+  }
+  .win-fieldset > legend {
+    padding: 0 4px;
+    font-size: var(--win-fs-sm);
+    background: var(--win-gray);
+  }
+
+  /* 输入框 */
+  .win-input {
+    @apply bg-white text-black;
+    border: none;
+    box-shadow:
+      inset 1px 1px var(--win-btn-darkshadow),
+      inset -1px -1px var(--win-btn-highlight),
+      inset 2px 2px var(--win-btn-shadow),
+      inset -2px -2px var(--win-btn-light);
+    padding: 3px 4px;
+    font-family: var(--win-font);
+    font-size: var(--win-fs-base);
+    outline: none;
+  }
+  .win-input:focus {
+    outline: none;
+  }
+
+  /* 文本 */
+  .win-text {
+    font-family: var(--win-font);
+    font-size: var(--win-fs-base);
+    color: var(--win-black);
+  }
+  .win-text-bold {
+    font-weight: var(--win-fw-bold);
+  }
+  .win-text-disabled {
+    color: var(--win-btn-shadow);
+    text-shadow: 1px 1px var(--win-btn-highlight);
+  }
+
+  /* 任务栏按钮 */
+  .win-taskbar-btn {
+    @apply bg-win-gray text-black;
+    border: none;
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-highlight),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-light);
+    padding: 2px 8px;
+    font-size: var(--win-fs-sm);
+    height: 24px;
+    min-width: 140px;
+    max-width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    text-align: left;
+  }
+  .win-taskbar-btn.is-active {
+    box-shadow:
+      inset 1px 1px var(--win-btn-darkshadow),
+      inset -1px -1px var(--win-btn-highlight),
+      inset 2px 2px var(--win-btn-shadow),
+      inset -2px -2px var(--win-btn-light);
+    font-weight: var(--win-fw-bold);
+  }
+  /* 激活按钮：灰面上叠白色棋盘抖动 */
+  .win-taskbar-btn.is-active::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(45deg, rgba(255, 255, 255, 0.5) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255, 255, 255, 0.5) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.5) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.5) 75%);
+    background-size: 2px 2px;
+    background-position: 0 0, 0 1px, 1px -1px, -1px 0;
+  }
+  .win-taskbar-btn {
+    position: relative;
+  }
+  .win-taskbar-btn.is-active > * {
+    transform: translate(1px, 1px);
+  }
+
+  /* 桌面图标 */
+  .win-desktop-icon {
+    width: 78px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px 4px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .win-desktop-icon:focus {
+    outline: none;
+  }
+  .win-desktop-icon:focus .win-desktop-icon-label {
+    background: var(--win-navy);
+    color: var(--win-white);
+    outline: 1px dotted var(--win-yellow);
+  }
+  .win-desktop-icon.is-selected .win-desktop-icon-label {
+    background: var(--win-navy);
+    color: var(--win-white);
+    outline: 1px dotted var(--win-yellow);
+  }
+  /* 选中时图标叠加藏青抖动（经典反色效果） */
+  .win-desktop-icon.is-selected .win-icon-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(45deg, var(--win-navy) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--win-navy) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--win-navy) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--win-navy) 75%);
+    background-size: 2px 2px;
+    background-position: 0 0, 0 1px, 1px -1px, -1px 0;
+    opacity: 0.55;
+  }
+  .win-desktop-icon-label {
+    text-align: center;
+    color: var(--win-white);
+    font-size: var(--win-fs-xs);
+    padding: 1px 3px;
+    text-shadow: 1px 1px #000;
+    word-break: break-all;
+    line-height: 1.15;
+    max-height: 2.3em;
+    overflow: hidden;
+  }
+
+  /* 开始菜单 */
+  .win-menu {
+    background: var(--win-gray);
+    box-shadow:
+      inset -1px -1px var(--win-btn-darkshadow),
+      inset 1px 1px var(--win-btn-light),
+      inset -2px -2px var(--win-btn-shadow),
+      inset 2px 2px var(--win-btn-highlight);
+    padding: 3px;
+  }
+  .win-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 4px 8px;
+    font-size: var(--win-fs-base);
+    font-family: var(--win-font);
+    color: var(--win-black);
+    cursor: pointer;
+    text-align: left;
+    background: transparent;
+    border: none;
+  }
+  .win-menu-item:hover,
+  .win-menu-item.is-hover {
+    background: var(--win-navy);
+    color: var(--win-white);
+  }
+  .win-menu-item:disabled {
+    color: var(--win-btn-shadow);
+    text-shadow: 1px 1px var(--win-btn-highlight);
+    background: transparent;
+    cursor: not-allowed;
+  }
+  .win-menu-item:disabled:hover {
+    background: transparent;
+    color: var(--win-btn-shadow);
+  }
+  .win-menu-separator {
+    height: 0;
+    margin: 3px 2px;
+    border-top: 1px solid var(--win-btn-shadow);
+    border-bottom: 1px solid var(--win-btn-highlight);
+  }
+}

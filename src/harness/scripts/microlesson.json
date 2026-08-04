@@ -1,0 +1,146 @@
+{
+  "scenario": "microlesson",
+  "title": "高三数学微课 · 函数单调性判定",
+  "duration": 180,
+  "frames": [
+    { "t": 0, "snapshot": "录播室·PPT封面：函数单调性", "metrics": { "slide": 1, "screen_focus": 0.95 } },
+    { "t": 15, "snapshot": "PPT切换至定义页·教师讲解", "metrics": { "slide": 2, "screen_focus": 0.92 } },
+    { "t": 40, "snapshot": "PPT展示判定方法·公式推导", "metrics": { "slide": 3, "screen_focus": 0.9 } },
+    { "t": 70, "snapshot": "PPT例题分析·推导过程", "metrics": { "slide": 4, "screen_focus": 0.88 } },
+    { "t": 100, "snapshot": "PPT动态图演示·曲线变化", "metrics": { "slide": 5, "screen_focus": 0.93 } },
+    { "t": 130, "snapshot": "PPT练习题·思考时间", "metrics": { "slide": 6, "screen_focus": 0.85 } },
+    { "t": 160, "snapshot": "PPT总结·知识结构图", "metrics": { "slide": 7, "screen_focus": 0.92 } },
+    { "t": 178, "snapshot": "片尾·下次预告", "metrics": { "slide": 8, "screen_focus": 0.5 } }
+  ],
+  "transcript": [
+    { "t": 5, "speaker": "teacher", "text": "同学们好，本节微课讲解函数单调性的判定方法。" },
+    { "t": 18, "speaker": "teacher", "text": "单调性定义：在区间内函数值随自变量增大而增大（递增）或减小（递减）。" },
+    { "t": 42, "speaker": "teacher", "text": "判定方法：求导，f'(x)>0 递增，f'(x)<0 递减。" },
+    { "t": 75, "speaker": "teacher", "text": "看例题：f(x)=x²-2x+3，求导 f'(x)=2x-2。" },
+    { "t": 105, "speaker": "teacher", "text": "当 x>1 时 f'(x)>0 递增，x<1 时递减。" },
+    { "t": 135, "speaker": "teacher", "text": "练习：判断 f(x)=ln(x) 的单调性，30 秒思考。" },
+    { "t": 165, "speaker": "teacher", "text": "ln(x) 求导为 1/x，在 x>0 时恒正，故递增。" },
+    { "t": 175, "speaker": "teacher", "text": "下节课学习函数极值与最值。" }
+  ],
+  "analysisScript": [
+    { "type": "frame_ref", "content": "frame-0", "timestamp": 0, "label": "片头启动" },
+    { "type": "text", "content": "VLM 录制启动，识别到 PPT 封面，", "timestamp": 2 },
+    { "type": "text", "content": "屏幕焦点集中（0.95）。", "timestamp": 3 },
+    { "type": "metric", "content": "0.95", "timestamp": 5, "label": "屏幕焦点" },
+    { "type": "event", "content": "微课录制开始", "timestamp": 1, "confidence": 0.97, "label": "session_start" },
+    { "type": "frame_ref", "content": "frame-15", "timestamp": 15, "label": "定义讲解" },
+    { "type": "text", "content": "PPT 切换至定义页，", "timestamp": 16 },
+    { "type": "text", "content": "教师讲解单调性定义，节奏清晰。", "timestamp": 17 },
+    { "type": "wiki", "content": "知识节点：单调性定义", "timestamp": 20, "wikiNodeId": "k1" },
+    { "type": "metric", "content": "0.92", "timestamp": 20, "label": "屏幕焦点" },
+    { "type": "frame_ref", "content": "frame-40", "timestamp": 40, "label": "判定方法" },
+    { "type": "text", "content": "PPT 展示判定方法，", "timestamp": 41 },
+    { "type": "text", "content": "推导 f'(x) 与单调性关系。", "timestamp": 42 },
+    { "type": "wiki", "content": "知识节点：导数判定", "timestamp": 45, "wikiNodeId": "k2" },
+    { "type": "metric", "content": "0.9", "timestamp": 45, "label": "屏幕焦点" },
+    { "type": "event", "content": "判定方法推导", "timestamp": 42, "confidence": 0.93, "label": "derivation" },
+    { "type": "frame_ref", "content": "frame-70", "timestamp": 70, "label": "例题分析" },
+    { "type": "text", "content": "PPT 展示例题 f(x)=x²-2x+3，", "timestamp": 71 },
+    { "type": "text", "content": "教师推导 f'(x)=2x-2。", "timestamp": 72 },
+    { "type": "wiki", "content": "知识节点：导数计算", "timestamp": 75, "wikiNodeId": "k3" },
+    { "type": "metric", "content": "0.88", "timestamp": 75, "label": "屏幕焦点" },
+    { "type": "event", "content": "例题推导", "timestamp": 70, "confidence": 0.94, "label": "example" },
+    { "type": "frame_ref", "content": "frame-100", "timestamp": 100, "label": "动态图演示" },
+    { "type": "text", "content": "PPT 动态图演示曲线变化，", "timestamp": 101 },
+    { "type": "text", "content": "x>1 递增，x<1 递减。", "timestamp": 102 },
+    { "type": "wiki", "content": "知识节点：单调区间", "timestamp": 105, "wikiNodeId": "k4" },
+    { "type": "metric", "content": "0.93", "timestamp": 105, "label": "屏幕焦点" },
+    { "type": "frame_ref", "content": "frame-130", "timestamp": 130, "label": "练习思考" },
+    { "type": "text", "content": "PPT 切换至练习题，", "timestamp": 131 },
+    { "type": "text", "content": "判定 ln(x) 单调性，思考 30 秒。", "timestamp": 132 },
+    { "type": "metric", "content": "0.85", "timestamp": 135, "label": "屏幕焦点" },
+    { "type": "event", "content": "练习启动", "timestamp": 130, "confidence": 0.9, "label": "exercise" },
+    { "type": "frame_ref", "content": "frame-160", "timestamp": 160, "label": "总结回顾" },
+    { "type": "text", "content": "PPT 展示知识结构图，", "timestamp": 161 },
+    { "type": "text", "content": "ln(x) 求导 1/x 恒正故递增。", "timestamp": 162 },
+    { "type": "event", "content": "课堂总结", "timestamp": 160, "confidence": 0.93, "label": "summary" },
+    { "type": "wiki", "content": "复习：单调性定义", "timestamp": 161, "wikiNodeId": "k1" },
+    { "type": "wiki", "content": "复习：导数判定", "timestamp": 162, "wikiNodeId": "k2" },
+    { "type": "frame_ref", "content": "frame-178", "timestamp": 178, "label": "片尾预告" },
+    { "type": "event", "content": "片尾预告", "timestamp": 178, "confidence": 0.95, "label": "preview" },
+    { "type": "event", "content": "微课结束", "timestamp": 179, "confidence": 0.96, "label": "session_end" }
+  ],
+  "students": [
+    {
+      "id": "s1", "name": "学生 A", "avatarColor": "#008000",
+      "timeline": [
+        { "t": 0, "attention": 0.92, "state": "观看", "note": "全神贯注" },
+        { "t": 70, "attention": 0.88, "state": "思考", "note": "推导过程" },
+        { "t": 130, "attention": 0.95, "state": "练习", "note": "迅速完成" }
+      ],
+      "feedback": "微课专注度极高，练习题 15 秒完成。建议观看下节极值课时同步完成配套练习册。"
+    },
+    {
+      "id": "s2", "name": "学生 B", "avatarColor": "#808000",
+      "timeline": [
+        { "t": 0, "attention": 0.78, "state": "观看", "note": "正常" },
+        { "t": 75, "attention": 0.65, "state": "走神", "note": "看手机" },
+        { "t": 130, "attention": 0.72, "state": "练习", "note": "未完成" }
+      ],
+      "feedback": "推导环节走神，练习未完成。建议重看 70-100 秒片段，并完成配套习题后再继续下节学习。"
+    },
+    {
+      "id": "s3", "name": "学生 C", "avatarColor": "#000080",
+      "timeline": [
+        { "t": 0, "attention": 0.85, "state": "观看", "note": "认真" },
+        { "t": 70, "attention": 0.9, "state": "思考", "note": "主动记录" },
+        { "t": 130, "attention": 0.88, "state": "练习", "note": "正确完成" }
+      ],
+      "feedback": "全程稳定，主动记录推导过程。建议尝试将本节方法应用到三角函数单调性判定，拓展学习。"
+    }
+  ],
+  "wiki": {
+    "nodes": [
+      {
+        "id": "k1", "title": "函数单调性定义",
+        "category": "数学·函数",
+        "summary": "函数在区间内随自变量增大而函数值增大（递增）或减小（递减）的性质。",
+        "details": "严格定义：设 f(x) 在区间 I 上定义，对任意 x1<x2∈I，若 f(x1)<f(x2) 则递增；若 f(x1)>f(x2) 则递减。单调性是函数的核心性质之一。",
+        "related": ["k2", "k4"],
+        "classroomRefs": [{ "t": 20, "type": "讲解", "label": "定义讲解" }]
+      },
+      {
+        "id": "k2", "title": "导数判定法",
+        "category": "数学·导数应用",
+        "summary": "若 f(x) 在区间内可导，则 f'(x)>0 时递增，f'(x)<0 时递减。",
+        "details": "这是判定可导函数单调性最直接的方法。注意：1) 必须先确定函数定义域；2) 求导后需解不等式 f'(x)>0 或 <0；3) 驻点（f'(x)=0）需单独分析是否改变单调性。",
+        "related": ["k1", "k3", "k4"],
+        "classroomRefs": [{ "t": 45, "type": "讲解", "label": "判定方法" }]
+      },
+      {
+        "id": "k3", "title": "导数计算",
+        "category": "数学·导数",
+        "summary": "应用基本求导公式与法则求 f'(x)。",
+        "details": "本课涉及公式：(x^n)' = n·x^(n-1)，(ln x)' = 1/x。复合函数用链式法则。例：f(x)=x²-2x+3 的导数 f'(x)=2x-2。",
+        "related": ["k2"],
+        "classroomRefs": [{ "t": 75, "type": "例题", "label": "求导推导" }]
+      },
+      {
+        "id": "k4", "title": "单调区间划分",
+        "category": "数学·函数",
+        "summary": "通过 f'(x) 的符号变化点将定义域划分为单调区间。",
+        "details": "步骤：1) 求定义域；2) 求 f'(x)；3) 解 f'(x)=0 找分界点；4) 用分界点划分区间，每段判断 f'(x) 符号。例：f(x)=x²-2x+3 在 (-∞,1) 递减，(1,+∞) 递增。",
+        "related": ["k1", "k2"],
+        "classroomRefs": [{ "t": 105, "type": "演示", "label": "区间划分演示" }]
+      }
+    ],
+    "assistantScript": [
+      { "q": "什么是函数单调性？", "a": "函数单调性指函数在区间内随自变量增大而函数值增大（递增）或减小（递减）的性质。严格定义：对任意 x1<x2∈I，若 f(x1)<f(x2) 则递增。" },
+      { "q": "如何用导数判定单调性？", "a": "若 f(x) 在区间内可导，则：f'(x)>0 时递增，f'(x)<0 时递减。这是最直接的方法，但需先确定函数定义域，且驻点（f'(x)=0）需单独分析。", "keywords": ["导数", "判定"] },
+      { "q": "怎么求 x²-2x+3 的单调区间？", "a": "1) 求导 f'(x)=2x-2；2) 令 f'(x)=0 得 x=1；3) 划分 (-∞,1) 与 (1,+∞)；4) 当 x<1 时 f'(x)<0 递减，x>1 时 f'(x)>0 递增。", "keywords": ["例题", "x²"] },
+      { "q": "ln(x) 是单调的吗？", "a": "ln(x) 在定义域 (0,+∞) 上递增。因为 (ln x)'=1/x，在 x>0 时恒为正，故 f'(x)>0 全程成立，函数单调递增。", "keywords": ["ln", "单调"] }
+    ]
+  },
+  "metrics": {
+    "teaching": 0.92,
+    "engagement": 0.86,
+    "interaction": 0.7,
+    "compliance": 0.95,
+    "innovation": 0.82
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "scenario": "lab",
+  "title": "高二化学 · 酸碱中和滴定",
+  "duration": 200,
+  "frames": [
+    { "t": 0, "snapshot": "实验室·学生穿戴护目镜与手套", "metrics": { "students_present": 24, "safety_gear": 1 } },
+    { "t": 15, "snapshot": "教师讲解滴定管使用要点", "metrics": { "attention": 0.88, "demo_active": 1 } },
+    { "t": 35, "snapshot": "学生开始滴定操作·教师巡视", "metrics": { "attention": 0.82, "practice_active": 1 } },
+    { "t": 70, "snapshot": "第3组操作错误·教师纠正", "metrics": { "attention": 0.85, "correction_active": 1 } },
+    { "t": 100, "snapshot": "记录数据·计算浓度", "metrics": { "attention": 0.9, "calculation_active": 1 } },
+    { "t": 140, "snapshot": "清洗器材·整理台面", "metrics": { "attention": 0.7, "cleanup_active": 1 } },
+    { "t": 180, "snapshot": "课堂总结·数据汇报", "metrics": { "attention": 0.85, "summary": 1 } },
+    { "t": 195, "snapshot": "下课·归还器材", "metrics": { "attention": 0.4, "dismiss": 1 } }
+  ],
+  "transcript": [
+    { "t": 5, "speaker": "teacher", "text": "注意穿戴护目镜和手套，今天操作有腐蚀性液体。" },
+    { "t": 18, "speaker": "teacher", "text": "滴定管使用前要润洗，读数时视线与液面平齐。" },
+    { "t": 38, "speaker": "teacher", "text": "开始滴定，控制活塞让液滴一滴一滴落下。" },
+    { "t": 72, "speaker": "teacher", "text": "第3组，滴定速度太快，应改为半滴加入。" },
+    { "t": 105, "speaker": "teacher", "text": "记录数据，用 c1V1=c2V2 计算未知浓度。" },
+    { "t": 145, "speaker": "teacher", "text": "实验结束清洗滴定管，倒置晾干。" },
+    { "t": 182, "speaker": "teacher", "text": "今天重点：操作规范和数据记录。" }
+  ],
+  "analysisScript": [
+    { "type": "frame_ref", "content": "frame-0", "timestamp": 0, "label": "安全准备" },
+    { "type": "text", "content": "VLM 识别到 24 名学生，", "timestamp": 2 },
+    { "type": "text", "content": "全员护目镜与手套穿戴规范。", "timestamp": 3 },
+    { "type": "metric", "content": "1.0", "timestamp": 5, "label": "安全合规率" },
+    { "type": "event", "content": "安全检查通过", "timestamp": 5, "confidence": 0.96, "label": "safety_pass" },
+    { "type": "event", "content": "课堂开始", "timestamp": 6, "confidence": 0.95, "label": "session_start" },
+    { "type": "frame_ref", "content": "frame-15", "timestamp": 15, "label": "操作讲解" },
+    { "type": "text", "content": "教师讲解滴定管使用要点，", "timestamp": 16 },
+    { "type": "text", "content": "重点强调润洗与读数规范。", "timestamp": 17 },
+    { "type": "metric", "content": "0.88", "timestamp": 20, "label": "抬头率" },
+    { "type": "wiki", "content": "知识节点：滴定管", "timestamp": 18, "wikiNodeId": "k1" },
+    { "type": "frame_ref", "content": "frame-35", "timestamp": 35, "label": "学生操作" },
+    { "type": "text", "content": "学生开始独立滴定操作，", "timestamp": 36 },
+    { "type": "text", "content": "教师巡视各组检查姿势。", "timestamp": 37 },
+    { "type": "metric", "content": "0.82", "timestamp": 40, "label": "操作专注度" },
+    { "type": "event", "content": "实验操作启动", "timestamp": 35, "confidence": 0.92, "label": "practice" },
+    { "type": "wiki", "content": "知识节点：酸碱中和", "timestamp": 38, "wikiNodeId": "k2" },
+    { "type": "frame_ref", "content": "frame-70", "timestamp": 70, "label": "错误纠正" },
+    { "type": "text", "content": "第 3 组滴定速度过快，", "timestamp": 71 },
+    { "type": "text", "content": "教师及时纠正为半滴操作。", "timestamp": 72 },
+    { "type": "metric", "content": "0.85", "timestamp": 75, "label": "纠错响应度" },
+    { "type": "event", "content": "操作错误纠正", "timestamp": 70, "confidence": 0.88, "label": "correction" },
+    { "type": "wiki", "content": "知识节点：半滴操作", "timestamp": 75, "wikiNodeId": "k3" },
+    { "type": "student", "content": "第3组赵静操作错误被纠正", "timestamp": 72, "studentId": "s2", "label": "操作错误" },
+    { "type": "frame_ref", "content": "frame-100", "timestamp": 100, "label": "数据计算" },
+    { "type": "text", "content": "学生记录实验数据，", "timestamp": 101 },
+    { "type": "text", "content": "用公式 c1V1=c2V2 计算浓度。", "timestamp": 102 },
+    { "type": "metric", "content": "0.9", "timestamp": 105, "label": "数据完整度" },
+    { "type": "wiki", "content": "知识节点：滴定计算", "timestamp": 102, "wikiNodeId": "k4" },
+    { "type": "event", "content": "数据计算启动", "timestamp": 100, "confidence": 0.93, "label": "calculation" },
+    { "type": "frame_ref", "content": "frame-140", "timestamp": 140, "label": "清理器材" },
+    { "type": "text", "content": "进入器材清理阶段，", "timestamp": 141 },
+    { "type": "text", "content": "教师示范滴定管清洗晾干。", "timestamp": 142 },
+    { "type": "metric", "content": "0.7", "timestamp": 145, "label": "清理专注度" },
+    { "type": "event", "content": "清理启动", "timestamp": 140, "confidence": 0.9, "label": "cleanup" },
+    { "type": "frame_ref", "content": "frame-180", "timestamp": 180, "label": "课堂总结" },
+    { "type": "text", "content": "各组汇报数据，", "timestamp": 181 },
+    { "type": "text", "content": "教师总结操作规范要点。", "timestamp": 182 },
+    { "type": "event", "content": "课堂总结", "timestamp": 180, "confidence": 0.94, "label": "summary" },
+    { "type": "wiki", "content": "复习：滴定管操作", "timestamp": 182, "wikiNodeId": "k1" },
+    { "type": "frame_ref", "content": "frame-195", "timestamp": 195, "label": "下课" },
+    { "type": "event", "content": "下课", "timestamp": 196, "confidence": 0.96, "label": "session_end" }
+  ],
+  "students": [
+    {
+      "id": "s1", "name": "陈思", "avatarColor": "#008000",
+      "timeline": [
+        { "t": 0, "attention": 0.9, "state": "准备", "note": "护具齐全" },
+        { "t": 35, "attention": 0.88, "state": "操作", "note": "姿势标准" },
+        { "t": 100, "attention": 0.95, "state": "计算", "note": "数据精准" },
+        { "t": 140, "attention": 0.8, "state": "清理", "note": "主动" }
+      ],
+      "feedback": "操作规范度满分，数据计算精准（误差 0.3%）。建议在实验报告中加入误差来源分析，提升科学严谨性。可作为实验员助理人选。"
+    },
+    {
+      "id": "s2", "name": "赵静", "avatarColor": "#808000",
+      "timeline": [
+        { "t": 0, "attention": 0.85, "state": "准备", "note": "规范" },
+        { "t": 35, "attention": 0.7, "state": "操作", "note": "滴定过快" },
+        { "t": 70, "attention": 0.75, "state": "纠错", "note": "改进中" },
+        { "t": 100, "attention": 0.88, "state": "计算", "note": "数据基本正确" }
+      ],
+      "feedback": "滴定速度过快导致操作错误，经纠正后有所改善但需强化练习。建议下次实验前复习半滴操作要点，并单独练习滴定速度控制。"
+    },
+    {
+      "id": "s3", "name": "刘洋", "avatarColor": "#000080",
+      "timeline": [
+        { "t": 0, "attention": 0.88, "state": "准备", "note": "认真" },
+        { "t": 35, "attention": 0.82, "state": "操作", "note": "稳定" },
+        { "t": 100, "attention": 0.92, "state": "计算", "note": "思路清晰" },
+        { "t": 180, "attention": 0.9, "state": "汇报", "note": "表达清楚" }
+      ],
+      "feedback": "操作稳定，计算思路清晰，汇报表达能力强。建议尝试设计自己的实验方案，培养创新思维。"
+    }
+  ],
+  "wiki": {
+    "nodes": [
+      {
+        "id": "k1", "title": "滴定管的使用",
+        "category": "化学·实验仪器",
+        "summary": "滴定管用于精确量取液体体积，分酸式（带活塞）和碱式（带橡皮管）两种。",
+        "details": "使用前必须润洗：用待装液润洗 2-3 次，避免残留水稀释液体。读数时视线与液面最低处保持水平，估读到 0.01 mL。装液后要排气泡。",
+        "related": ["k2", "k3"],
+        "classroomRefs": [{ "t": 18, "type": "讲解", "label": "滴定管使用要点" }]
+      },
+      {
+        "id": "k2", "title": "酸碱中和反应",
+        "category": "化学·反应原理",
+        "summary": "酸与碱反应生成盐和水，反应实质是 H+ + OH- → H2O。",
+        "details": "强酸强碱中和反应的离子方程式为 H+ + OH- = H2O，是放热反应。中和滴定利用这一反应测定未知浓度的酸或碱。指示剂选择原则：变色范围与滴定终点 pH 匹配。",
+        "related": ["k1", "k4"],
+        "classroomRefs": [{ "t": 38, "type": "讲解", "label": "中和反应原理" }]
+      },
+      {
+        "id": "k3", "title": "半滴操作",
+        "category": "化学·实验技巧",
+        "summary": "滴定接近终点时改为半滴加入，悬而不落，靠锥形瓶壁接入。",
+        "details": "当指示剂颜色变化缓慢或接近终点时，应控制活塞让液滴悬在管口，用锥形瓶内壁靠取，再用蒸馏水冲洗。这是保证精度（误差<0.1%）的关键操作。",
+        "related": ["k1"],
+        "classroomRefs": [{ "t": 75, "type": "纠错", "label": "第3组纠正半滴" }]
+      },
+      {
+        "id": "k4", "title": "滴定计算公式",
+        "category": "化学·计算",
+        "summary": "酸碱完全中和时满足 c1V1 = c2V2（物质的量相等）。",
+        "details": "前提：反应按化学计量数完全进行（如 1:1 反应的强酸强碱）。若是 H2SO4 与 NaOH 反应，则 c(酸)×V(酸)×2 = c(碱)×V(碱)。计算时要注意反应化学计量比。",
+        "related": ["k2"],
+        "classroomRefs": [{ "t": 102, "type": "计算", "label": "浓度计算演示" }]
+      }
+    ],
+    "assistantScript": [
+      { "q": "滴定管为什么要润洗？", "a": "润洗是为了避免管内残留的水稀释待装液，保证浓度准确。具体做法是用待装液润洗 2-3 次，每次少量，转动滴定管使内壁全部润湿后从下端放出。" },
+      { "q": "如何进行半滴操作？", "a": "接近终点时，轻转活塞让液滴悬在管口不落下，将锥形瓶内壁靠过去接触液滴，再用蒸馏水冲洗内壁。这是保证精度低于 0.1% 误差的关键技巧。", "keywords": ["半滴", "终点"] },
+      { "q": "中和反应的本质是什么？", "a": "本质是 H+ 与 OH- 结合生成水：H+ + OH- = H2O。这是放热反应，因此在滴定过程中温度会略有上升。", "keywords": ["中和", "本质"] },
+      { "q": "c1V1=c2V2 何时成立？", "a": "当反应按化学计量数完全进行且计量比为 1:1 时成立（如强酸强碱 1:1 反应）。若是 H2SO4 与 NaOH，应写作 c(酸)×V(酸)×2 = c(碱)×V(碱)。", "keywords": ["计算", "公式"] }
+    ]
+  },
+  "metrics": {
+    "teaching": 0.9,
+    "engagement": 0.85,
+    "interaction": 0.8,
+    "compliance": 0.96,
+    "innovation": 0.75
+  }
+}
