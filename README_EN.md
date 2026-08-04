@@ -18,7 +18,7 @@
 
 ---
 
-## 🕹️ What Is This Project?
+## 🕹️ What Is This Project? {#what-is-this-project} · [↗ 中文](README.md#what-is-this-project)
 
 Let's roll the clock back to 1995 — the teal "Start" button, the chunky 3D window borders, draggable icons everywhere. Today, we've stuffed a **future-proof brain** into that classic Win95 desktop shell:
 
@@ -41,7 +41,7 @@ It isn't actually running a giant model in the cloud — the project ships a **p
 
 ---
 
-## ✨ Core Features
+## ✨ Core Features {#core-features} · [↗ 中文](README.md#core-features)
 
 | Module | Description |
 | --- | --- |
@@ -57,7 +57,7 @@ It isn't actually running a giant model in the cloud — the project ships a **p
 
 ---
 
-## 🖼️ Screenshots
+## 🖼️ Screenshots {#screenshots} · [↗ 中文](README.md#screenshots)
 
 > All screenshots are real captures from the running app — pixel-art nostalgia meets modern AI capability ✨
 > 👆 **Click any screenshot to view the full-resolution original.**
@@ -153,7 +153,7 @@ Students can pin highlights to the top; teachers can browse the system info — 
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture {#architecture} · [↗ 中文](README.md#architecture)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -181,7 +181,7 @@ Students can pin highlights to the top; teachers can browse the system info — 
 
 ---
 
-## 🚀 Run Locally
+## 🚀 Run Locally {#run-locally} · [↗ 中文](README.md#run-locally)
 
 ```bash
 # 1. Install dependencies
@@ -207,7 +207,7 @@ After loading, you'll see:
 
 ---
 
-## 🧩 Tech Stack
+## 🧩 Tech Stack {#tech-stack} · [↗ 中文](README.md#tech-stack)
 
 | Category | Choice |
 | --- | --- |
@@ -221,7 +221,7 @@ After loading, you'll see:
 
 ---
 
-## 🗂️ Project Layout
+## 🗂️ Project Layout {#project-layout} · [↗ 中文](README.md#project-layout)
 
 ```
 src/
@@ -244,7 +244,7 @@ src/
 
 ---
 
-## 📜 License
+## 📜 License {#license} · [↗ 中文](README.md#license)
 
 This project is released under the **[Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/deed.en)** license.
 
@@ -264,7 +264,7 @@ The full legal text is available in the [LICENSE](LICENSE) file.
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Acknowledgments {#acknowledgments} · [↗ 中文](README.md#acknowledgments)
 
 - Salute to **Microsoft Windows 95** — a product that defined what a "personal computer desktop" should be.
 - Salute to every open-source **VLM / Qwen-VL / GPT-4V** — for making "let AI see the world" possible.

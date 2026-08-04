@@ -12,11 +12,13 @@
 [![Tailwind](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-CC_BY--NC_4.0-EF9421?logo=creative-commons&logoColor=white)](#-许可证)
 
+[**中文文档**](README.md) · [English](README_EN.md)
+
 </div>
 
 ---
 
-## 🕹️ 这是一个什么样的项目？
+## 🕹️ 这是一个什么样的项目？ {#what-is-this-project} · [↗ English](README_EN.md#what-is-this-project)
 
 把时间拨回 1995 年 —— 蓝盈盈的"开始"按钮、凹凸的 3D 窗口边框、能拖来拖去的图标。今天，我们把这套经典的 Win95 桌面操作系统外壳，**重新塞进了一个面向未来的内核**：
 
@@ -39,7 +41,7 @@
 
 ---
 
-## ✨ 核心特性
+## ✨ 核心特性 {#core-features} · [↗ English](README_EN.md#core-features)
 
 | 模块 | 说明 |
 | --- | --- |
@@ -55,7 +57,7 @@
 
 ---
 
-## 🖼️ 项目截图
+## 🖼️ 项目截图 {#screenshots} · [↗ English](README_EN.md#screenshots)
 
 > 所有截图均来自项目实际运行界面，复古的像素感与现代化能力并存 ✨
 > 👆 **点击任一截图可查看高清原图**。
@@ -151,7 +153,7 @@
 
 ---
 
-## 🏗️ 架构
+## 🏗️ 架构 {#architecture} · [↗ English](README_EN.md#architecture)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -179,7 +181,7 @@
 
 ---
 
-## 🚀 本地运行
+## 🚀 本地运行 {#run-locally} · [↗ English](README_EN.md#run-locally)
 
 ```bash
 # 1. 安装依赖
@@ -205,7 +207,7 @@ npm run preview
 
 ---
 
-## 🧩 技术栈
+## 🧩 技术栈 {#tech-stack} · [↗ English](README_EN.md#tech-stack)
 
 | 类别 | 选型 |
 | --- | --- |
@@ -219,7 +221,7 @@ npm run preview
 
 ---
 
-## 🗂️ 目录结构
+## 🗂️ 目录结构 {#project-layout} · [↗ English](README_EN.md#project-layout)
 
 ```
 src/
@@ -242,7 +244,7 @@ src/
 
 ---
 
-## 📜 许可证
+## 📜 许可证 {#license} · [↗ English](README_EN.md#license)
 
 本项目采用 **[Creative Commons 署名-非商业性使用 4.0 国际 (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)** 协议发布。
 
@@ -262,7 +264,7 @@ src/
 
 ---
 
-## 🙏 致谢
+## 🙏 致谢 {#acknowledgments} · [↗ English](README_EN.md#acknowledgments)
 
 - 致敬 **Microsoft Windows 95** —— 一个定义了"个人电脑桌面"的伟大产品
 - 致敬所有开源的 **VLM / Qwen-VL / GPT-4V** —— 让"让 AI 看懂世界"成为可能
