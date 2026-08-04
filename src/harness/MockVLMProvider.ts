@@ -12,11 +12,11 @@ import workshopScript from './scripts/workshop.json';
 import microlessonScript from './scripts/microlesson.json';
 
 const SCRIPTS: Record<ScenarioType, ScenarioScript> = {
-  classroom: classroomScript as ScenarioScript,
-  pe: peScript as ScenarioScript,
-  lab: labScript as ScenarioScript,
-  workshop: workshopScript as ScenarioScript,
-  microlesson: microlessonScript as ScenarioScript,
+  classroom: classroomScript as unknown as ScenarioScript,
+  pe: peScript as unknown as ScenarioScript,
+  lab: labScript as unknown as ScenarioScript,
+  workshop: workshopScript as unknown as ScenarioScript,
+  microlesson: microlessonScript as unknown as ScenarioScript,
 };
 
 export function getScript(scenario: ScenarioType): ScenarioScript {
