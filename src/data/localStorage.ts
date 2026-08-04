@@ -1,5 +1,6 @@
-import { STORAGE_KEY, STORAGE_VERSION, type NoteRecord, type SessionRecord, type StorageSchema } from './types';
+import { STORAGE_KEY, STORAGE_VERSION, type SessionRecord, type StorageSchema } from './types';
 import { seedSessions, seedTeacherProfile, seedStudentProfile, seedNotes } from './seed';
+export type { NoteRecord } from './types';
 
 let cache: StorageSchema | null = null;
 let writeTimer: number | null = null;
