@@ -12,7 +12,7 @@ export type ScenarioType =
 
 export type AnalysisMode = 'realtime' | 'playback';
 
-export type UserRole = 'teacher' | 'student';
+export type UserRole = 'teacher' | 'student' | 'admin';
 
 /** 视频帧采样（每帧含可视化描述 + 关键指标） */
 export interface FrameSample {
@@ -210,4 +210,161 @@ export interface CapabilityProvider {
   getSimulation(scenario: ScenarioType): Promise<SimulationScript>;
   /** 获取学生互动游戏模块 */
   getGames(scenario: ScenarioType): Promise<GameModule[]>;
+}
+
+// ============ 治理编排层（GovernanceProvider） ============
+// 与 VLMProvider / CapabilityProvider 并列的第三个 Provider。
+// 关注点：面向管理岗位的 AI agent 洞察编排。
+// 数据分层治理：
+//   Layer1 Raw      → GovernanceContext.raw（AI 消费，不直接渲染）
+//   Layer2 Aggregated → GovernanceContext.aggregates（AI 参考 + 用户图表双用）
+//   Layer3 Agent Output → GovernanceChunk / AnomalyAlert / ResearchSuggestion（AI 产出，用户消费）
+//   Layer4 Presentation → 图表 / 卡片 / 对话（用户直接呈现，由 Apps 层渲染）
+
+/** 组织架构快照（harness 层独立定义，不依赖 data 层持久化结构） */
+export interface OrgSnapshot {
+  schools: { id: string; name: string; type: string }[];
+  terms: { id: string; name: string; isCurrent: boolean }[];
+  grades: { id: string; name: string; schoolId: string }[];
+  classes: { id: string; name: string; gradeId: string; studentCount: number }[];
+  subjects: { id: string; name: string }[];
+}
+
+/** AI 消费的会话摘要（从 data 层 SessionRecord 投影，由 governanceStore 适配转换） */
+export interface SessionSummary {
+  id: string;
+  scenario: ScenarioType;
+  title: string;
+  teacherId: string;
+  teacherName: string;
+  date: string;
+  duration: number;
+  metrics: { teaching: number; engagement: number; interaction: number; compliance: number; innovation: number };
+  studentCount: number;
+  classId: string;
+  gradeId: string;
+  termId: string;
+  subjectId: string;
+}
+
+/** AI 消费的教师摘要 */
+export interface TeacherSummary {
+  id: string;
+  name: string;
+  subject: string;
+  title: string;
+  department?: string;
+  sessionCount: number;
+}
+
+// —— Layer 2: 聚合统计（AI 参考 + 用户图表双用） ——
+
+export interface SchoolOverview {
+  totalScore: number;
+  scoreChange: number; // 环比（与上学期差值）
+  analyzedSessions: number;
+  totalSessions: number;
+  coverageRate: number;
+  activeTeachers: number;
+  activeClasses: number;
+}
+
+export interface ClassComparisonRow {
+  classId: string;
+  className: string;
+  avgScore: number;
+  sessionCount: number;
+  studentCount: number;
+  trend: number; // 与上学期差值
+}
+
+export interface SubjectComparisonRow {
+  subjectId: string;
+  subjectName: string;
+  avgScore: number;
+  teacherCount: number;
+  sessionCount: number;
+}
+
+export interface TeacherComparisonRow {
+  teacherId: string;
+  teacherName: string;
+  subject: string;
+  avgScore: number;
+  sessionCount: number;
+  metrics: { teaching: number; engagement: number; interaction: number; compliance: number; innovation: number };
+}
+
+export interface TrendSeries {
+  termId: string;
+  termName: string;
+  avgScore: number;
+  sessionCount: number;
+}
+
+// —— Layer 1: AI 消费的数据上下文 ——
+
+export interface GovernanceContext {
+  /** 原始数据层 — 喂给 AI 的完整数据，不直接展示给用户 */
+  raw: {
+    sessions: SessionSummary[];
+    teachers: TeacherSummary[];
+    org: OrgSnapshot;
+  };
+  /** 聚合层 — AI 参考 + 用户图表共用 */
+  aggregates: {
+    schoolOverview: SchoolOverview;
+    classComparison: ClassComparisonRow[];
+    subjectComparison: SubjectComparisonRow[];
+    teacherComparison: TeacherComparisonRow[];
+    trends: TrendSeries[];
+  };
+}
+
+// —— Layer 3: Agent 产出（用户消费） ——
+
+export type GovernanceChunkType = 'insight' | 'alert' | 'suggestion' | 'metric_ref';
+
+export interface GovernanceChunk {
+  type: GovernanceChunkType;
+  content: string;
+  /** 引用的数据/指标 ID（用于图表联动高亮） */
+  refId?: string;
+  severity?: 'info' | 'warning' | 'critical';
+}
+
+export interface AnomalyAlert {
+  id: string;
+  type: 'score_drop' | 'low_engagement' | 'compliance_risk' | 'coverage_gap';
+  target: { type: 'teacher' | 'class' | 'subject'; id: string; name: string };
+  severity: 'warning' | 'critical';
+  description: string;
+  metric: string;
+  value: number;
+  threshold: number;
+}
+
+export interface ResearchSuggestion {
+  target: { type: 'teacher' | 'class' | 'subject'; id: string; name: string };
+  dimension: string;
+  currentScore: number;
+  suggestion: string;
+  priority: 'high' | 'medium' | 'low';
+}
+
+// —— 第三个 Provider 接口 ——
+
+export interface GovernanceProvider {
+  readonly name: string;
+  /** 流式治理简报（复用 VLMProvider AsyncIterable 模式，增量 yield chunk） */
+  streamBriefing(ctx: GovernanceContext): AsyncIterable<GovernanceChunk>;
+  /** 对话式洞察（流式） */
+  streamInsight(query: string, ctx: GovernanceContext): AsyncIterable<GovernanceChunk>;
+  /** 异常预警扫描（复用 CapabilityProvider Promise 模式） */
+  detectAnomalies(ctx: GovernanceContext): Promise<AnomalyAlert[]>;
+  /** 教研建议生成 */
+  suggestResearch(
+    target: { type: 'teacher' | 'class' | 'subject'; id: string },
+    ctx: GovernanceContext,
+  ): Promise<ResearchSuggestion>;
 }

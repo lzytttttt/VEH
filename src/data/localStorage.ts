@@ -1,11 +1,62 @@
-import { STORAGE_KEY, STORAGE_VERSION, type NoteRecord, type SessionRecord, type StorageSchema } from './types';
-import { seedSessions, seedTeacherProfile, seedStudentProfile, seedNotes } from './seed';
+import {
+  STORAGE_KEY,
+  STORAGE_VERSION,
+  type NoteRecord,
+  type SessionRecord,
+  type StorageSchema,
+} from './types';
+import {
+  seedClasses,
+  seedGrades,
+  seedSchools,
+  seedSubjects,
+  seedTerms,
+  seedSessions,
+  seedTeacherProfile,
+  seedStudentProfile,
+  seedNotes,
+} from './seed';
 export type { NoteRecord, SessionRecord } from './types';
 
 let cache: StorageSchema | null = null;
 let writeTimer: number | null = null;
 
 const LEGACY_STORAGE_KEY = 'vlm-classroom:db';
+
+/** v1 schema 结构（迁移用） */
+interface StorageSchemaV1 {
+  version: number;
+  sessions: Array<Omit<SessionRecord, 'classId' | 'gradeId' | 'termId' | 'subjectId'>>;
+  teacherProfiles: StorageSchema['teacherProfiles'];
+  studentProfiles: StorageSchema['studentProfiles'];
+  notes: NoteRecord[];
+}
+
+/** v1 → v2 渐进迁移：保留旧 session 数据，补全组织字段默认值 */
+function migrateV1toV2(v1: StorageSchemaV1): StorageSchema {
+  const DEFAULT_TERM = seedTerms[0].id;
+  const DEFAULT_CLASS = seedClasses[0].id;
+  const DEFAULT_GRADE = seedGrades[0].id;
+  const DEFAULT_SUBJECT = seedSubjects[0].id;
+  return {
+    version: 2,
+    schools: seedSchools,
+    terms: seedTerms,
+    grades: seedGrades,
+    classes: seedClasses,
+    subjects: seedSubjects,
+    sessions: v1.sessions.map((s) => ({
+      ...s,
+      classId: s.classId ?? DEFAULT_CLASS,
+      gradeId: s.gradeId ?? DEFAULT_GRADE,
+      termId: s.termId ?? DEFAULT_TERM,
+      subjectId: s.subjectId ?? DEFAULT_SUBJECT,
+    })),
+    teacherProfiles: v1.teacherProfiles,
+    studentProfiles: v1.studentProfiles,
+    notes: v1.notes,
+  };
+}
 
 function loadFromStorage(): StorageSchema {
   try {
@@ -20,12 +71,19 @@ function loadFromStorage(): StorageSchema {
       }
     }
     if (!raw) return seedSchema();
-    const parsed = JSON.parse(raw) as StorageSchema;
+    const parsed = JSON.parse(raw) as { version: number };
+    // 渐进迁移：v1 → v2
+    if (parsed.version === 1) {
+      const migrated = migrateV1toV2(JSON.parse(raw) as StorageSchemaV1);
+      cache = migrated;
+      persist();
+      return migrated;
+    }
     if (parsed.version !== STORAGE_VERSION) {
-      // schema 不匹配，回退到 seed
+      // 未知版本，回退到 seed
       return seedSchema();
     }
-    return parsed;
+    return JSON.parse(raw) as StorageSchema;
   } catch (e) {
     console.error('LocalStorage load failed', e);
     return seedSchema();
@@ -35,6 +93,11 @@ function loadFromStorage(): StorageSchema {
 function seedSchema(): StorageSchema {
   return {
     version: STORAGE_VERSION,
+    schools: seedSchools,
+    terms: seedTerms,
+    grades: seedGrades,
+    classes: seedClasses,
+    subjects: seedSubjects,
     sessions: seedSessions,
     teacherProfiles: [seedTeacherProfile],
     studentProfiles: [seedStudentProfile],

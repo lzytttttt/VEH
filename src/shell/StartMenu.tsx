@@ -45,6 +45,7 @@ export default function StartMenu({ onClose, onLogout }: Props) {
 
   const scenarios = apps.filter((a) => a.category === 'scenario');
   const reports = apps.filter((a) => a.category === 'report' || a.category === 'profile' || a.category === 'wiki');
+  const governance = apps.filter((a) => a.category === 'governance');
   const system = apps.filter((a) => a.category === 'system');
 
   return (
@@ -105,6 +106,16 @@ export default function StartMenu({ onClose, onLogout }: Props) {
               <MenuItem key={a.id} icon={a.icon} label={a.name} hint={a.description} onClick={() => handleOpen(a)} />
             ))}
           </MenuGroup>
+          {governance.length > 0 && (
+            <>
+              <div className="win-menu-separator" />
+              <MenuGroup label="学校治理">
+                {governance.map((a) => (
+                  <MenuItem key={a.id} icon={a.icon} label={a.name} hint={a.description} onClick={() => handleOpen(a)} />
+                ))}
+              </MenuGroup>
+            </>
+          )}
           <div className="win-menu-separator" />
           <MenuGroup label="系统">
             {system.map((a) => (

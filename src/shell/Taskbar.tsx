@@ -110,7 +110,7 @@ export default function Taskbar() {
               boxShadow: 'inset 1px 1px #808080, inset -1px -1px #fff',
             }}
           >
-            {user?.role === 'teacher' ? 'T' : 'S'}
+            {user?.role === 'teacher' ? 'T' : user?.role === 'student' ? 'S' : 'A'}
           </span>
           <span style={{ fontSize: '12px', fontFamily: 'var(--win-font-mono)', letterSpacing: '0.5px' }}>
             {timeStr}

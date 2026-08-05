@@ -16,6 +16,11 @@ import MicroLessonApp from './scenarios/MicroLessonApp';
 const TeacherDrillApp = lazy(() => import('./TeacherDrillApp'));
 const LearningGameApp = lazy(() => import('./LearningGameApp'));
 
+// 学校治理 App 懒加载（独立 chunk）
+const DashboardApp = lazy(() => import('./DashboardApp'));
+const AdminConsoleApp = lazy(() => import('./AdminConsoleApp'));
+const GradeAnalysisApp = lazy(() => import('./GradeAnalysisApp'));
+
 /**
  * 应用启动器：根据 appId 返回对应窗口内容。
  */
@@ -27,7 +32,7 @@ export function launchApp(
   const app = findApp(appId);
   if (!app) return <div className="p-4">未找到应用：{appId}</div>;
 
-  const userRole = role as 'teacher' | 'student';
+  const userRole = (role === 'admin' ? 'teacher' : role) as 'teacher' | 'student';
   const scenarioProps = {
     role: userRole,
     studentId: userRole === 'student' ? 's1' : undefined,
@@ -54,6 +59,24 @@ export function launchApp(
       return (
         <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载学生闯关...</div>}>
           <LearningGameApp />
+        </Suspense>
+      );
+    case 'dashboard':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载校长驾驶舱...</div>}>
+          <DashboardApp />
+        </Suspense>
+      );
+    case 'admin-console':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载教务管理台...</div>}>
+          <AdminConsoleApp />
+        </Suspense>
+      );
+    case 'grade-analysis':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载年级分析台...</div>}>
+          <GradeAnalysisApp />
         </Suspense>
       );
     case 'classroom':

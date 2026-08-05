@@ -1,10 +1,12 @@
-import type { VLMProvider, CapabilityProvider } from './types';
+import type { VLMProvider, CapabilityProvider, GovernanceProvider } from './types';
 import { MockVLMProvider } from './MockVLMProvider';
 import { OpenAIAdapter } from './adapters/OpenAIAdapter';
 import { QwenAdapter } from './adapters/QwenAdapter';
 import { VLLMAdapter } from './adapters/VLLMAdapter';
 import { MockCapabilityProvider } from './MockCapabilityProvider';
 import { CapabilityAdapter } from './adapters/CapabilityAdapter';
+import { MockGovernanceProvider } from './MockGovernanceProvider';
+import { GovernanceAdapter } from './adapters/GovernanceAdapter';
 
 const REGISTRY: Record<string, () => VLMProvider> = {
   mock: () => new MockVLMProvider(),
@@ -57,5 +59,31 @@ export function listCapabilityProviders(): { id: string; name: string; available
   return [
     { id: 'mock', name: 'Mock Capability (脚本派生)', available: true },
     { id: 'api', name: '模型 API Adapter', available: false },
+  ];
+}
+
+// —— 治理 Provider（与 VLMProvider/CapabilityProvider 并列，共用同一注册文件保持一致性） ——
+
+const GOVERNANCE_REGISTRY: Record<string, () => GovernanceProvider> = {
+  mock: () => new MockGovernanceProvider(),
+  api: () => new GovernanceAdapter(),
+};
+
+const ACTIVE_GOVERNANCE_PROVIDER = 'mock';
+
+let govCached: GovernanceProvider | null = null;
+
+export function getGovernanceProvider(name: string = ACTIVE_GOVERNANCE_PROVIDER): GovernanceProvider {
+  if (name === ACTIVE_GOVERNANCE_PROVIDER && govCached) return govCached;
+  const factory = GOVERNANCE_REGISTRY[name] ?? GOVERNANCE_REGISTRY[ACTIVE_GOVERNANCE_PROVIDER];
+  const provider = factory();
+  if (name === ACTIVE_GOVERNANCE_PROVIDER) govCached = provider;
+  return provider;
+}
+
+export function listGovernanceProviders(): { id: string; name: string; available: boolean }[] {
+  return [
+    { id: 'mock', name: 'Mock Governance (规则引擎)', available: true },
+    { id: 'api', name: 'LLM API Adapter', available: false },
   ];
 }

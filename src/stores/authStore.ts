@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 
-export type UserRole = 'teacher' | 'student';
+export type UserRole = 'teacher' | 'student' | 'admin';
 
 export interface AuthUser {
   id: string;
   name: string;
   role: UserRole;
-  title: string; // 教师: 学科/职称；学生: 年级
+  title: string; // 教师: 学科/职称；学生: 年级；管理: 岗位
   avatarColor: string;
+  orgId?: string;
+  classId?: string;
 }
 
 interface AuthState {
@@ -45,4 +47,13 @@ export const STUDENT_USER: AuthUser = {
   role: 'student',
   title: '高二·三班',
   avatarColor: '#008000',
+};
+
+export const ADMIN_USER: AuthUser = {
+  id: 'a1',
+  name: '王校长',
+  role: 'admin',
+  title: '管理岗位',
+  avatarColor: '#800080',
+  orgId: 'school-1',
 };

@@ -1,5 +1,5 @@
-export type AppRole = 'teacher' | 'student' | 'both';
-export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'capability' | 'system';
+export type AppRole = 'teacher' | 'student' | 'admin' | 'both';
+export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'capability' | 'governance' | 'system';
 
 export interface AppMeta {
   id: string;
@@ -28,6 +28,10 @@ export const APP_REGISTRY: AppMeta[] = [
   { id: 'teacher-drill', name: '教师演练', icon: '🎓', role: 'teacher', category: 'capability', description: 'Three.js 虚拟学生模拟演练', width: 980, height: 660 },
   { id: 'learning-game', name: '学生闯关', icon: '🎮', role: 'student', category: 'capability', description: '课堂内容互动游戏（限时问答/多选/连线）', width: 760, height: 560 },
   { id: 'notes', name: '我的笔记', icon: '📝', role: 'student', category: 'system', description: '课堂笔记与重点收藏', width: 600, height: 480 },
+  // 学校治理（管理岗位）
+  { id: 'dashboard', name: '校长驾驶舱', icon: '📊', role: 'admin', category: 'governance', description: 'AI Agent 治理简报 · 全校概览 · 学期趋势', width: 1040, height: 680 },
+  { id: 'admin-console', name: '教务管理台', icon: '🗂️', role: 'admin', category: 'governance', description: '教师/班级管理 · 系统集成 · SSO配置', width: 980, height: 640 },
+  { id: 'grade-analysis', name: '年级分析台', icon: '📈', role: 'admin', category: 'governance', description: '班级对比 · 学科组分析 · 群体分布', width: 940, height: 620 },
   // 系统
   { id: 'about', name: '关于', icon: '💡', role: 'both', category: 'system', description: '关于本系统', width: 480, height: 360 },
 ];

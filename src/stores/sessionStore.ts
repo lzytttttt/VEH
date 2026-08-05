@@ -27,6 +27,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       metrics: script.metrics,
       studentCount: script.students.length,
       note: '由本次实时分析自动生成',
+      classId: 'class-2-3',
+      gradeId: 'grade-2',
+      termId: 'term-2025-fall',
+      subjectId: 'subj-physics',
     };
     saveSession(record);
     set({ sessions: listSessions() });
