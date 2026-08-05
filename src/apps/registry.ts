@@ -1,5 +1,5 @@
 export type AppRole = 'teacher' | 'student' | 'both';
-export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'system';
+export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'capability' | 'system';
 
 export interface AppMeta {
   id: string;
@@ -24,6 +24,9 @@ export const APP_REGISTRY: AppMeta[] = [
   { id: 'profile', name: '画像档案', icon: '👤', role: 'both', category: 'profile', description: '教师画像 / 学生学情长期档案', width: 800, height: 600 },
   // 知识模块
   { id: 'wiki', name: '知识 WIKI', icon: '📖', role: 'both', category: 'wiki', description: 'LLM 知识图谱 + AI 学习助手', width: 900, height: 640 },
+  // 能力提升
+  { id: 'teacher-drill', name: '教师演练', icon: '🎓', role: 'teacher', category: 'capability', description: 'Three.js 虚拟学生模拟演练', width: 980, height: 660 },
+  { id: 'learning-game', name: '学生闯关', icon: '🎮', role: 'student', category: 'capability', description: '课堂内容互动游戏（限时问答/多选/连线）', width: 760, height: 560 },
   { id: 'notes', name: '我的笔记', icon: '📝', role: 'student', category: 'system', description: '课堂笔记与重点收藏', width: 600, height: 480 },
   // 系统
   { id: 'about', name: '关于', icon: '💡', role: 'both', category: 'system', description: '关于本系统', width: 480, height: 360 },

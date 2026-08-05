@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { getScript } from '../harness/MockVLMProvider';
-import type { ScenarioType, WikiNode } from '../harness/types';
+import { useEffect, useState } from 'react';
+import { getCapabilityProvider } from '../harness/providerRegistry';
+import type { ScenarioType, WikiContainer, WikiNode } from '../harness/types';
 import WikiTree from '../components/WikiTree';
 import ChatAssistant from '../components/ChatAssistant';
+import KnowledgeGraph from '../components/KnowledgeGraph';
 
 interface Props {
   initialScenario?: ScenarioType;
@@ -20,12 +21,33 @@ const SCENARIO_OPTIONS: { id: ScenarioType; label: string; icon: string }[] = [
 
 export default function WikiApp({ initialScenario = 'classroom', initialNodeId, onSeekClassroom }: Props) {
   const [scenario, setScenario] = useState<ScenarioType>(initialScenario);
-  const script = getScript(scenario);
-  const wiki = script.wiki;
-  const [selectedId, setSelectedId] = useState<string | null>(
-    initialNodeId && script.wiki.nodes.find(n => n.id === initialNodeId) ? initialNodeId : wiki.nodes[0]?.id ?? null
-  );
-  const selectedNode: WikiNode | null = wiki.nodes.find((n) => n.id === selectedId) ?? null;
+  const [wiki, setWiki] = useState<WikiContainer | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // 经 CapabilityProvider 异步加载 wiki（Mock 等价于原 getScript，adapter 预留真实模型 API）
+  useEffect(() => {
+    let cancelled = false;
+    setWiki(null);
+    getCapabilityProvider()
+      .getWiki(scenario)
+      .then((w) => {
+        if (cancelled) return;
+        setWiki(w);
+        const init =
+          initialNodeId && w.nodes.find((n) => n.id === initialNodeId)
+            ? initialNodeId
+            : w.nodes[0]?.id ?? null;
+        setSelectedId(init);
+      })
+      .catch((e) => {
+        console.error('WikiApp load wiki failed', e);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // 场景切换即重新加载；initialNodeId 仅作首屏定位
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scenario]);
 
   const handleSeek = (t: number) => {
     if (onSeekClassroom) onSeekClassroom(scenario, t);
@@ -33,9 +55,18 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
 
   const handleScenarioChange = (s: ScenarioType) => {
     setScenario(s);
-    const newScript = getScript(s);
-    setSelectedId(newScript.wiki.nodes[0]?.id ?? null);
   };
+
+  const nodes = wiki?.nodes ?? [];
+  const selectedNode: WikiNode | null = nodes.find((n) => n.id === selectedId) ?? null;
+
+  if (!wiki) {
+    return (
+      <div className="flex items-center justify-center h-full bg-win-gray win-sunken" style={{ fontSize: '12px' }}>
+        <span className="win-text-disabled animate-blink">▌ 正在加载知识 WIKI...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full bg-win-gray">
@@ -155,32 +186,10 @@ function NodeDetail({
         </div>
       )}
 
-      {/* 知识图谱占位 */}
+      {/* 知识图谱（交互式力导向） */}
       <div className="win-fieldset" style={{ marginTop: '8px' }}>
         <legend>知识图谱</legend>
-        <svg width="100%" height="120" viewBox="0 0 400 120">
-          <defs>
-            <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-              <path d="M0,0 L6,3 L0,6 Z" fill="#808080" />
-            </marker>
-          </defs>
-          {/* 中心节点 */}
-          <circle cx="200" cy="60" r="22" fill="#000080" stroke="#fff" strokeWidth="2" />
-          <text x="200" y="64" textAnchor="middle" fill="#fff" style={{ fontSize: '9px' }}>{node.title.slice(0, 4)}</text>
-          {/* 关联节点 */}
-          {related.map((r, i) => {
-            const angle = (i / Math.max(related.length, 1)) * Math.PI * 2;
-            const x = 200 + Math.cos(angle) * 80;
-            const y = 60 + Math.sin(angle) * 40;
-            return (
-              <g key={r.id}>
-                <line x1="200" y1="60" x2={x} y2={y} stroke="#808080" strokeWidth="1" markerEnd="url(#arrow)" />
-                <circle cx={x} cy={y} r="14" fill="#008000" stroke="#fff" strokeWidth="1" />
-                <text x={x} y={y + 3} textAnchor="middle" fill="#fff" style={{ fontSize: '8px' }}>{r.title.slice(0, 3)}</text>
-              </g>
-            );
-          })}
-        </svg>
+        <KnowledgeGraph node={node} allNodes={allNodes} onSelectNode={onSelectNode} />
       </div>
     </div>
   );

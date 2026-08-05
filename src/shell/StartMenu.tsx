@@ -81,7 +81,7 @@ export default function StartMenu({ onClose, onLogout }: Props) {
               whiteSpace: 'nowrap',
             }}
           >
-            VLM<span style={{ fontWeight: 400 }}>Classroom</span>
+            VLM<span style={{ fontWeight: 400 }}>EduHub</span>
             <span style={{ color: '#c0c0c0', fontSize: '13px' }}> 95</span>
           </span>
         </div>
@@ -96,6 +96,12 @@ export default function StartMenu({ onClose, onLogout }: Props) {
           <div className="win-menu-separator" />
           <MenuGroup label="报告与档案">
             {reports.map((a) => (
+              <MenuItem key={a.id} icon={a.icon} label={a.name} hint={a.description} onClick={() => handleOpen(a)} />
+            ))}
+          </MenuGroup>
+          <div className="win-menu-separator" />
+          <MenuGroup label="能力提升">
+            {apps.filter((a) => a.category === 'capability').map((a) => (
               <MenuItem key={a.id} icon={a.icon} label={a.name} hint={a.description} onClick={() => handleOpen(a)} />
             ))}
           </MenuGroup>

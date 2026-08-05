@@ -1,8 +1,10 @@
-import type { VLMProvider } from './types';
+import type { VLMProvider, CapabilityProvider } from './types';
 import { MockVLMProvider } from './MockVLMProvider';
 import { OpenAIAdapter } from './adapters/OpenAIAdapter';
 import { QwenAdapter } from './adapters/QwenAdapter';
 import { VLLMAdapter } from './adapters/VLLMAdapter';
+import { MockCapabilityProvider } from './MockCapabilityProvider';
+import { CapabilityAdapter } from './adapters/CapabilityAdapter';
 
 const REGISTRY: Record<string, () => VLMProvider> = {
   mock: () => new MockVLMProvider(),
@@ -29,5 +31,31 @@ export function listProviders(): { id: string; name: string; available: boolean 
     { id: 'openai', name: 'OpenAI 兼容接口', available: false },
     { id: 'qwen', name: '通义千问 Qwen', available: false },
     { id: 'vllm', name: 'VLLM 本地部署', available: false },
+  ];
+}
+
+// —— 能力提升 Provider（与 VLMProvider 并行，共用同一注册文件保持一致性） ——
+
+const CAPABILITY_REGISTRY: Record<string, () => CapabilityProvider> = {
+  mock: () => new MockCapabilityProvider(),
+  api: () => new CapabilityAdapter(),
+};
+
+const ACTIVE_CAPABILITY_PROVIDER = 'mock';
+
+let capCached: CapabilityProvider | null = null;
+
+export function getCapabilityProvider(name: string = ACTIVE_CAPABILITY_PROVIDER): CapabilityProvider {
+  if (name === ACTIVE_CAPABILITY_PROVIDER && capCached) return capCached;
+  const factory = CAPABILITY_REGISTRY[name] ?? CAPABILITY_REGISTRY[ACTIVE_CAPABILITY_PROVIDER];
+  const provider = factory();
+  if (name === ACTIVE_CAPABILITY_PROVIDER) capCached = provider;
+  return provider;
+}
+
+export function listCapabilityProviders(): { id: string; name: string; available: boolean }[] {
+  return [
+    { id: 'mock', name: 'Mock Capability (脚本派生)', available: true },
+    { id: 'api', name: '模型 API Adapter', available: false },
   ];
 }

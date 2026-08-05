@@ -10,17 +10,17 @@ export default function AboutApp() {
         </div>
         <div>
           <div className="win-text win-text-bold" style={{ fontSize: '18px' }}>
-            VLM 课堂分析系统
+            VLM 教育赋能中枢
           </div>
           <div className="win-text" style={{ fontSize: '12px' }}>
-            Windows 95 Nostalgia OS Edition · v0.1.0 (Build 1995)
+            Windows 95 Nostalgia OS Edition · v0.2.0 (Build 1995)
           </div>
         </div>
       </div>
 
       <div className="win-sunken p-3">
         <div className="win-text" style={{ fontSize: '12px', lineHeight: '1.6' }}>
-          一套基于 VLM（视觉语言大模型）的课堂分析平台 Demo。本系统以"桌面操作系统"拟态形式承载课堂分析功能，
+          一套基于 VLM（视觉语言大模型）的教育赋能中枢 Demo。本平台以"桌面操作系统"拟态形式承载课堂分析、学生自主学习与教师能力提升功能，
           通过预制剧本与虚拟画面模拟 Qwen-VLM 等多模态大模型的实时分析能力，
           旨在替代传统多管线课堂录播方案（ASR→CV→NLP→Rules）。
         </div>
@@ -46,7 +46,7 @@ export default function AboutApp() {
       </div>
 
       <div className="win-text-disabled text-center" style={{ fontSize: '11px', marginTop: '8px' }}>
-        © 1995-2026 VLM Systems Inc. · 仅供演示
+        © 1995-2026 VLM Edu Hub Inc. · 仅供演示
       </div>
     </div>
   );

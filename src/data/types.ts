@@ -53,4 +53,4 @@ export interface StorageSchema {
 }
 
 export const STORAGE_VERSION = 1;
-export const STORAGE_KEY = 'vlm-classroom:db';
+export const STORAGE_KEY = 'vlm-edu-hub:db';

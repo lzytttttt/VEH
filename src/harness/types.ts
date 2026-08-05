@@ -69,6 +69,54 @@ export interface WikiContainer {
   assistantScript: AssistantScriptItem[];
 }
 
+/** 虚拟学生演练：某时刻的学生状态事件 */
+export interface VirtualStudentState {
+  id: string;
+  name: string;
+  avatarColor: string;
+  /** 课堂时间点触发（秒） */
+  triggerT: number;
+  state: 'attentive' | 'distracted' | 'asking' | 'discussing';
+  /** 学生行为/台词 */
+  prompt: string;
+}
+
+/** 教师虚拟学生模拟演练剧本（根据课程分析结果派生） */
+export interface SimulationScript {
+  scenario: ScenarioType;
+  classroomTitle: string;
+  students: VirtualStudentState[];
+  /** 教师应对分支：每个情境给出若干选项 + 脚本反馈 + 评分 */
+  branches: {
+    id: string;
+    situation: string;
+    options: { id: string; label: string; feedback: string; score: number }[];
+  }[];
+}
+
+/** 学生互动游戏题目 */
+export interface GameQuestion {
+  id: string;
+  type: 'choice' | 'match' | 'connect';
+  prompt: string;
+  options: string[];
+  /** choice: 单选字符串；match: 多选正确项数组；connect: 正确配对（配对数据见 pairs） */
+  answer: string | string[];
+  /** 关联的知识点 id（保证"根据课程分析结果提升能力"的数据闭环） */
+  wikiNodeId: string;
+  explain?: string;
+  /** connect 题专用：左右配对项 */
+  pairs?: { left: string; right: string }[];
+}
+
+/** 游戏模块 */
+export interface GameModule {
+  id: string;
+  title: string;
+  type: GameQuestion['type'];
+  questions: GameQuestion[];
+}
+
 /** Chunk 类型 — 决定 UI 如何渲染该事件 */
 export type AnalysisChunkType =
   | 'text' // 流式 LLM 分析文本
@@ -121,6 +169,10 @@ export interface ScenarioScript {
   analysisScript: AnalysisChunk[];
   students: StudentObservation[];
   wiki: WikiContainer;
+  /** 教师虚拟学生演练剧本（可选，未配置则 Mock 返回空结构） */
+  simulation?: SimulationScript;
+  /** 学生互动游戏模块（可选） */
+  games?: GameModule[];
   /** 场景指标基线（用于报告） */
   metrics: {
     teaching: number; // 教学质量
@@ -141,4 +193,21 @@ export interface VLMProvider {
   analyzeStream(input: AnalysisInput): AsyncIterable<AnalysisChunk>;
   /** 取消正在进行中的分析（用于切换模式/停止） */
   cancel?(sessionId: string): void;
+}
+
+/**
+ * 能力提升 Provider — 与 VLMProvider 并行的解耦接口
+ *
+ * 关注点不同：VLMProvider 负责流式课堂分析；CapabilityProvider 负责
+ * 知识 WIKI / 虚拟学生演练 / 互动游戏的取数。Mock 返回 script 派生数据，
+ * adapter 调真实模型 API。UI 只消费此接口，切换 Adapter 业务代码一行不改。
+ */
+export interface CapabilityProvider {
+  readonly name: string;
+  /** 获取某场景的知识 WIKI（闭合 WikiApp 直接 getScript 的 harness 缺口） */
+  getWiki(scenario: ScenarioType): Promise<WikiContainer>;
+  /** 获取教师虚拟学生演练剧本 */
+  getSimulation(scenario: ScenarioType): Promise<SimulationScript>;
+  /** 获取学生互动游戏模块 */
+  getGames(scenario: ScenarioType): Promise<GameModule[]>;
 }

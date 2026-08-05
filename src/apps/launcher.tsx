@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { findApp, type AppRole } from './registry';
 import AboutApp from './AboutApp';
 import PlaceholderApp from './PlaceholderApp';
@@ -11,6 +11,10 @@ import PEApp from './scenarios/PEApp';
 import LabApp from './scenarios/LabApp';
 import WorkshopApp from './scenarios/WorkshopApp';
 import MicroLessonApp from './scenarios/MicroLessonApp';
+
+// 能力提升 App 懒加载（独立 chunk）
+const TeacherDrillApp = lazy(() => import('./TeacherDrillApp'));
+const LearningGameApp = lazy(() => import('./LearningGameApp'));
 
 /**
  * 应用启动器：根据 appId 返回对应窗口内容。
@@ -40,6 +44,18 @@ export function launchApp(
       return <ProfileApp role={userRole} />;
     case 'notes':
       return <NotesApp />;
+    case 'teacher-drill':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载教师演练...</div>}>
+          <TeacherDrillApp />
+        </Suspense>
+      );
+    case 'learning-game':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载学生闯关...</div>}>
+          <LearningGameApp />
+        </Suspense>
+      );
     case 'classroom':
       return <ClassroomApp {...scenarioProps} />;
     case 'pe':

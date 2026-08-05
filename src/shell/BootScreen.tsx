@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 
 const BOOT_LINES = [
-  'VLM Classroom BIOS v1.95',
-  'Copyright (C) 1995-2026 VLM Systems Inc.',
+  'VLM Edu Hub BIOS v1.95',
+  'Copyright (C) 1995-2026 VLM Edu Hub Inc.',
   '',
   'CPU: Qwen-VLM 3.6-27B (INT4 quantization) @ 1.2 TFLOPS',
   'Memory Test: 640K Base, 65536K Extended ... OK',
@@ -119,7 +119,7 @@ export default function BootScreen() {
                 textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
               }}
             >
-              VLM Classroom Analysis Edition · {progress < 100 ? '正在启动…' : '欢迎'}
+              VLM Edu Hub Edition · {progress < 100 ? '正在启动…' : '欢迎'}
             </div>
           </div>
 

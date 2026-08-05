@@ -58,7 +58,7 @@ export default function LoginDialog() {
         <div className="win-titlebar" style={{ cursor: 'default' }}>
           <div className="flex items-center gap-[5px]">
             <span style={{ fontSize: '12px' }}>🔑</span>
-            <span>登录到 VLM 课堂分析系统</span>
+            <span>登录到 VLM 教育赋能中枢</span>
           </div>
           <button className="win-titlebar-btn" title="关闭" disabled style={{ opacity: 0.85 }}>
             <span className="win-glyph win-glyph-close" />

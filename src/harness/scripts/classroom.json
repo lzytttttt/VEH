@@ -167,6 +167,73 @@
       { "q": "实验中弹簧测力计显示什么？", "a": "弹簧测力计通过弹簧形变量反映所受拉力大小，是验证 F = ma 关系的经典演示工具。本课演示中，教师通过不同质量物体的拉伸对比直观展示了力与质量的反比关系。", "keywords": ["实验", "弹簧", "测力计"] }
     ]
   },
+  "simulation": {
+    "scenario": "classroom",
+    "classroomTitle": "高一物理 · 牛顿第二定律",
+    "students": [
+      { "id": "s1", "name": "张明", "avatarColor": "#008000", "triggerT": 58, "state": "asking", "prompt": "老师，加速度方向是不是一定跟力的方向相同？" },
+      { "id": "s2", "name": "王芳", "avatarColor": "#808000", "triggerT": 45, "state": "distracted", "prompt": "看窗外走神，注意度降至 0.45" },
+      { "id": "s3", "name": "李伟", "avatarColor": "#000080", "triggerT": 50, "state": "attentive", "prompt": "全程认真做笔记，紧跟板书" },
+      { "id": "s4", "name": "赵静", "avatarColor": "#800080", "triggerT": 120, "state": "discussing", "prompt": "分组讨论中积极发言，提出验证方案" }
+    ],
+    "branches": [
+      {
+        "id": "b1", "situation": "学生张明举手提问：加速度方向是否与力方向相同",
+        "options": [
+          { "id": "o1", "label": "明确指出加速度方向与合外力相同，并举例减速场景", "feedback": "回应精准，举例恰当，澄清了易混淆点，互动质量高", "score": 10 },
+          { "id": "o2", "label": "简单回答“是的”后继续讲课", "feedback": "回应过于简略，未澄清加速度与速度方向的差异，易留隐患", "score": 4 },
+          { "id": "o3", "label": "让张明课后自己查资料", "feedback": "回避提问，挫伤学生积极性，错失教学契机", "score": 1 }
+        ]
+      },
+      {
+        "id": "b2", "situation": "学生王芳持续走神（45 秒注意度 0.45）",
+        "options": [
+          { "id": "o1", "label": "通过提问或指派为实验记录员重新介入", "feedback": "及时干预，以任务驱动提升参与度，保护自尊", "score": 10 },
+          { "id": "o2", "label": "当众点名批评王芳", "feedback": "公开批评易伤自尊，不推荐", "score": 2 },
+          { "id": "o3", "label": "忽略走神，继续讲完内容", "feedback": "放任走神，参与度持续走低", "score": 3 }
+        ]
+      },
+      {
+        "id": "b3", "situation": "分组练习阶段赵静积极讨论并提出验证方案",
+        "options": [
+          { "id": "o1", "label": "巡视到该组给予肯定并引导深入推导", "feedback": "正向强化，巩固讨论质量，延伸思维深度", "score": 10 },
+          { "id": "o2", "label": "打断讨论统一讲解", "feedback": "打断良性讨论，影响节奏与自主性", "score": 4 }
+        ]
+      }
+    ]
+  },
+  "games": [
+    {
+      "id": "g1", "title": "牛顿定律限时问答", "type": "choice",
+      "questions": [
+        { "id": "q1", "type": "choice", "prompt": "牛顿第二定律的公式是？", "options": ["F=ma", "F=mv", "E=mc²", "P=mv"], "answer": "F=ma", "wikiNodeId": "k2", "explain": "F=ma，合外力等于质量乘以加速度" },
+        { "id": "q2", "type": "choice", "prompt": "加速度的方向与下列哪个相同？", "options": ["速度方向", "合外力方向", "运动方向", "位移方向"], "answer": "合外力方向", "wikiNodeId": "k4", "explain": "加速度方向与合外力方向一致，而非速度方向" },
+        { "id": "q3", "type": "choice", "prompt": "牛顿第二定律中的 F 指的是？", "options": ["单个力", "合外力", "重力", "摩擦力"], "answer": "合外力", "wikiNodeId": "k5", "explain": "F 是所有作用在物体上的力的矢量和" },
+        { "id": "q4", "type": "choice", "prompt": "物体不受外力时保持静止或匀速直线运动，这是？", "options": ["牛顿第一定律", "牛顿第二定律", "牛顿第三定律", "惯性力"], "answer": "牛顿第一定律", "wikiNodeId": "k1", "explain": "即惯性定律" }
+      ]
+    },
+    {
+      "id": "g2", "title": "概念多选", "type": "match",
+      "questions": [
+        { "id": "q1", "type": "match", "prompt": "下列哪些属于牛顿三大定律？", "options": ["牛顿第一定律", "牛顿第二定律", "能量守恒定律", "牛顿第三定律"], "answer": ["牛顿第一定律", "牛顿第二定律", "牛顿第三定律"], "wikiNodeId": "k2", "explain": "牛顿三定律为惯性、F=ma、作用与反作用" },
+        { "id": "q2", "type": "match", "prompt": "关于加速度，下列说法正确的是？", "options": ["加速度是速度的变化率", "加速度方向与合外力相同", "加速度方向一定与速度相同", "加速度单位是 m/s²"], "answer": ["加速度是速度的变化率", "加速度方向与合外力相同", "加速度单位是 m/s²"], "wikiNodeId": "k4", "explain": "加速度方向与合外力相同，不一定与速度相同" }
+      ]
+    },
+    {
+      "id": "g3", "title": "概念连线", "type": "connect",
+      "questions": [
+        {
+          "id": "q1", "type": "connect", "prompt": "将定律与对应描述连线", "options": [], "answer": [],
+          "wikiNodeId": "k2",
+          "pairs": [
+            { "left": "牛顿第一定律", "right": "惯性·保持运动状态" },
+            { "left": "牛顿第二定律", "right": "F=ma" },
+            { "left": "牛顿第三定律", "right": "作用与反作用" }
+          ]
+        }
+      ]
+    }
+  ],
   "metrics": {
     "teaching": 0.88,
     "engagement": 0.82,
