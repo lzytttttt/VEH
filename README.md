@@ -2,9 +2,9 @@
 
 # 🏫 VLM 教育赋能中枢
 
-### Windows 95 Nostalgia OS Edition · v0.2.0 (Build 1995)
+### Windows 95 Nostalgia OS Edition · v0.3.0 (Build 1995)
 
-**课堂分析 · 学生自主学习 · 教师能力提升 —— 三位一体的 VLM 教育赋能平台。**
+**课堂分析 · 学生自主学习 · 教师能力提升 · 学校治理 —— 四位一体的 VLM 教育赋能平台。**
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -23,7 +23,7 @@
 
 把时间拨回 1995 年 —— 蓝盈盈的"开始"按钮、凹凸的 3D 窗口边框、能拖来拖去的图标。今天，我们把这套经典的 Win95 桌面操作系统外壳，**重新塞进了一个面向未来的内核**：
 
-> **VLM（Vision-Language Model，视觉语言大模型）驱动的教育赋能中枢 —— 课堂分析 · 学生自主学习 · 教师能力提升 三位一体。**
+> **VLM（Vision-Language Model，视觉语言大模型）驱动的教育赋能中枢 —— 课堂分析 · 学生自主学习 · 教师能力提升 · 学校治理 四位一体。**
 
 传统课堂录播分析往往是这样的"流水线工厂"：
 
@@ -44,6 +44,8 @@
 - 🎮 **学生**：基于课堂知识点的互动闯关游戏 —— 限时问答、概念多选、知识连线，让复习变成"打游戏"
 - 📖 **知识 WIKI**：交互式力导向知识图谱，拖拽缩放、点击聚焦，AI 助手随问随答
 
+而本阶段（🆕 v0.3.0）我们更进一步 —— 让 AI Agent 从课堂走进**学校治理**：为校长 / 教务 / 年级组长提供专属的**管理岗位**登录入口，**GovernanceProvider**（与 VLMProvider / CapabilityProvider 并列的第三编排器）持续产出治理简报、异常预警与教研建议，数据按 **Raw → Aggregated → Agent Output → Presentation** 四层流向清晰可审计，**AI 消费的数据**与**用户呈现的数据**严格分层。
+
 它不是真的在云端跑大模型 —— 项目内置了一套**预制剧本 + 增量流式 Mock Provider**，让前端体验与真实 VLM 几乎一致；等你接入真实接口时，只需替换 Adapter，无需改动任何业务代码。
 
 ---
@@ -56,7 +58,7 @@
 | --- | --- |
 | 🏫 **5 大场景演示** | 普通教室 / 体育课 / 实验室 / 实训车间 / 微课录制 |
 | 🧠 **解耦的 VLM Harness** | Mock 预制剧本 + 增量流式 + Adapter 预留，可平滑切换真实 VLM |
-| 👨‍🏫👩‍🎓 **双角色登录** | 教师 / 学生各自独立的界面与权限 |
+| 👨‍🏫👩‍🎓 **三角色登录** | 教师 / 学生 / 管理岗位 各自独立的界面与权限 |
 | 🎯 **双视角观察** | 教师看"我的学生"，学生看"我的视角" |
 | ⏯️ **实时 + 回放双模式** | 边录边分析 / 录后自由拖动时间线 |
 | 📋 **分析报告** | 自动汇总指标、改进建议、可打印、可导出 |
@@ -71,6 +73,16 @@
 | 🧑‍🏫 **教师虚拟学生演练** | Three.js 3D 低多边形教室，模拟学生举手机/走神/讨论等状态，情境式应对选择 + 即时脚本反馈评分 |
 | 🎮 **学生互动闯关** | 限时问答（单选倒计时）/ 概念多选（全对得分）/ 知识连线（配对连线），题目从知识点自动派生，最佳得分持久化 |
 | 🔌 **CapabilityProvider 解耦** | 与 VLMProvider 并行的能力接口，Mock→Adapter 切换零业务代码改动 |
+
+### 🏛️ 学校治理（本阶段新增 🆕 v0.3.0）
+
+| 模块 | 说明 |
+| --- | --- |
+| 📊 **校长驾驶舱** | AI Agent 三区治理视图 —— 左侧数据可视化（综合评分/学期趋势/学科均分/班级排名/教师雷达）+ 中央 Agent 流式治理简报 + 右侧 Agent 对话问答（6 个快捷提问） |
+| 🗂️ **教务管理台** | 教师/班级管理 Tab + 一卡通/教务/钉钉/企微 系统集成面板 + SSO/LDAP 配置；底部 Agent 教务洞察给出异常预警 |
+| 📈 **年级分析台** | 班级横向对比柱状 + 学科组均分 + 群体分布饼图 + 进步趋势；Agent 年级诊断洞察流式产出短板与建议 |
+| 🧠 **GovernanceProvider 编排** | 第三编排器，与 VLMProvider/CapabilityProvider 并列，`streamBriefing` / `streamInsight` 流式 + `detectAnomalies` / `suggestResearch` Promise，Mock→Adapter 切换零业务代码改动 |
+| 📑 **四层数据治理** | Raw(AI 消费) → Aggregated(AI+用户共用) → Agent Output(AI 产出) → Presentation(图表/卡片/对话)，数据流向可审计 |
 
 ---
 
@@ -206,34 +218,83 @@
 
 ---
 
+## 🏛️ AI Agent 学校治理（本阶段新增 🆕）
+
+从「单教师单课堂」到「学校级治理中枢」——本阶段新增**管理岗位**统一视角（涵盖校长、教务主任、年级组长等管理职能，应用内通过视角切换实现差异化），让 AI Agent 从课堂走进校园治理。
+
+**三大架构升级：**
+
+| 升级点 | 说明 |
+| --- | --- |
+| 🧠 **GovernanceProvider 编排** | 与 VLMProvider / CapabilityProvider 并列的第三个 Provider，提供 `streamBriefing` 流式简报、`streamInsight` 流式对话问答、`detectAnomalies` 异常扫描、`suggestResearch` 教研建议，Mock 规则引擎 + Adapter 预留接入真实 LLM |
+| 📊 **数据四层分层治理** | Layer1 Raw（AI 消费，不渲染）→ Layer2 Aggregated（AI+用户共用）→ Layer3 Agent Output（AI 产出，用户消费）→ Layer4 Presentation（图表/卡片/对话）—— 数据流向清晰可审计 |
+| 🪟 **三区 AI Agent 界面范式** | 左侧数据图表 + 中间 Agent 流式简报 + 右侧 Agent 对话问答，洞察与可视化联动 |
+
+### 📊 校长驾驶舱 · AI Agent 治理三区布局
+
+打开「校长驾驶舱」后，呈现典型的 AI Agent 治理视图 —— **不是冷冰冰的看板，而是一位坐在你旁边的 AI 副校长**：
+
+- 📈 **左侧数据可视化区**：综合评分、学期环比、分析覆盖率、活跃教师/班级 5 张概览卡片；下方依次是学期趋势折线、学科均分对比、班级综合排名、教师能力雷达
+- 💡 **中央 Agent 治理简报**（AI 流式逐块产出）：自动总结「本期教学综合评分 86%，环比 +1.6%」「课堂分析覆盖率 65%，活跃教师 5 名」「整体稳步上升」「高一·三班需关注互动性下滑」「高二·三班待提升」等洞察，**预警项以红色高亮**，可下钻到具体数据
+- 💬 **右侧治理 Agent 对话**：内置「全校教学质量趋势」「班级排名对比」「哪个教师需要帮扶」「学科分析」「异常预警」「教研建议」6 个快捷提问，可自由追问；Agent 引用真实数据作答，并联动左侧图表高亮
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-05_142920_397.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-05_142920_397.png" width="72%" alt="校长驾驶舱 · AI Agent 治理三区布局" />
+  </a>
+  <br/>
+  <sub>📊 图 9 · 校长驾驶舱 · 治理简报流 + 数据可视化 + Agent 对话问答，三区联动</sub>
+</div>
+
+---
+
+### 🗂️ 教务管理台 · 系统集成与 SSO 配置
+
+打开「教务管理台」并切到「**系统集成**」Tab：四个集成系统卡片清晰呈现状态 —— ✅ 一卡通系统（已连接，最近同步 2025-12-04 08:30，同步记录 1280 条）/ ✅ 教务系统（已连接，1286 条）/ 🔄 钉钉（同步中，240 条）/ ❌ 企业微信（未连接）。下方同步日志按时间倒序展示每一次握手，底部「Agent 教务洞察」给出异常预警与建议。
+
+> 该视图向学校决策者**演示了未来对接一卡通 / 教务 / 钉钉 / 企微 / LDAP / SSO 的真实路径** —— 数据走向、连接状态、同步频率、异常告警一目了然，是采购决策时最关心的「可集成性」可视化证据。
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-05_142951_250.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-05_142951_250.png" width="72%" alt="教务管理台 · 系统集成 Tab" />
+  </a>
+  <br/>
+  <sub>🗂️ 图 10 · 教务管理台 · 系统集成 Tab · 4 套业务系统连接状态 + 同步日志 + Agent 异常预警</sub>
+</div>
+
+---
+
 ## 🏗️ 架构 {#architecture} · [↗ English](README_EN.md#architecture)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  Shell 层（Win95 拟态桌面）                                │
+│  Shell 层（Win95 拟态桌面 · 三角色登录）                     │
 │  BootScreen · LoginDialog · Desktop · Window · Taskbar    │
+│  🆕 SSO 模拟认证进度对话框 · 管理岗位入口                   │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
 │  Apps 层                                                   │
-│  ┌─────────────────────┬──────────────────────────────┐  │
-│  │ 课堂分析             │ 能力提升（🆕）               │  │
-│  │ 5 场景 + 报告 + 画像 │ 知识WIKI + 教师演练 + 游戏  │  │
-│  └─────────────────────┴──────────────────────────────┘  │
+│  ┌──────────────┬───────────────┬──────────────────────┐ │
+│  │ 课堂分析       │ 能力提升（🆕）  │ 学校治理（🆕 v0.3.0）│ │
+│  │ 5场景+报告+画像│ WIKI+演练+游戏│ 驾驶舱+教务+年级    │ │
+│  └──────────────┴───────────────┴──────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Harness 层（VLM 编排 + 能力提供）                          │
-│  VLMProvider 接口 · CapabilityProvider 接口（🆕）           │
-│  MockProvider · MockCapabilityProvider · Adapter 预留       │
+│  Harness 层（三 Provider 编排）                              │
+│  VLMProvider · CapabilityProvider（🆕）· GovernanceProvider │
+│  Mock 规则引擎 × 3 · Adapter 预留真实 API × 3                │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Data 层（LocalStorage 持久化）                             │
+│  Data 层（LocalStorage 持久化 · StorageSchema v1→v2 渐进迁移）│
+│  🆕 组织架构：学校/学期/年级/班级/学科实体                   │
+│  🆕 多学期多教师多班级真实感种子数据（约 36 条）               │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
+**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数，`GovernanceProvider`（🆕 v0.3.0）负责管理岗位的治理简报 / 对话问答 / 异常预警 / 教研建议；治理数据按 **Raw → Aggregated → Agent Output → Presentation** 四层分层治理，**AI 消费的数据**与**用户呈现的数据**严格分离。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
 
 ---
 
@@ -257,8 +318,8 @@ npm run preview
 进入系统后会依次看到：
 
 1. 🖥️ **BootScreen** —— 蓝白渐变的开机引导
-2. 🔐 **LoginDialog** —— 选择"教师登录"或"学生登录"
-3. 🪟 **Desktop** —— 桌面图标 + 开始菜单 + 任务栏（教师/学生看到不同应用）
+2. 🔐 **LoginDialog** —— 选择「教师登录」/「学生登录」/「管理岗位登录」（🆕 含 SSO 模拟认证进度对话框）
+3. 🪟 **Desktop** —— 桌面图标 + 开始菜单 + 任务栏（教师/学生/管理岗位看到不同应用，**管理岗位进入「学校治理」分组**）
 4. 🎯 双击图标打开任意 App 窗口
 
 ---
@@ -271,7 +332,7 @@ npm run preview
 | 构建 | Vite 5 |
 | 样式 | Tailwind CSS 3 + 自研 Win95 组件样式（`.win-text` / `.win-sunken` / `.win-fieldset`） |
 | 3D 渲染 🆕 | Three.js r169 + @react-three/fiber v8 + @react-three/drei v9 |
-| 状态 | Zustand（auth / session / profile / wiki / game / window 多 Store 分治） |
+| 状态 | Zustand（auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance 多 Store 分治） |
 | 图标 | lucide-react + react-icons |
 | 图表 | recharts（雷达图 / 折线图） |
 | 持久化 | 浏览器 LocalStorage（开箱即用、无需后端） |
@@ -294,22 +355,30 @@ src/
 │   ├── AboutApp.tsx
 │   ├── TeacherDrillApp.tsx  # 🆕 教师演练 App 外壳
 │   ├── LearningGameApp.tsx  # 🆕 学生闯关 App 外壳
-│   ├── registry.ts          # 应用注册 + AppCategory 分类
-│   └── launcher.tsx         # 懒加载分发
+│   ├── DashboardApp.tsx     # 🆕 v0.3.0 校长驾驶舱 · AI Agent 三区布局
+│   ├── AdminConsoleApp.tsx  # 🆕 v0.3.0 教务管理台 · 教师/班级/集成/SSO
+│   ├── GradeAnalysisApp.tsx # 🆕 v0.3.0 年级分析台 · 班级/学科/群体对比
+│   ├── registry.ts          # 应用注册 + AppCategory 分类（🆕 governance 类别）
+│   └── launcher.tsx         # 懒加载分发（🆕 治理应用 chunk）
 ├── components/      # 复用组件
 │   ├── KnowledgeGraph.tsx  # 🆕 交互式力导向知识图谱
 │   ├── Timeline.tsx · RadarChart.tsx · TrendChart.tsx
+│   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
+│   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent 流式组件
 │   ├── TypingStream.tsx · ChatAssistant.tsx
 │   └── WikiTree.tsx
 ├── harness/         # 编排层
-│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider 接口
+│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider
 │   ├── MockVLMProvider.ts
 │   ├── MockCapabilityProvider.ts  # 🆕 脚本驱动能力 Provider
-│   ├── providerRegistry.ts  # 统一注册 + 切换
-│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter）
+│   ├── MockGovernanceProvider.ts  # 🆕 v0.3.0 规则引擎治理 Provider
+│   ├── providerRegistry.ts  # 三 Provider 统一注册 + 切换
+│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter）
 │   └── scripts/             # 预制剧本（classroom.json 含 🆕 simulation + games 数据）
 ├── stores/          # Zustand 状态管理
 │   ├── gameStore.ts         # 🆕 游戏最佳得分持久化
+│   ├── orgStore.ts          # 🆕 v0.3.0 组织架构（学校/学期/年级/班级/学科）
+│   ├── governanceStore.ts   # 🆕 v0.3.0 治理聚合计算（Layer2 Aggregated）
 │   ├── wikiStore.ts · authStore.ts · sessionStore.ts · ...
 ├── data/            # 种子数据 + LocalStorage 持久化
 ├── theme/           # Win95 主题样式
