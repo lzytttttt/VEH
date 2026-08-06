@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useWindowStore } from '../stores/windowStore';
 import { appsForRole, type AppMeta } from '../apps/registry';
@@ -7,6 +8,23 @@ import DesktopIcon from './DesktopIcon';
 export default function Desktop() {
   const user = useAuthStore((s) => s.user);
   const openWindow = useWindowStore((s) => s.openWindow);
+  const closeWindow = useWindowStore((s) => s.closeWindow);
+
+  // 登录进入桌面后自动弹出管理门户；切换角色登录时重建为当前角色内容
+  useEffect(() => {
+    if (!user) return;
+    closeWindow('portal');
+    openWindow({
+      id: 'portal',
+      title: '管理门户',
+      icon: '🚪',
+      x: 40,
+      y: 30,
+      width: 880,
+      height: 580,
+      content: launchApp('portal', user.role),
+    });
+  }, [user?.id, openWindow, closeWindow]);
 
   if (!user) return null;
   const apps = appsForRole(user.role);

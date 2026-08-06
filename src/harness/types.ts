@@ -368,3 +368,69 @@ export interface GovernanceProvider {
     ctx: GovernanceContext,
   ): Promise<ResearchSuggestion>;
 }
+
+// ============ 门户编排层（PortalProvider） ============
+// 与 VLMProvider / CapabilityProvider / GovernanceProvider 并列的第四个 Provider。
+// 关注点：面向登录门户的 AI Agent 检索导航编排。
+// 数据契约同 Governance：UI 侧构建 PortalContext 注入，Provider 只产 Layer3 导航/洞察 chunk，
+// 不直接读 stores/data 层，保证 Harness 与平台解耦、可审计。
+
+/** 门户上下文（UI 侧聚合后注入 Provider） */
+export interface PortalContext {
+  role: UserRole;
+  /** 当前角色可用的应用清单（来自 apps/registry，已按角色过滤） */
+  apps: { id: string; name: string; icon: string; category: string; description: string }[];
+  /** 角色级数据摘要（Layer2 聚合投影，供 AI 引用） */
+  summary: RoleSummary;
+}
+
+/** 角色级数据摘要 */
+export interface RoleSummary {
+  cards: SummaryCard[];
+  /** 一句话亮点（喂给 AI 的简短上下文） */
+  highlights: string[];
+}
+
+/** 数据概览卡片（可点击跳转应用） */
+export interface SummaryCard {
+  label: string;
+  value: string;
+  hint?: string;
+  trend?: number;
+  refAppId?: string;
+}
+
+export type PortalNavChunkType = 'nav_result' | 'insight' | 'suggestion' | 'data_ref';
+
+/** 门户 Agent 产出的导航 chunk */
+export interface PortalNavChunk {
+  type: PortalNavChunkType;
+  content: string;
+  /** nav_result 时必填：可直接 openWindow 的应用 id */
+  appId?: string;
+  appName?: string;
+  appIcon?: string;
+  /** data_ref 引用的摘要卡片 label */
+  refId?: string;
+  severity?: 'info' | 'warning' | 'critical';
+}
+
+/** 快捷导航项（演示脚本驱动） */
+export interface NavEntry {
+  appId: string;
+  name: string;
+  icon: string;
+  category: string;
+  reason: string;
+}
+
+/** 第四个 Provider 接口 */
+export interface PortalProvider {
+  readonly name: string;
+  /** 流式检索导航：自然语言 query → 增量 yield 导航/洞察/建议 chunk */
+  streamNavigate(query: string, ctx: PortalContext): AsyncIterable<PortalNavChunk>;
+  /** 角色级快捷导航项 */
+  getQuickNav(role: UserRole): NavEntry[];
+  /** 角色级建议 chip（常见提问） */
+  getSuggestionChips(role: UserRole): string[];
+}

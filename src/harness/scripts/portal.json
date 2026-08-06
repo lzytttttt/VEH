@@ -1,0 +1,38 @@
+{
+  "quickNav": {
+    "teacher": [
+      { "appId": "classroom", "name": "普通教室", "icon": "🏫", "category": "scenario", "reason": "查看我的课堂实时分析" },
+      { "appId": "profile", "name": "画像档案", "icon": "👤", "category": "profile", "reason": "查看我的多维能力雷达与趋势" },
+      { "appId": "report", "name": "分析报告", "icon": "📋", "category": "report", "reason": "生成单节课分析报告与改进建议" },
+      { "appId": "teacher-drill", "name": "教师演练", "icon": "🎓", "category": "capability", "reason": "3D 虚拟学生情境式应对演练" }
+    ],
+    "student": [
+      { "appId": "classroom", "name": "普通教室", "icon": "🏫", "category": "scenario", "reason": "回顾上节课的内容" },
+      { "appId": "wiki", "name": "知识 WIKI", "icon": "📖", "category": "wiki", "reason": "查看知识图谱与 AI 学习助手" },
+      { "appId": "learning-game", "name": "学生闯关", "icon": "🎮", "category": "capability", "reason": "互动游戏复习知识点" },
+      { "appId": "notes", "name": "我的笔记", "icon": "📝", "category": "system", "reason": "查看课堂笔记与重点收藏" }
+    ],
+    "admin": [
+      { "appId": "dashboard", "name": "校长驾驶舱", "icon": "📊", "category": "governance", "reason": "全校 AI Agent 治理简报" },
+      { "appId": "admin-console", "name": "教务管理台", "icon": "🗂️", "category": "governance", "reason": "教师/班级管理与系统集成" },
+      { "appId": "grade-analysis", "name": "年级分析台", "icon": "📈", "category": "governance", "reason": "班级横向对比与年级诊断" }
+    ]
+  },
+  "suggestionChips": {
+    "teacher": ["我的课堂分析", "教师画像评分", "生成分析报告", "虚拟学生演练", "知识 WIKI 备课"],
+    "student": ["回顾上节课", "知识图谱", "闯关复习", "我的笔记", "我的学情"],
+    "admin": ["全校教学质量", "班级排名对比", "哪个教师需要帮扶", "异常预警", "教研建议"]
+  },
+  "keywordRules": [
+    { "keywords": ["课堂", "分析", "教室", "板书", "抬头", "走神", "体育", "实验", "车间", "微课", "场景"], "appId": "classroom", "reason": "课堂实时分析场景" },
+    { "keywords": ["报告", "汇总", "改进", "评课", "磨课"], "appId": "report", "reason": "单节课分析报告与改进建议" },
+    { "keywords": ["画像", "能力", "雷达", "趋势", "档案", "我的评分"], "appId": "profile", "reason": "教师多维能力画像档案" },
+    { "keywords": ["wiki", "知识", "图谱", "学习助手", "牛顿", "概念", "定律"], "appId": "wiki", "reason": "知识 WIKI 与 AI 学习助手" },
+    { "keywords": ["演练", "虚拟", "3d", "情境", "应对", "模拟", "练课"], "appId": "teacher-drill", "reason": "教师虚拟学生演练" },
+    { "keywords": ["游戏", "闯关", "复习", "答题", "连线", "多选", "限时", "挑战"], "appId": "learning-game", "reason": "学生互动闯关复习" },
+    { "keywords": ["笔记", "重点", "收藏", "记录"], "appId": "notes", "reason": "课堂笔记与重点收藏" },
+    { "keywords": ["校长", "驾驶", "治理", "全校", "综合", "简报", "概览"], "appId": "dashboard", "reason": "校长驾驶舱 AI 治理" },
+    { "keywords": ["教务", "管理", "班级管理", "教师管理", "集成", "sso", "一卡通", "钉钉", "企微", "ldap"], "appId": "admin-console", "reason": "教务管理台与系统集成" },
+    { "keywords": ["年级", "对比", "横向", "学科组", "分布", "诊断", "年级分析"], "appId": "grade-analysis", "reason": "年级分析台" }
+  ]
+}

@@ -1,4 +1,4 @@
-import type { VLMProvider, CapabilityProvider, GovernanceProvider } from './types';
+import type { VLMProvider, CapabilityProvider, GovernanceProvider, PortalProvider } from './types';
 import { MockVLMProvider } from './MockVLMProvider';
 import { OpenAIAdapter } from './adapters/OpenAIAdapter';
 import { QwenAdapter } from './adapters/QwenAdapter';
@@ -7,6 +7,8 @@ import { MockCapabilityProvider } from './MockCapabilityProvider';
 import { CapabilityAdapter } from './adapters/CapabilityAdapter';
 import { MockGovernanceProvider } from './MockGovernanceProvider';
 import { GovernanceAdapter } from './adapters/GovernanceAdapter';
+import { MockPortalProvider } from './MockPortalProvider';
+import { PortalAdapter } from './adapters/PortalAdapter';
 
 const REGISTRY: Record<string, () => VLMProvider> = {
   mock: () => new MockVLMProvider(),
@@ -84,6 +86,32 @@ export function getGovernanceProvider(name: string = ACTIVE_GOVERNANCE_PROVIDER)
 export function listGovernanceProviders(): { id: string; name: string; available: boolean }[] {
   return [
     { id: 'mock', name: 'Mock Governance (规则引擎)', available: true },
+    { id: 'api', name: 'LLM API Adapter', available: false },
+  ];
+}
+
+// —— 门户 Provider（与 VLM/Capability/Governance 并列第四 Provider，共用同一注册文件保持一致性） ——
+
+const PORTAL_REGISTRY: Record<string, () => PortalProvider> = {
+  mock: () => new MockPortalProvider(),
+  api: () => new PortalAdapter(),
+};
+
+const ACTIVE_PORTAL_PROVIDER = 'mock';
+
+let portalCached: PortalProvider | null = null;
+
+export function getPortalProvider(name: string = ACTIVE_PORTAL_PROVIDER): PortalProvider {
+  if (name === ACTIVE_PORTAL_PROVIDER && portalCached) return portalCached;
+  const factory = PORTAL_REGISTRY[name] ?? PORTAL_REGISTRY[ACTIVE_PORTAL_PROVIDER];
+  const provider = factory();
+  if (name === ACTIVE_PORTAL_PROVIDER) portalCached = provider;
+  return provider;
+}
+
+export function listPortalProviders(): { id: string; name: string; available: boolean }[] {
+  return [
+    { id: 'mock', name: 'Mock Portal (演示脚本)', available: true },
     { id: 'api', name: 'LLM API Adapter', available: false },
   ];
 }
