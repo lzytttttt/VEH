@@ -332,6 +332,16 @@ After loading, you'll see:
 
 ---
 
+## 🔌 Integrating Real VLM / LLM APIs {#api-integration} · [↗ 中文](README.md#api-integration)
+
+This project ships with a **scripted Mock Provider + incremental streaming** that delivers a front-end experience nearly identical to a real VLM. When you're ready to plug in real model APIs (OpenAI GPT-4o / Qwen-VL / local vLLM, etc.), **zero business-code changes are needed** — just implement the reserved Adapter skeletons and flip one constant in the registry.
+
+📖 **Full integration guide**: [API_INTEGRATION_GUIDE_EN.md](API_INTEGRATION_GUIDE_EN.md) (English) · [API_INTEGRATION_GUIDE.md](API_INTEGRATION_GUIDE.md)（中文）
+
+The guide covers: the 6 Providers' interface contracts & Adapter locations, VLM vs LLM differences and use cases, env vars & backend proxy setup, SSE streaming parser utility, an end-to-end OpenAIAdapter implementation example, security notes, and an FAQ.
+
+---
+
 ## 🧩 Tech Stack {#tech-stack} · [↗ 中文](README.md#tech-stack)
 
 | Category | Choice |

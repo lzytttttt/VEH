@@ -364,6 +364,16 @@ npm run preview
 
 ---
 
+## 🔌 接入真实 VLM / LLM API {#api-integration} · [↗ English](README_EN.md#api-integration)
+
+本项目开箱即用一套**预制剧本 + 增量流式 Mock Provider**，前端体验与真实 VLM 几乎一致。当你准备好接入真实模型 API（OpenAI GPT-4o / 通义千问 Qwen-VL / 本地 vLLM 部署等）时，**业务代码一行不改** —— 只需实现预留的 Adapter 骨架，再在注册中心切换一个常量。
+
+📖 **完整接入指南**：[API_INTEGRATION_GUIDE.md](API_INTEGRATION_GUIDE.md)（中文） · [API_INTEGRATION_GUIDE_EN.md](API_INTEGRATION_GUIDE_EN.md)（English）
+
+指南涵盖：6 个 Provider 的接口契约与 Adapter 位置、VLM 与 LLM 的区别与场景、环境变量与后端代理配置、SSE 流式解析工具、端到端 OpenAIAdapter 完整实现示例、安全注意事项与常见问题。
+
+---
+
 ## 🧩 技术栈 {#tech-stack} · [↗ English](README_EN.md#tech-stack)
 
 | 类别 | 选型 |
