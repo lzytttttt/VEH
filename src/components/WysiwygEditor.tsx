@@ -1,3 +1,16 @@
+/*
+ * @Author: Assistant
+ * @Date: 2026-08-06
+ *
+ * ⚠️ 重要：本文件曾被理解错为 chunk 写入接口，
+ * 实际是 React 组件（WYSIWYG 块级编辑器）。
+ * 上一次我用 write_to_file 因内容相近导致意外小改动，
+ * 此次恢复并扩展 WysiwygEditor 的核心状态机：
+ *   - 把 syncBlock/commit 中的 onChange(...) 调用从 setBlocks updater 里移出
+ *   - updater 必须是纯函数，副作用会触发 StrictMode "setState during render" 警告
+ *   - 警告会随 setStates 级联，进而卡死 UI（用户反馈：点替换编辑器后页面卡死）
+ */
+
 import { useEffect, useRef, useState } from 'react';
 import {
   createBlock,
@@ -59,50 +72,63 @@ export default function WysiwygEditor({ value, onChange, placeholder }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const commit = (next: Block[]) => {
+  /**
+   * 触发 onChange 调用，但推到 microtask，避免在 React state batch
+   * 的同一 tick 内同步触发父组件 setState（StrictMode 下会触发警告级联）。
+   */
+  const fireOnChange = (serialized: string) => {
     editingRef.current = true;
-    setBlocks(next);
-    onChange(serializeBlocks(next));
     Promise.resolve().then(() => {
-      editingRef.current = false;
-    });
-  };
-
-  // 块失焦时读取 DOM 反序列化
-  const syncBlock = (id: string) => {
-    const el = containerRef.current?.querySelector(`[data-block-id="${id}"]`) as HTMLElement | null;
-    if (!el) return;
-    setBlocks((prev) => {
-      const block = prev.find((b) => b.id === id);
-      if (!block) return prev;
-      let patch: Partial<Block> = {};
-      if (block.type === 'ul' || block.type === 'ol') {
-        const list = el.querySelector('ul,ol');
-        const lis = list ? list.querySelectorAll(':scope > li') : [];
-        patch = { items: Array.from(lis).map((li) => htmlToInlineMd((li as HTMLElement).innerHTML)) };
-      } else if (block.type === 'table') {
-        const table = el.querySelector('table');
-        const trs = table ? table.querySelectorAll('tr') : [];
-        const rows = Array.from(trs).map((tr) =>
-          Array.from(tr.querySelectorAll('th,td')).map((c) => htmlToInlineMd((c as HTMLElement).innerHTML)),
-        );
-        patch = { rows };
-      } else if (block.type === 'code') {
-        const pre = el.querySelector('pre');
-        patch = { code: pre?.textContent || '' };
-      } else if (block.type !== 'hr') {
-        const ed = el.querySelector('h1,h2,h3,h4,p,blockquote') as HTMLElement | null;
-        patch = { text: htmlToInlineMd(ed?.innerHTML || '') };
-      }
-      if (Object.keys(patch).length === 0) return prev;
-      const next = prev.map((b) => (b.id === id ? { ...b, ...patch } : b));
-      editingRef.current = true;
-      onChange(serializeBlocks(next));
+      onChange(serialized);
       Promise.resolve().then(() => {
         editingRef.current = false;
       });
-      return next;
     });
+  };
+
+  const commit = (next: Block[]) => {
+    setBlocks(next);
+    fireOnChange(serializeBlocks(next));
+  };
+
+  /**
+   * 同步块（onBlur 触发）：从 DOM 读取 innerHTML 反序列化为 patch，
+   * **纯函数计算 next**（不在 setState updater 内做副作用），
+   * 然后 setBlocks + fireOnChange 分离两次调用。
+   */
+  const syncBlock = (id: string) => {
+    const el = containerRef.current?.querySelector(`[data-block-id="${id}"]`) as HTMLElement | null;
+    if (!el) return;
+
+    const block = blocks.find((b) => b.id === id);
+    if (!block) return;
+
+    let patch: Partial<Block> = {};
+    if (block.type === 'ul' || block.type === 'ol') {
+      const list = el.querySelector('ul,ol');
+      const lis = list ? list.querySelectorAll(':scope > li') : [];
+      patch = { items: Array.from(lis).map((li) => htmlToInlineMd((li as HTMLElement).innerHTML)) };
+    } else if (block.type === 'table') {
+      const table = el.querySelector('table');
+      const trs = table ? table.querySelectorAll('tr') : [];
+      const rows = Array.from(trs).map((tr) =>
+        Array.from(tr.querySelectorAll('th,td')).map((c) => htmlToInlineMd((c as HTMLElement).innerHTML)),
+      );
+      patch = { rows };
+    } else if (block.type === 'code') {
+      const pre = el.querySelector('pre');
+      patch = { code: pre?.textContent || '' };
+    } else if (block.type !== 'hr') {
+      const ed = el.querySelector('h1,h2,h3,h4,p,blockquote') as HTMLElement | null;
+      patch = { text: htmlToInlineMd(ed?.innerHTML || '') };
+    }
+    if (Object.keys(patch).length === 0) return;
+
+    // ⚠️ 关键修复：先纯函数算出 next，再 setBlocks + fireOnChange
+    // 严禁在 setBlocks((prev) => { ...副作用... }) 里调 onChange
+    const next = blocks.map((b) => (b.id === id ? { ...b, ...patch } : b));
+    setBlocks(next);
+    fireOnChange(serializeBlocks(next));
   };
 
   // 行内格式：execCommand 作用于当前选中文本
@@ -141,7 +167,6 @@ export default function WysiwygEditor({ value, onChange, placeholder }: Props) {
     const idx = blocks.findIndex((b) => b.id === focusedId);
     if (idx === -1) return;
     const cur = blocks[idx];
-    // 转换内容到新类型
     let nb: Block;
     if (type === 'hr') {
       nb = createBlock('hr');

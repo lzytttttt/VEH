@@ -33,8 +33,14 @@ export default function DrillController({ scenario, onActiveStudent, onScore }: 
   }, [scenario]);
 
   const branch = sim?.branches[branchIdx] ?? null;
-  const maxScore = sim ? sim.branches.reduce((m, b) => m + Math.max(...b.options.map((o) => o.score)), 0) : 0;
-  const involved = branch && sim ? sim.students.find((s) => branch.situation.includes(s.name)) ?? null : null;
+  const maxScore = sim
+    ? sim.branches.reduce((m, b) => m + Math.max(...(b.options ?? []).map((o) => o.score ?? 0)), 0)
+    : 0;
+  // 防御：branch.situation 可能因 LLM JSON 缺字段而 undefined。安全降级 find 为 null。
+  const involved =
+    branch && sim && typeof branch.situation === 'string'
+      ? sim.students.find((s) => branch.situation.includes(s.name)) ?? null
+      : null;
 
   useEffect(() => {
     onActiveStudent(branch ? involved?.id ?? null : null);

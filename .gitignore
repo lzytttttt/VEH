@@ -27,5 +27,11 @@ lerna-debug.log*
 *.tsbuildinfo
 .vite
 
+# Playwright CLI test artifacts (snapshots, screenshots, console logs)
+.playwright-cli/
+
 # Project internal data
 .codebuddy/
+
+# Project info (local only)
+project info/

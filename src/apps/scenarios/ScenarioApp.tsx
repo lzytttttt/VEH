@@ -63,7 +63,7 @@ export default function ScenarioApp({ config, role, studentId, onOpenWiki }: Pro
   const startStream = useCallback(async () => {
     abortRef.current = { cancelled: false };
     const token = abortRef.current;
-    const provider = getProvider('mock');
+    const provider = getProvider();
     try {
       for await (const chunk of provider.analyzeStream({
         scenario: config.scenario,

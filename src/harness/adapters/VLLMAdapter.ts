@@ -1,4 +1,5 @@
 import type { AnalysisChunk, AnalysisInput, VLMProvider } from '../types';
+import { getProviderConfig } from '../../stores/apiConfigStore';
 
 /**
  * VLLM 本地部署 Adapter（骨架）
@@ -12,16 +13,26 @@ import type { AnalysisChunk, AnalysisInput, VLMProvider } from '../types';
  * 3. model（如 Qwen/Qwen2-VL-7B-Instruct, Qwen/Qwen3-VL-27B-A15B-int4）
  * 4. stream 解析（OpenAI SSE 协议）
  * 5. 推荐启用 gemma3 / chat_template 与多模态 image_url 适配
+ *
+ * 配置从 apiConfigStore 的 'vlm' 条目懒读取（调用时取最新），
+ * 面板切换 active='vllm' 时会自动套用 vLLM 预设 baseURL/model。
  */
 export class VLLMAdapter implements VLMProvider {
   readonly name = 'VLLM Local Adapter';
 
-  private baseURL = 'http://localhost:8000/v1';
-  private apiKey = 'EMPTY';
-  private model = 'Qwen/Qwen2-VL-7B-Instruct';
+  /** 调用时懒读取最新配置（非构造时），避免脏缓存 */
+  private cfg() {
+    const c = getProviderConfig('vlm');
+    return {
+      baseURL: c.baseURL || 'http://localhost:8000/v1',
+      apiKey: c.apiKey || 'EMPTY',
+      model: c.model || 'Qwen/Qwen2-VL-7B-Instruct',
+    };
+  }
 
   async *analyzeStream(input: AnalysisInput): AsyncIterable<AnalysisChunk> {
-    console.error('VLLMAdapter not implemented', { input, baseURL: this.baseURL, model: this.model });
+    const { baseURL, apiKey, model } = this.cfg();
+    console.error('VLLMAdapter not implemented', { input, baseURL, hasApiKey: !!apiKey, model });
     throw new Error('VLLMAdapter not implemented — 请在 adapters/VLLMAdapter.ts 接入真实本地部署');
   }
 

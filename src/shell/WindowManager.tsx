@@ -1,5 +1,6 @@
 import { useWindowStore } from '../stores/windowStore';
 import Window from './Window';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export default function WindowManager() {
   const windows = useWindowStore((s) => s.windows);
@@ -9,7 +10,9 @@ export default function WindowManager() {
     <>
       {windows.map((w) => (
         <Window key={w.id} instance={w} isActive={activeId === w.id}>
-          {w.content}
+          <ErrorBoundary>
+            {w.content}
+          </ErrorBoundary>
         </Window>
       ))}
     </>

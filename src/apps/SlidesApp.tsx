@@ -5,6 +5,7 @@ import { getSlidesGenProvider } from '../harness/slides';
 import { renderSlide, SLIDE_DESIGNS } from '../harness/slides/designs';
 import type { SlideDesign } from '../harness/slides';
 import { renderMarkdown, splitSlides } from '../lib/markdown';
+import { normalizeMarkdown } from '../harness/adapters/sseUtils';
 import {
   createSlideDeck,
   deleteSlideDeck,
@@ -331,7 +332,8 @@ export default function SlidesApp() {
             buildChatInput={(query, content) => ({ currentContent: content, query, design })}
             onInsert={(text, mode) => {
               if (!current) return;
-              const newSlides = splitSlides(text);
+              const normalized = normalizeMarkdown(text);
+              const newSlides = splitSlides(normalized);
               if (mode === 'replace') {
                 updateCurrent({ slides: newSlides.length ? newSlides : [''], notes: newSlides.map(() => '') });
                 setCurrentIndex(0);

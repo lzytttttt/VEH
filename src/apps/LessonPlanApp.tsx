@@ -2,6 +2,7 @@ import { useState } from 'react';
 import WysiwygEditor from '../components/WysiwygEditor';
 import ContentGenAssistant from '../components/ContentGenAssistant';
 import { getLessonPlanGenProvider } from '../harness/lessonPlan';
+import { normalizeMarkdown } from '../harness/adapters/sseUtils';
 import {
   createLessonPlan,
   deleteLessonPlan,
@@ -158,7 +159,8 @@ export default function LessonPlanApp() {
             buildChatInput={(query, content) => ({ currentContent: content, query })}
             onInsert={(text, mode) => {
               if (!current) return;
-              const newContent = mode === 'replace' ? text : current.content + '\n\n' + text;
+              const normalized = normalizeMarkdown(text);
+              const newContent = mode === 'replace' ? normalized : current.content + '\n\n' + normalized;
               updateCurrent({ content: newContent });
             }}
           />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore, TEACHER_USER, STUDENT_USER, ADMIN_USER, type AuthUser } from '../stores/authStore';
+import ApiConfigPanel from '../components/ApiConfigPanel';
 
 const ACCOUNTS: AuthUser[] = [TEACHER_USER, STUDENT_USER, ADMIN_USER];
 
@@ -117,6 +118,7 @@ export default function LoginDialog() {
   const login = useAuthStore((s) => s.login);
   const [selected, setSelected] = useState<AuthUser | null>(TEACHER_USER);
   const [ssoActive, setSsoActive] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
 
   const handleOk = () => {
     if (selected) login(selected);
@@ -134,7 +136,8 @@ export default function LoginDialog() {
   return (
     <div className="absolute inset-0 win-desktop-bg flex items-center justify-center animate-fade-in">
       {ssoActive && <SSOProgressDialog onDone={handleSSODone} />}
-      <div className="win-window" style={{ width: '480px' }}>
+      {configOpen && <ApiConfigPanel onClose={() => setConfigOpen(false)} />}
+      <div className="win-window" style={{ width: '520px' }}>
         {/* 标题栏 */}
         <div className="win-titlebar" style={{ cursor: 'default' }}>
           <div className="flex items-center gap-[5px]">
@@ -174,14 +177,24 @@ export default function LoginDialog() {
 
           {/* 按钮栏 */}
           <div className="flex items-center justify-between gap-2 pt-2">
-            <button
-              className="win-button"
-              onClick={handleSSO}
-              style={{ minWidth: '120px' }}
-              title="模拟学校统一身份认证(CAS/LDAP)登录"
-            >
-              🔐 统一身份认证(SSO)
-            </button>
+            <div className="flex gap-2">
+              <button
+                className="win-button"
+                onClick={handleSSO}
+                style={{ minWidth: '120px' }}
+                title="模拟学校统一身份认证(CAS/LDAP)登录"
+              >
+                🔐 统一身份认证(SSO)
+              </button>
+              <button
+                className="win-button"
+                onClick={() => setConfigOpen(true)}
+                style={{ minWidth: '120px' }}
+                title="图形化配置 VLM/LLM API 接入（6 个 Provider 独立切换）"
+              >
+                ⚙ API 接入设置
+              </button>
+            </div>
             <div className="flex gap-2">
               <button
                 className={`win-button ${selected ? 'is-default' : ''}`}
