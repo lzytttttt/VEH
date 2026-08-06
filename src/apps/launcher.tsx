@@ -16,6 +16,10 @@ import MicroLessonApp from './scenarios/MicroLessonApp';
 const TeacherDrillApp = lazy(() => import('./TeacherDrillApp'));
 const LearningGameApp = lazy(() => import('./LearningGameApp'));
 
+// 教学工具 App 懒加载（独立 chunk，reveal.js 体积较大避免拖慢首屏）
+const LessonPlanApp = lazy(() => import('./LessonPlanApp'));
+const SlidesApp = lazy(() => import('./SlidesApp'));
+
 // 学校治理 App 懒加载（独立 chunk）
 const DashboardApp = lazy(() => import('./DashboardApp'));
 const AdminConsoleApp = lazy(() => import('./AdminConsoleApp'));
@@ -62,6 +66,18 @@ export function launchApp(
       return (
         <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载教师演练...</div>}>
           <TeacherDrillApp />
+        </Suspense>
+      );
+    case 'lesson-plan':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载教案工具...</div>}>
+          <LessonPlanApp />
+        </Suspense>
+      );
+    case 'slides':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载课件工具...</div>}>
+          <SlidesApp />
         </Suspense>
       );
     case 'learning-game':

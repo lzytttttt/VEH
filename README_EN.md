@@ -2,9 +2,9 @@
 
 # 🏫 VLM Edu Hub
 
-### Windows 95 Nostalgia OS Edition · v0.2.0 (Build 1995)
+### Windows 95 Nostalgia OS Edition · v0.3.0 (Build 1995)
 
-**Classroom Analysis · Student Self-Learning · Teacher Capability Uplift — a three-in-one education empowerment hub powered by VLM.**
+**Classroom Analysis · Student Self-Learning · Teacher Capability Uplift · School Governance — a four-in-one education empowerment hub powered by VLM.**
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -23,7 +23,7 @@
 
 Let's roll the clock back to 1995 — the teal "Start" button, the chunky 3D window borders, draggable icons everywhere. Today, we've stuffed a **future-proof brain** into that classic Win95 desktop shell:
 
-> **An education empowerment hub powered by VLM (Vision-Language Models) — classroom analysis · student self-learning · teacher capability uplift, all in one.**
+> **An education empowerment hub powered by VLM (Vision-Language Models) — classroom analysis · student self-learning · teacher capability uplift · school governance, all in one.**
 
 A traditional lecture-recording pipeline usually looks like this:
 
@@ -44,6 +44,8 @@ But we go beyond analysis — **what happens after?** The answer: **interactive 
 - 🎮 **For Students**: Interactive quiz games built from classroom knowledge — timed Q&A, multi-select, concept-matching — turning review into play
 - 📖 **Knowledge WIKI**: An interactive force-directed knowledge graph (drag, zoom, click-to-focus) with an AI study assistant at your side
 
+And this phase (🆕 v0.3.0) goes one step further — letting the AI Agent step out of the classroom and into **school governance**: a dedicated **management-role** login for principals / academic affairs / grade heads, a **GovernanceProvider** (the third orchestrator alongside VLMProvider / CapabilityProvider) continuously producing governance briefings, anomaly alerts and teaching-research suggestions, with data flowing through **Raw → Aggregated → Agent Output → Presentation** in four clearly auditable layers — **data consumed by AI** and **data shown to users** are strictly separated.
+
 It isn't actually running a giant model in the cloud — the project ships a **pre-scripted Mock Provider with incremental streaming** so the front-end feels just like a real VLM. When you're ready to wire up a real backend, you only swap the Adapter; **no business code needs to change**.
 
 ---
@@ -56,7 +58,7 @@ It isn't actually running a giant model in the cloud — the project ships a **p
 | --- | --- |
 | 🏫 **5 Scenario Demos** | Regular Classroom / PE Class / Chemistry Lab / Vocational Workshop / Micro-lesson Recording |
 | 🧠 **Decoupled VLM Harness** | Mock scripts + incremental streaming + Adapter slot — seamlessly switch to a real VLM |
-| 👨‍🏫👩‍🎓 **Dual-Role Login** | Separate interfaces and permissions for teachers and students |
+| 👨‍🏫👩‍🎓 **Three-Role Login** | Separate interfaces and permissions for teachers, students, and management roles |
 | 🎯 **Two Observational Views** | Teachers see "my students"; students see "my own view" |
 | ⏯️ **Live + Replay Modes** | Analyze in real time, or scrub the timeline afterwards at any speed |
 | 📋 **Analysis Reports** | Auto-aggregated metrics, improvement suggestions, printable & exportable |
@@ -68,9 +70,21 @@ It isn't actually running a giant model in the cloud — the project ships a **p
 | Module | Description |
 | --- | --- |
 | 📖 **Interactive Knowledge WIKI** | Force-directed knowledge graph (drag/zoom/click-focus) + AI study assistant Q&A |
-| 🧑‍🏫 **Teacher Virtual Student Drill** | Three.js low-poly 3D classroom with simulated students (asking/distracted/discussing); scenario-based response selection with instant scripted scoring |
+| 🧑‍🏫 **Teacher Virtual Student Drill** | Three.js low-poly 3D classroom with simulated students (raising hand / zoning out / taking notes / discussing); scenario-based response selection with instant scripted scoring |
 | 🎮 **Student Interactive Games** | Timed Q&A (single-choice countdown) / Concept multi-select / Knowledge connection (pair-matching) — all derived from knowledge nodes, with best-score persistence |
 | 🔌 **CapabilityProvider Decoupling** | A parallel capability interface alongside VLMProvider — Mock→Adapter swap with zero business-code changes |
+| 📄 **Lesson Plan Tool 🆕** | A self-developed WYSIWYG Markdown editor (block-level `contenteditable` + full toolbar: headings/lists/quote/table/code/hr + inline bold/italic/code/link) + isolated `lessonPlan` Harness + streaming Gen Assistant (one-click draft + chat refinement + insert-into-editor) |
+| 🎬 **Slides Deck Tool 🆕** | 3 structurally-distinct designs (Classic Blackboard / Modern Minimalist / DataViz — DataViz is dark two-column with progress bar, not just skin-swap) + isolated `slides` Harness (with `designs/` subfolder) + WYSIWYG per-slide editor + custom React presentation mode (keyboard paging / progress / speaker notes) |
+
+### 🏛️ School Governance (New 🆕 v0.3.0)
+
+| Module | Description |
+| --- | --- |
+| 📊 **Principal Cockpit** | AI Agent three-zone governance view — left data visualization (composite score / semester trend / subject averages / class ranking / teacher radar) + center Agent streaming briefing + right Agent Q&A (6 quick prompts) |
+| 🗂️ **Academic Affairs Console** | Teacher/Class management tabs + Campus Card / Academic Affairs / DingTalk / WeCom integration panel + SSO/LDAP config; bottom Agent insight surfaces anomaly alerts |
+| 📈 **Grade Analysis Console** | Class comparison bars + subject-group averages + group distribution pie + progress trend; Agent streams grade-level diagnosis of weak points and suggestions |
+| 🧠 **GovernanceProvider Orchestration** | Third orchestrator alongside VLMProvider/CapabilityProvider — `streamBriefing` / `streamInsight` streaming + `detectAnomalies` / `suggestResearch` promises; Mock→Adapter swap with zero business-code changes |
+| 📑 **Four-Layer Data Governance** | Raw (AI consumed) → Aggregated (AI+user shared) → Agent Output (AI produced) → Presentation (charts/cards/chat); data flow is fully auditable |
 
 ---
 
@@ -206,35 +220,88 @@ Students can pin highlights to the top; teachers can browse the system info — 
 
 ---
 
+## 🏛️ AI Agent School Governance (New 🆕)
+
+From "single teacher, single classroom" to a "school-level governance hub" — this phase adds a unified **management-role** view (covering principal, academic-affairs director, grade head and other management functions, differentiated via in-app view switching), letting the AI Agent step from the classroom into campus governance.
+
+**Three architectural upgrades:**
+
+| Upgrade | Description |
+| --- | --- |
+| 🧠 **GovernanceProvider Orchestration** | The third Provider alongside VLMProvider / CapabilityProvider — offers `streamBriefing` streaming briefings, `streamInsight` streaming Q&A, `detectAnomalies` anomaly scans, and `suggestResearch` teaching-research suggestions; Mock rules engine + Adapter slot for real LLMs |
+| 📊 **Four-Layer Data Governance** | Layer1 Raw (AI consumed, not rendered) → Layer2 Aggregated (AI+user shared) → Layer3 Agent Output (AI produced, user consumed) → Layer4 Presentation (charts/cards/chat) — data flow is clear and auditable |
+| 🪟 **Three-Zone AI Agent UI Paradigm** | Left data charts + center Agent streaming briefing + right Agent Q&A, with insights and visualization linked |
+
+### 📊 Principal Cockpit · AI Agent Three-Zone Layout
+
+Open "Principal Cockpit" and you get a textbook AI Agent governance view — **not a cold dashboard, but an AI vice-principal sitting next to you**:
+
+- 📈 **Left data-visualization zone**: 5 overview cards (composite score, semester trend, analysis coverage, active teachers/classes); below them semester trend line, subject averages, class ranking, teacher capability radar
+- 💡 **Center Agent governance briefing** (AI streams block by block): auto-summarizes "this period's composite teaching score 86%, +1.6% QoQ", "analysis coverage 65%, 5 active teachers", "overall steady rise", "Grade-10 Class-3 needs attention for interactivity decline", "Grade-11 Class-3 to improve", etc.; **alerts are highlighted in red**, drillable to specific data
+- 💬 **Right governance Agent chat**: 6 built-in quick prompts ("school-wide teaching-quality trend", "class ranking comparison", "which teacher needs support", "subject analysis", "anomaly alerts", "teaching-research suggestions"); free-form follow-ups supported; Agent answers citing real data and links to left-side chart highlights
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-05_142920_397.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-05_142920_397.png" width="72%" alt="Principal Cockpit · AI Agent Three-Zone Layout" />
+  </a>
+  <br/>
+  <sub>📊 Fig. 11 · Principal Cockpit · governance briefing stream + data visualization + Agent Q&A, three zones linked</sub>
+</div>
+
+---
+
+### 🗂️ Academic Affairs Console · System Integration & SSO Config
+
+Open "Academic Affairs Console" and switch to the "**System Integration**" tab: four integration-system cards show their status — ✅ Campus Card (connected, last sync 2025-12-04 08:30, 1280 records) / ✅ Academic Affairs (connected, 1286 records) / 🔄 DingTalk (syncing, 240 records) / ❌ WeCom (not connected). Below, a sync log lists every handshake in reverse-chronological order; the bottom "Agent Academic Insight" surfaces anomaly alerts and suggestions.
+
+> This view **demonstrates to school decision-makers the real path for future integration** with Campus Card / Academic Affairs / DingTalk / WeCom / LDAP / SSO — data flow, connection status, sync frequency, and anomaly alerts at a glance, the "integrability" evidence that matters most during procurement.
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-05_142951_250.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-05_142951_250.png" width="72%" alt="Academic Affairs Console · System Integration Tab" />
+  </a>
+  <br/>
+  <sub>🗂️ Fig. 10 · Academic Affairs Console · System Integration tab · 4 business-system connection statuses + sync log + Agent anomaly alerts</sub>
+</div>
+
+---
+
 ## 🏗️ Architecture {#architecture} · [↗ 中文](README.md#architecture)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  Shell layer (Win95-style desktop)                       │
-│  BootScreen · LoginDialog · Desktop · Window · Taskbar   │
+│  Shell layer (Win95-style desktop · three-role login)    │
+│  BootScreen · LoginDialog · Desktop · Window · Taskbar  │
+│  🆕 SSO simulated auth-progress dialog · management entry│
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Apps layer                                               │
-│  ┌─────────────────────┬──────────────────────────────┐  │
-│  │ Classroom Analysis   │ Capability Building (🆕)     │  │
-│  │ 5 Scenarios + Report │ Knowledge WIKI + Drill +     │  │
-│  │ + Profiles           │ Interactive Games            │  │
-│  └─────────────────────┴──────────────────────────────┘  │
+│  Apps layer                                              │
+│  ┌──────────────┬───────────────┬──────────────────────┐ │
+│  │ Classroom    │ Capability     │ School Governance    │ │
+│  │ Analysis     │ Building (🆕)  │ (🆕 v0.3.0)          │ │
+│  │ 5 scenarios  │ WIKI+Drill+    │ Cockpit+Academic+   │ │
+│  │ +report+prof │ Games          │ Grade Analysis       │ │
+│  └──────────────┴───────────────┴──────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Harness layer (VLM orchestration + capability provisioning)│
-│  VLMProvider interface · CapabilityProvider interface (🆕) │
-│  MockProvider · MockCapabilityProvider · Adapter slots     │
+│  Harness layer (six-Provider orchestration)              │
+│  VLMProvider · CapabilityProvider (🆕) · GovernanceProvider
+│  · PortalProvider (🆕 v0.3.0)                            │
+│  · LessonPlanGenProvider (🆕) · SlidesGenProvider (🆕+3 Designs)│
+│  Mock rules engines × 6 · Adapter slots for real APIs × 6 │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Data layer (LocalStorage persistence)                   │
+│  Data layer (LocalStorage persistence · StorageSchema    │
+│  v1→v2 progressive migration)                            │
+│  🆕 Org structure: school/semester/grade/class/subject    │
+│  🆕 Multi-semester multi-teacher multi-class seed (~36)   │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Key design principle**: The Harness layer is fully decoupled from the Apps layer. `VLMProvider` handles streaming classroom analysis; `CapabilityProvider` (🆕) handles knowledge WIKI / virtual drill / interactive game data. Today you use Mock providers to run scripted events; tomorrow swap in Adapters for real APIs. **Zero business-code changes required.**
+**Key design principle**: The Harness layer is fully decoupled from the Apps layer. `VLMProvider` handles streaming classroom analysis; `CapabilityProvider` (🆕) handles data for knowledge WIKI / virtual drill / interactive games; `GovernanceProvider` (🆕 v0.3.0) handles governance briefings / Q&A / anomaly alerts / teaching-research suggestions for management roles; `PortalProvider` (🆕 v0.3.0) handles the AI Agent search navigation and role-based quick entries for the default post-login portal. Governance data follows the **Raw → Aggregated → Agent Output → Presentation** four-layer model — **data consumed by AI** and **data shown to users** are strictly separated. Today you use Mock providers to run scripted events; tomorrow swap in Adapters for real APIs. **Zero business-code changes required.**
 
 ---
 
@@ -258,9 +325,10 @@ npm run preview
 After loading, you'll see:
 
 1. 🖥️ **BootScreen** — the classic blue-and-white boot animation
-2. 🔐 **LoginDialog** — choose "Teacher Login" or "Student Login"
-3. 🪟 **Desktop** — desktop icons + Start menu + taskbar (different apps per role)
-4. 🎯 Double-click any icon to open the corresponding App window
+2. 🔐 **LoginDialog** — choose "Teacher Login" / "Student Login" / "Management Login" (🆕 with SSO simulated auth-progress dialog)
+3. 🪟 **Desktop** — desktop icons + Start menu + taskbar (different apps per role; **management role enters the "School Governance" group**)
+4. 🚪 **PortalApp** — the role-adaptive management portal that pops up by default after login (top AI Agent search navigation routes straight to functions/data)
+5. 🎯 Double-click any icon to open the corresponding App window
 
 ---
 
@@ -272,7 +340,7 @@ After loading, you'll see:
 | Build | Vite 5 |
 | Styling | Tailwind CSS 3 + hand-rolled Win95 component styles (`.win-text` / `.win-sunken` / `.win-fieldset`) |
 | 3D Rendering 🆕 | Three.js r169 + @react-three/fiber v8 + @react-three/drei v9 |
-| State | Zustand (multiple stores: auth / session / profile / wiki / game / window) |
+| State | Zustand (multiple stores: auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal) |
 | Icons | lucide-react + react-icons |
 | Charts | recharts (radar / line) |
 | Persistence | Browser LocalStorage (zero-backend, works out of the box) |
@@ -295,22 +363,37 @@ src/
 │   ├── AboutApp.tsx
 │   ├── TeacherDrillApp.tsx  # 🆕 Teacher drill app shell
 │   ├── LearningGameApp.tsx  # 🆕 Student game app shell
-│   ├── registry.ts          # App registry + AppCategory
-│   └── launcher.tsx         # Lazy-load dispatcher
+│   ├── DashboardApp.tsx     # 🆕 v0.3.0 Principal Cockpit · AI Agent three-zone layout
+│   ├── AdminConsoleApp.tsx # 🆕 v0.3.0 Academic Affairs Console · teacher/class/integration/SSO
+│   ├── GradeAnalysisApp.tsx# 🆕 v0.3.0 Grade Analysis Console · class/subject/group comparison
+│   ├── PortalApp.tsx       # 🆕 v0.3.0 role-adaptive management portal (default post-login popup · AI Agent search navigation)
+│   ├── registry.ts          # App registry + AppCategory (🆕 governance category)
+│   └── launcher.tsx         # Lazy-load dispatcher (🆕 governance app chunk)
 ├── components/      # Reusable components
 │   ├── KnowledgeGraph.tsx  # 🆕 Interactive force-directed knowledge graph
-│   ├── Timeline.tsx · RadarChart.tsx · TrendChart.tsx
+│   ├── Timeline.tsx · StudentTimeline.tsx · RadarChart.tsx · TrendChart.tsx
+│   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
+│   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent streaming components
 │   ├── TypingStream.tsx · ChatAssistant.tsx
 │   └── WikiTree.tsx
-├── harness/         # Orchestration layer
-│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider interfaces
-│   ├── MockVLMProvider.ts
-│   ├── MockCapabilityProvider.ts  # 🆕 Script-driven capability provider
-│   ├── providerRegistry.ts  # Unified registry + switching
-│   ├── adapters/            # Real API stubs (OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter)
+├── harness/         # Orchestration layer (six Providers)
+│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider + 🆕 PortalProvider + 🆕 LessonPlanGenProvider + 🆕 SlidesGenProvider
+│   ├── MockVLMProvider.ts · MockCapabilityProvider.ts
+│   ├── MockGovernanceProvider.ts · MockPortalProvider.ts
+│   ├── lessonPlan/          # 🆕 isolated Lesson Plan Harness (physically separate)
+│   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
+│   ├── slides/              # 🆕 isolated Slides Deck Harness (with 3 designs)
+│   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
+│   │   └── designs/         # 🆕 3 structurally-distinct designs (classic/modern/dataviz)
+│   │       └── classic.tsx · modern.tsx · dataviz.tsx · index.tsx
+│   ├── providerRegistry.ts  # Four-Provider unified registry + switching
+│   ├── adapters/            # Real API stubs (OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter + 🆕 PortalAdapter + 🆕 LessonPlanGenAdapter + 🆕 SlidesGenAdapter)
 │   └── scripts/             # Scripted scenarios (classroom.json with 🆕 simulation + games data)
 ├── stores/          # Zustand stores
 │   ├── gameStore.ts         # 🆕 Game best-score persistence
+│   ├── orgStore.ts          # 🆕 v0.3.0 Org structure (school/semester/grade/class/subject)
+│   ├── governanceStore.ts   # 🆕 v0.3.0 Governance aggregation (Layer2 Aggregated)
+│   ├── portalStore.ts       # 🆕 v0.3.0 Portal context builder (role highlights)
 │   ├── wikiStore.ts · authStore.ts · sessionStore.ts · ...
 ├── data/            # Seed data + LocalStorage persistence
 ├── theme/           # Win95 theme styles

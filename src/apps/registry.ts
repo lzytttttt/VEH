@@ -1,5 +1,5 @@
 export type AppRole = 'teacher' | 'student' | 'admin' | 'both';
-export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'capability' | 'governance' | 'system';
+export type AppCategory = 'scenario' | 'report' | 'profile' | 'wiki' | 'capability' | 'governance' | 'system' | 'teaching';
 
 export interface AppMeta {
   id: string;
@@ -27,6 +27,9 @@ export const APP_REGISTRY: AppMeta[] = [
   // 能力提升
   { id: 'teacher-drill', name: '教师演练', icon: '🎓', role: 'teacher', category: 'capability', description: 'Three.js 虚拟学生模拟演练', width: 980, height: 660 },
   { id: 'learning-game', name: '学生闯关', icon: '🎮', role: 'student', category: 'capability', description: '课堂内容互动游戏（限时问答/多选/连线）', width: 760, height: 560 },
+  // 教学工具（教师角色）
+  { id: 'lesson-plan', name: '教案工具', icon: '📄', role: 'teacher', category: 'teaching', description: 'MD 富文本教案编辑器 + 生成助手 Agent', width: 1080, height: 660 },
+  { id: 'slides', name: '课件工具', icon: '🎬', role: 'teacher', category: 'teaching', description: 'HTML Deck 课件 + reveal.js 演示 + 生成助手', width: 1080, height: 660 },
   { id: 'notes', name: '我的笔记', icon: '📝', role: 'student', category: 'system', description: '课堂笔记与重点收藏', width: 600, height: 480 },
   // 学校治理（管理岗位）
   { id: 'dashboard', name: '校长驾驶舱', icon: '📊', role: 'admin', category: 'governance', description: 'AI Agent 治理简报 · 全校概览 · 学期趋势', width: 1040, height: 680 },

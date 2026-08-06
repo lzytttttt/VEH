@@ -193,6 +193,44 @@
 
 ---
 
+### 📄 教案工具 & 🎬 课件工具（本阶段新增 🆕）
+
+**📄 教案工具**（教师角色专属）—— 打开「教案工具」应用后呈现三栏布局：**左侧多文档列表**（localStorage 独立 key 持久化，新建/删除/标题/学科/课题元数据）· **中间所见即所得 WYSIWYG 编辑器**（自研轻量 Markdown 渲染器 + 块级 `contenteditable`，**直接在预览视图点击修改，无需看 Markdown 源码**；工具栏一键切换标题 H1-H4 / 段落 / 引用 / 有序无序列表 / 代码块 / 表格 / 分割线，行内加粗/斜体/代码/链接通过 `execCommand` 包裹当前选中文本，失焦时用 `htmlToInlineMd` 反序列化为 markdown；上移/下移/删除/插入块级操作齐全）· **右侧生成助手 Agent**（顶部「⚡ 一键生成草稿」按钮按课题流式产出完整教案，下方追问微调如"导入环节怎么设计""例题能否加变式""作业如何分层""时间节奏如何调整"，每条 AI 回答末尾提供「↓ 追加到编辑器」/「⇄ 替换编辑器」一键回填）。
+
+>图中可见「函数单调性判定·教案」已用 WYSIWYG 工具栏撰写为完整章节结构（一/教学目标、二/重难点、三/教学过程含 5 个子节、引用块"提示：求 (ln x)' 的符号"、表格小结），右侧 Agent 正在流式生成同一课题草稿（"AI 助手"消息逐字符浮现），生成完成后可一键替换/追加。
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-06_170724_904.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-06_170724_904.png" width="72%" alt="教案工具 · WYSIWYG 编辑器 + 生成助手" />
+  </a>
+  <br/>
+  <sub>📄 图 7 · 教案工具 · WYSIWYG 块级所见即所得编辑器 + 工具栏 + 独立 lessonPlan Harness + 流式生成助手</sub>
+</div>
+
+---
+
+**🎬 课件工具**（教师角色专属）—— 打开「课件工具」应用后，**核心亮点是 3 套结构差异显著的 design 可切换**（非简单换皮）：
+
+| Design | 字体 / 底色 | 标题装饰 | 列表 / 表格 | **结构差异** |
+| --- | --- | --- | --- | --- |
+| **📜 经典板书** | 衬线 / 楷体 + 米黄纸张底（带横线纹理） | 双下划线 + 副标题细线 | ▸ 符号 / 双线边框 | 单栏 + 底部页码 |
+| **✨ 现代极简** | 无衬线 + 白底居中 | 渐变色块 + 圆点 | 圆点 / 阴影斑马纹 | 居中 + 卡片段落 + 大留白 |
+| **📊 图表驱动** | 无衬线 + 暗色 (#0f172a) | 编号 + 左侧色条 | ▸ 蓝色 / 斑马纹 + hover | **双栏（左内容 72% + 右侧栏 28% 进度/页码/本页结构目录）+ 底部进度条** |
+
+>图中 Design 切换器选中"**图表驱动**"（深色高亮），Design 预览区呈现暗色双栏：左侧大字号"单调区间"标题 + 蓝色左色条，右侧"07 / 10"页码徽章 + 渐变进度条 + 本页结构目录（单调区间）+ 底部彩虹进度条；中部编辑区为 WYSIWYG 单页 markdown 编辑（工具栏 + 表格 +＋行/＋列 + 演讲者备注「演示时按 S 键查看」）；右侧生成助手支持"3 套 design 怎么选""增加几张幻灯片""怎样加动画""演讲者备注怎么写"等追问。点击「▶ 演示」进入自定义 React 全屏演示：**←/→/Space** 翻页、**S** 切换演讲者备注、**Esc** 退出、底部进度条实时更新。
+
+<div align="center">
+  <a href="素材/ScreenShot_2026-08-06_170816_609.png" target="_blank">
+    <img src="素材/ScreenShot_2026-08-06_170816_609.png" width="72%" alt="课件工具 · 3 套 design 切换 + WYSIWYG 编辑 + 演示模式" />
+  </a>
+  <br/>
+  <sub>🎬 图 8 · 课件工具 · Design 切换器（经典板书/现代极简/图表驱动，当前图表驱动）+ Design 预览（暗色双栏 + 进度条）+ WYSIWYG 编辑 + 演讲者备注 + 独立 slides Harness + 生成助手</sub>
+</div>
+
+**关键架构：两个工具分别有独立的解耦 Harness**——教案走 `src/harness/lessonPlan/`（types/scripts/MockProvider/adapter/index），课件走 `src/harness/slides/`（同上，含 `designs/` 子目录三套渲染组件），**两个 Harness 物理隔离**，各自自包含注册函数（`getLessonPlanGenProvider` / `getSlidesGenProvider`），不共享类型与状态；接入真实 LLM 时各自在 `adapter.ts` 实现 + `index.ts` 切 `ACTIVE='api'`，**业务代码一行不改**。每套 `design` 是独立 React 组件 + scoped CSS（`sd-classic-` / `sd-modern-` / `sd-dataviz-` 前缀隔离），切换 design 时整套渲染逻辑与样式同步替换——编辑预览与预览模式共用同一组 design 组件，**所见即所演**。
+
+---
+
 ### 📝 我的笔记 & 💡 关于本系统
 
 学生可以把课堂重点钉在"置顶"位置，老师可以翻阅系统说明 —— 一切都装在这台像素风"电脑"里。
@@ -282,9 +320,10 @@
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Harness 层（三 Provider 编排）                              │
+│  Harness 层（四 Provider 编排）                              │
 │  VLMProvider · CapabilityProvider（🆕）· GovernanceProvider │
-│  Mock 规则引擎 × 3 · Adapter 预留真实 API × 3                │
+│  · PortalProvider（🆕 v0.3.0）                              │
+│  Mock 规则引擎 × 4 · Adapter 预留真实 API × 4                │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
@@ -294,7 +333,7 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数，`GovernanceProvider`（🆕 v0.3.0）负责管理岗位的治理简报 / 对话问答 / 异常预警 / 教研建议；治理数据按 **Raw → Aggregated → Agent Output → Presentation** 四层分层治理，**AI 消费的数据**与**用户呈现的数据**严格分离。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
+**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数，`GovernanceProvider`（🆕 v0.3.0）负责管理岗位的治理简报 / 对话问答 / 异常预警 / 教研建议，`PortalProvider`（🆕 v0.3.0）负责登录后默认门户的 AI Agent 检索导航与角色级快捷入口，`LessonPlanGenProvider`（🆕）负责教案草稿流式生成与微调，`SlidesGenProvider`（🆕）负责课件（3 套 design）草稿流式生成与微调——后两者**物理隔离**为 `harness/lessonPlan/` 与 `harness/slides/` 子目录（含 `designs/` 三套独立渲染组件），各自自包含注册函数 `getLessonPlanGenProvider` / `getSlidesGenProvider`；治理数据按 **Raw → Aggregated → Agent Output → Presentation** 四层分层治理，**AI 消费的数据**与**用户呈现的数据**严格分离。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
 
 ---
 
@@ -320,7 +359,8 @@ npm run preview
 1. 🖥️ **BootScreen** —— 蓝白渐变的开机引导
 2. 🔐 **LoginDialog** —— 选择「教师登录」/「学生登录」/「管理岗位登录」（🆕 含 SSO 模拟认证进度对话框）
 3. 🪟 **Desktop** —— 桌面图标 + 开始菜单 + 任务栏（教师/学生/管理岗位看到不同应用，**管理岗位进入「学校治理」分组**）
-4. 🎯 双击图标打开任意 App 窗口
+4. 🚪 **PortalApp** —— 登录后默认弹出的角色自适应管理门户（顶部 AI Agent 检索导航直达功能/数据）
+5. 🎯 双击图标打开任意 App 窗口
 
 ---
 
@@ -332,7 +372,7 @@ npm run preview
 | 构建 | Vite 5 |
 | 样式 | Tailwind CSS 3 + 自研 Win95 组件样式（`.win-text` / `.win-sunken` / `.win-fieldset`） |
 | 3D 渲染 🆕 | Three.js r169 + @react-three/fiber v8 + @react-three/drei v9 |
-| 状态 | Zustand（auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance 多 Store 分治） |
+| 状态 | Zustand（auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal 多 Store 分治） |
 | 图标 | lucide-react + react-icons |
 | 图表 | recharts（雷达图 / 折线图） |
 | 持久化 | 浏览器 LocalStorage（开箱即用、无需后端） |
@@ -358,22 +398,28 @@ src/
 │   ├── DashboardApp.tsx     # 🆕 v0.3.0 校长驾驶舱 · AI Agent 三区布局
 │   ├── AdminConsoleApp.tsx  # 🆕 v0.3.0 教务管理台 · 教师/班级/集成/SSO
 │   ├── GradeAnalysisApp.tsx # 🆕 v0.3.0 年级分析台 · 班级/学科/群体对比
+│   ├── PortalApp.tsx        # 🆕 v0.3.0 角色自适应管理门户（登录后默认弹出 · AI Agent 检索导航）
 │   ├── registry.ts          # 应用注册 + AppCategory 分类（🆕 governance 类别）
 │   └── launcher.tsx         # 懒加载分发（🆕 治理应用 chunk）
 ├── components/      # 复用组件
 │   ├── KnowledgeGraph.tsx  # 🆕 交互式力导向知识图谱
-│   ├── Timeline.tsx · RadarChart.tsx · TrendChart.tsx
+│   ├── Timeline.tsx · StudentTimeline.tsx · RadarChart.tsx · TrendChart.tsx
 │   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
 │   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent 流式组件
 │   ├── TypingStream.tsx · ChatAssistant.tsx
 │   └── WikiTree.tsx
-├── harness/         # 编排层
-│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider
-│   ├── MockVLMProvider.ts
-│   ├── MockCapabilityProvider.ts  # 🆕 脚本驱动能力 Provider
-│   ├── MockGovernanceProvider.ts  # 🆕 v0.3.0 规则引擎治理 Provider
-│   ├── providerRegistry.ts  # 三 Provider 统一注册 + 切换
-│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter）
+├── harness/         # 编排层（六 Provider）
+│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider + 🆕 PortalProvider + 🆕 LessonPlanGenProvider + 🆕 SlidesGenProvider
+│   ├── MockVLMProvider.ts · MockCapabilityProvider.ts
+│   ├── MockGovernanceProvider.ts · MockPortalProvider.ts
+│   ├── lessonPlan/          # 🆕 教案独立 Harness（物理隔离）
+│   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
+│   ├── slides/              # 🆕 课件独立 Harness（含 3 套 design）
+│   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
+│   │   └── designs/         # 🆕 3 套结构差异 design（classic/modern/dataviz）
+│   │       └── classic.tsx · modern.tsx · dataviz.tsx · index.tsx
+│   ├── providerRegistry.ts  # 四 Provider 统一注册 + 切换
+│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter + 🆕 PortalAdapter + 🆕 LessonPlanGenAdapter + 🆕 SlidesGenAdapter）
 │   └── scripts/             # 预制剧本（classroom.json 含 🆕 simulation + games 数据）
 ├── stores/          # Zustand 状态管理
 │   ├── gameStore.ts         # 🆕 游戏最佳得分持久化
