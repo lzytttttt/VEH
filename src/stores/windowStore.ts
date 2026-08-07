@@ -26,6 +26,7 @@ interface WindowState {
   restoreWindow: (id: string) => void;
   toggleMaximize: (id: string) => void;
   moveWindow: (id: string, x: number, y: number) => void;
+  minimizeAll: () => void;
   isMinimized: (id: string) => boolean;
   getActiveId: () => string | null;
 }
@@ -97,6 +98,11 @@ export const useWindowStore = create<WindowState>((set, get) => ({
   moveWindow: (id, x, y) =>
     set((s) => ({
       windows: s.windows.map((w) => (w.id === id ? { ...w, x, y } : w)),
+    })),
+
+  minimizeAll: () =>
+    set((s) => ({
+      windows: s.windows.map((w) => ({ ...w, minimized: true })),
     })),
 
   isMinimized: (id) => {

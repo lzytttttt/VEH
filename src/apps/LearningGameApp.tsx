@@ -5,6 +5,7 @@ import { useGameStore } from '../stores/gameStore';
 import TimedQA from './games/TimedQA';
 import MatchGame from './games/MatchGame';
 import ConnectionGame from './games/ConnectionGame';
+import { useIsMobile } from '../lib/useIsMobile';
 
 const SCENARIO_OPTIONS: { id: ScenarioType; label: string; icon: string }[] = [
   { id: 'classroom', label: '高一物理·牛顿第二定律', icon: '🏫' },
@@ -22,6 +23,7 @@ export default function LearningGameApp() {
   const [result, setResult] = useState<{ score: number; total: number } | null>(null);
   const best = useGameStore((s) => s.best);
   const recordBest = useGameStore((s) => s.recordBest);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     let cancelled = false;
@@ -65,9 +67,9 @@ export default function LearningGameApp() {
         <span className="win-text-disabled">共 {modules.length} 个游戏</span>
       </div>
 
-      <div className="flex-1 flex gap-1 p-1 overflow-hidden">
+      <div className="flex-1 flex gap-1 p-1 overflow-hidden" style={{ flexDirection: isMobile ? 'column' : 'row' }}>
         {/* 左：游戏列表 */}
-        <div style={{ width: '200px' }} className="min-h-0">
+        <div style={{ width: isMobile ? '100%' : '200px', maxHeight: isMobile ? '120px' : undefined }} className="min-h-0">
           <div className="win-sunken bg-white p-1 h-full overflow-auto" style={{ fontSize: '11px' }}>
             <div className="px-1 py-1 win-text-bold" style={{ color: '#000080' }}>🎯 游戏列表</div>
             {modules.map((m) => (

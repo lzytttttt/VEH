@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import WysiwygEditor from '../components/WysiwygEditor';
 import ContentGenAssistant from '../components/ContentGenAssistant';
+import MobileTabBar from '../components/MobileTabBar';
+import { useIsMobile } from '../lib/useIsMobile';
 import { getSlidesGenProvider } from '../harness/slides';
 import { renderSlide, SLIDE_DESIGNS } from '../harness/slides/designs';
 import type { SlideDesign } from '../harness/slides';
@@ -35,6 +37,8 @@ export default function SlidesApp() {
   const [design, setDesign] = useState<SlideDesign>('classic');
   const [showPresent, setShowPresent] = useState(false);
   const [notesView, setNotesView] = useState(false);
+  const isMobile = useIsMobile();
+  const [mobileTab, setMobileTab] = useState('list');
 
   const current = decks.find((d) => d.id === selectedId) ?? null;
 
@@ -123,6 +127,120 @@ export default function SlidesApp() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [showPresent, total]);
+
+  // —— 移动端布局：三 Tab 切换 ——
+  if (isMobile) {
+    return (
+      <div className="flex flex-col h-full bg-win-gray" style={{ gap: '4px', padding: '4px' }}>
+        <MobileTabBar
+          tabs={[
+            { id: 'list', label: '课件', icon: '🎬' },
+            { id: 'editor', label: '编辑', icon: '✏️' },
+            { id: 'assistant', label: '助手', icon: '🤖' },
+          ]}
+          activeId={mobileTab}
+          onChange={setMobileTab}
+        />
+        <div className="flex-1 min-h-0 overflow-hidden">
+          {mobileTab === 'list' && (
+            <div className="flex flex-col h-full gap-1">
+              <div className="win-text-bold" style={{ fontSize: '11px', color: '#000080' }}>🎬 课件列表 ({decks.length})</div>
+              <button className="win-button" onClick={handleNew} style={{ fontSize: '11px', padding: '3px 8px' }}>＋ 新建课件</button>
+              <div className="win-sunken flex-1" style={{ padding: '4px', overflow: 'auto' }}>
+                {decks.length === 0 && <div style={{ fontSize: '11px', color: '#808080', fontStyle: 'italic' }}>▌暂无课件</div>}
+                {decks.map((d) => (
+                  <div key={d.id} onClick={() => { setSelectedId(d.id); setCurrentIndex(0); }} className="win-raised" style={{ padding: '6px', marginBottom: '4px', cursor: 'pointer', background: d.id === selectedId ? '#000080' : '#c0c0c0', color: d.id === selectedId ? '#fff' : '#000', fontSize: '12px' }}>
+                    <div className="flex items-center justify-between gap-1">
+                      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title || '（无标题）'}</span>
+                      <button className="win-button" style={{ minWidth: '24px', padding: '0 6px', fontSize: '12px', height: '20px', background: '#c0c0c0', color: '#000' }} onClick={(e) => { e.stopPropagation(); handleDelete(d.id); }} title="删除">×</button>
+                    </div>
+                    <div style={{ fontSize: '10px', opacity: 0.7 }}>{d.slides.length} 页 · {d.subject}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {mobileTab === 'editor' && current && (
+            <div className="flex flex-col h-full gap-1 overflow-auto">
+              <div className="flex gap-1 flex-wrap">
+                <input className="win-input flex-1" value={current.title} onChange={(e) => updateCurrent({ title: e.target.value })} placeholder="课件标题" style={{ fontSize: '12px', fontWeight: 'bold', minWidth: '120px' }} />
+                <button className="win-button is-default" onClick={() => setShowPresent(true)} style={{ fontSize: '11px', padding: '2px 12px', fontWeight: 'bold' }}>▶ 演示</button>
+              </div>
+              <div className="win-raised-thin flex items-center gap-1 overflow-x-auto" style={{ padding: '3px 6px', scrollbarWidth: 'none' }}>
+                <span style={{ fontSize: '10px', color: '#000080', fontWeight: 'bold', flexShrink: 0 }}>🎨 Design:</span>
+                {SLIDE_DESIGNS.map((d) => (
+                  <button key={d.id} className="win-button shrink-0" title={d.description} onClick={() => setDesign(d.id)} style={{ fontSize: '11px', padding: '2px 8px', background: design === d.id ? '#000080' : undefined, color: design === d.id ? '#fff' : undefined, fontWeight: design === d.id ? 'bold' : 'normal' }}>{d.name}</button>
+                ))}
+              </div>
+              <div className="win-sunken" style={{ padding: '4px', overflowX: 'auto', overflowY: 'hidden', display: 'flex', gap: '4px', height: '64px', flexShrink: 0 }}>
+                {current.slides.map((md, i) => (
+                  <div key={i} onClick={() => setCurrentIndex(i)} style={{ flex: '0 0 90px', height: '56px', background: '#fff', border: i === currentIndex ? '2px solid #000080' : '1px solid #808080', cursor: 'pointer', position: 'relative', overflow: 'hidden', fontSize: '6px', lineHeight: '1.1' }} title={`第 ${i + 1} 页`}>
+                    <div style={{ height: '100%', overflow: 'hidden', padding: '2px' }} dangerouslySetInnerHTML={{ __html: simpleThumbRender(md) }} />
+                    <span style={{ position: 'absolute', bottom: 0, right: 2, fontSize: '8px', fontWeight: 'bold', background: '#000080', color: '#fff', padding: '0 2px' }}>{i + 1}</span>
+                  </div>
+                ))}
+                <button className="win-button" onClick={addSlide} style={{ flex: '0 0 36px', height: '56px', fontSize: '14px', padding: 0 }} title="新增幻灯片">＋</button>
+              </div>
+              <div className="win-sunken" style={{ flex: '0 0 200px', minWidth: 0, display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+                <div style={{ fontSize: '10px', color: '#000080', padding: '3px 6px', background: '#c0c0c0', fontWeight: 'bold' }}>👁 预览（{SLIDE_DESIGNS.find((d) => d.id === design)?.name}）</div>
+                <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>{renderSlide(design, { md: currentSlideMd, index: currentIndex, total })}</div>
+              </div>
+              <div className="flex items-center justify-between" style={{ fontSize: '10px', color: '#000080', flexShrink: 0 }}>
+                <span>✏ 第 {currentIndex + 1} / {total} 页</span>
+                <div className="flex gap-px">
+                  <button className="win-button" onClick={() => moveSlide(currentIndex, -1)} disabled={currentIndex === 0} style={{ fontSize: '12px', padding: '2px 8px', minWidth: '32px' }} title="左移">◀</button>
+                  <button className="win-button" onClick={() => moveSlide(currentIndex, 1)} disabled={currentIndex === total - 1} style={{ fontSize: '12px', padding: '2px 8px', minWidth: '32px' }} title="右移">▶</button>
+                  <button className="win-button" onClick={() => deleteSlide(currentIndex)} disabled={total <= 1} style={{ fontSize: '12px', padding: '2px 8px', minWidth: '32px' }} title="删除当前页">×</button>
+                </div>
+              </div>
+              <div style={{ flex: '1 1 200px', minHeight: '120px' }}>
+                <WysiwygEditor value={currentSlideMd} onChange={(v) => updateSlide(currentIndex, v)} placeholder="编辑本页幻灯片..." />
+              </div>
+              <textarea className="win-input" style={{ height: '48px', fontSize: '11px', resize: 'none', lineHeight: '1.4', flexShrink: 0 }} placeholder="📝 演讲者备注..." value={currentNote} onChange={(e) => updateNote(currentIndex, e.target.value)} />
+            </div>
+          )}
+          {mobileTab === 'editor' && !current && (
+            <div className="win-sunken flex-1 flex items-center justify-center" style={{ fontSize: '12px', color: '#808080', fontStyle: 'italic' }}>▌ 请点击「课件」Tab 新建</div>
+          )}
+          {mobileTab === 'assistant' && (
+            <div className="h-full">
+              {current ? (
+                <ContentGenAssistant provider={provider} kind="slides" currentContent={current.slides.join('\n\n---\n\n')} defaultTopic={current.topic} defaultSubject={current.subject} buildDraftInput={(topic, subject) => ({ topic, subject, design })} buildChatInput={(query, content) => ({ currentContent: content, query, design })} onInsert={(text, mode) => { if (!current) return; const normalized = normalizeMarkdown(text); const newSlides = splitSlides(normalized); if (mode === 'replace') { updateCurrent({ slides: newSlides.length ? newSlides : [''], notes: newSlides.map(() => '') }); setCurrentIndex(0); } else { const startIdx = current.slides.length; updateCurrent({ slides: [...current.slides, ...newSlides], notes: [...current.notes, ...newSlides.map(() => '')] }); setCurrentIndex(startIdx); } }} />
+              ) : (
+                <div className="win-sunken h-full flex items-center justify-center" style={{ fontSize: '11px', color: '#808080' }}>▌选择课件后启用助手</div>
+              )}
+            </div>
+          )}
+        </div>
+        {/* 演示模式 Overlay（移动端触控增大） */}
+        {showPresent && current && (
+          <div style={{ position: 'fixed', inset: 0, background: '#000', zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ height: '36px', background: '#000080', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', fontSize: '12px', flexShrink: 0 }}>
+              <span className="truncate">▶ {current.title}</span>
+              <div className="flex gap-1 shrink-0">
+                <button className="win-button" onClick={() => setNotesView((v) => !v)} style={{ fontSize: '12px', padding: '2px 10px', minWidth: '48px' }}>📝</button>
+                <button className="win-button" onClick={() => setCurrentIndex((i) => Math.max(i - 1, 0))} disabled={currentIndex === 0} style={{ fontSize: '12px', padding: '2px 10px', minWidth: '48px' }}>◀</button>
+                <button className="win-button" onClick={() => setCurrentIndex((i) => Math.min(i + 1, total - 1))} disabled={currentIndex === total - 1} style={{ fontSize: '12px', padding: '2px 10px', minWidth: '48px' }}>▶</button>
+                <button className="win-button is-default" onClick={() => setShowPresent(false)} style={{ fontSize: '12px', padding: '2px 10px', minWidth: '60px', fontWeight: 'bold' }}>✕</button>
+              </div>
+            </div>
+            <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', inset: 0 }}>{renderSlide(design, { md: current.slides[currentIndex], index: currentIndex, total })}</div>
+              {notesView && (
+                <div style={{ position: 'absolute', right: 8, top: 8, left: 8, maxHeight: '60%', background: '#ffffe0', border: '2px solid #000080', padding: '10px 12px', fontSize: '13px', lineHeight: '1.6', overflow: 'auto' }}>
+                  <div style={{ fontSize: '11px', color: '#000080', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid #000080', paddingBottom: '3px' }}>📝 第 {currentIndex + 1} 页备注</div>
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{current.notes[currentIndex] || '（无备注）'}</div>
+                </div>
+              )}
+            </div>
+            <div style={{ height: '6px', background: '#1a1a2e', flexShrink: 0 }}>
+              <div style={{ height: '100%', width: `${total > 0 ? ((currentIndex + 1) / total) * 100 : 0}%`, background: 'linear-gradient(90deg, #38bdf8, #818cf8)', transition: 'width 0.2s' }} />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full bg-win-gray" style={{ gap: '4px', padding: '4px' }}>

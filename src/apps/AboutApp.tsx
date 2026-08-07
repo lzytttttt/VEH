@@ -13,7 +13,7 @@ export default function AboutApp() {
             VLM 教育赋能中枢
           </div>
           <div className="win-text" style={{ fontSize: '12px' }}>
-            Windows 95 Nostalgia OS Edition · v0.2.0 (Build 1995)
+            Windows 95 Nostalgia OS Edition · v0.3.0 (Build 1995)
           </div>
         </div>
       </div>

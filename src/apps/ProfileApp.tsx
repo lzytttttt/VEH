@@ -87,7 +87,7 @@ function TeacherProfile({ scripts }: { scripts: { id: ScenarioType; label: strin
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* 雷达图 */}
         <div className="win-fieldset">
           <legend>多维能力评估</legend>
@@ -102,7 +102,7 @@ function TeacherProfile({ scripts }: { scripts: { id: ScenarioType; label: strin
       </div>
 
       {/* 优势/短板 */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="win-fieldset">
           <legend>✅ 优势维度</legend>
           <ul className="list-disc pl-5" style={{ fontSize: '11px', lineHeight: '1.6' }}>
@@ -208,7 +208,7 @@ function StudentProfile({ scripts }: { scripts: { id: ScenarioType; label: strin
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="win-fieldset">
           <legend>学情多维评估</legend>
           <RadarChart data={radarData} color="#008000" height={240} />

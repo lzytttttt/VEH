@@ -8,6 +8,8 @@ import BarChart from '../components/BarChart';
 import MultiRadarChart, { type MultiRadarSeries } from '../components/MultiRadarChart';
 import AgentInsightStream from '../components/AgentInsightStream';
 import GovernanceChat from '../components/GovernanceChat';
+import { useIsMobile } from '../lib/useIsMobile';
+import MobileTabBar from '../components/MobileTabBar';
 
 const SHORT_TERM: Record<string, string> = {
   'term-2024-fall': '24秋',
@@ -85,71 +87,127 @@ export default function DashboardApp() {
     );
   };
 
+  const isMobile = useIsMobile();
+  const [mobileTab, setMobileTab] = useState('charts');
+
+  // —— 面板内容（移动端/桌面端共用） ——
+  const chartsPanel = (
+    <div className="flex flex-col gap-2" style={{ flex: isMobile ? undefined : '0 0 42%' }}>
+      <div className="win-fieldset">
+        <legend>📈 学期趋势</legend>
+        <TrendChart data={trendData} height={120} />
+      </div>
+      <div className="win-fieldset">
+        <legend>📚 学科均分对比</legend>
+        <BarChart data={subjectData} height={120} />
+      </div>
+    </div>
+  );
+
+  const agentBriefingPanel = (
+    <div className="win-fieldset flex flex-col" style={{ flex: isMobile ? undefined : '0 0 30%' }}>
+      <legend>🤖 Agent 治理简报</legend>
+      <AgentInsightStream chunks={briefingChunks} loading={briefingLoading} />
+    </div>
+  );
+
+  const agentChatPanel = (
+    <div style={{ flex: isMobile ? undefined : '1 1 26%' }}>
+      <GovernanceChat ctx={ctx} />
+    </div>
+  );
+
+  const classRankPanel = (
+    <div className="win-fieldset" style={{ flex: isMobile ? undefined : '1 1 50%' }}>
+      <legend>🏫 班级综合排名</legend>
+      <BarChart data={classData} height={160} layout="horizontal" />
+    </div>
+  );
+
+  const teacherRadarPanel = (
+    <div className="win-fieldset" style={{ flex: isMobile ? undefined : '1 1 50%' }}>
+      <legend>👨‍🏫 教师能力对比（选 {selectedTeachers.length}/3）</legend>
+      <div className="flex flex-wrap gap-1 mb-1">
+        {teachers.map((t) => (
+          <button
+            key={t.teacherId}
+            className="win-button"
+            style={{
+              fontSize: '10px',
+              padding: '1px 6px',
+              background: selectedTeachers.includes(t.teacherId) ? '#000080' : undefined,
+              color: selectedTeachers.includes(t.teacherId) ? '#fff' : undefined,
+            }}
+            onClick={() => toggleTeacher(t.teacherId)}
+          >
+            {t.teacherName}
+          </button>
+        ))}
+      </div>
+      <MultiRadarChart series={radarSeries} height={140} />
+    </div>
+  );
+
+  const statCards = (
+    <>
+      <StatCard label="综合评分" value={`${(ov.totalScore * 100).toFixed(1)}%`} trend={ov.scoreChange} />
+      <StatCard label="学期环比" value={`${ov.scoreChange >= 0 ? '+' : ''}${(ov.scoreChange * 100).toFixed(1)}%`} hint="较上学期" />
+      <StatCard label="分析覆盖率" value={`${(ov.coverageRate * 100).toFixed(0)}%`} hint={`${ov.analyzedSessions}/${ov.totalSessions} 节`} />
+      <StatCard label="活跃教师" value={`${ov.activeTeachers} 名`} />
+      <StatCard label="活跃班级" value={`${ov.activeClasses} 个`} />
+    </>
+  );
+
   return (
     <div className="flex flex-col gap-2 p-2" style={{ fontSize: '11px', height: '100%', overflow: 'auto' }}>
-      {/* 顶部概览栏 */}
-      <div className="flex gap-2 flex-wrap">
-        <StatCard label="综合评分" value={`${(ov.totalScore * 100).toFixed(1)}%`} trend={ov.scoreChange} />
-        <StatCard label="学期环比" value={`${ov.scoreChange >= 0 ? '+' : ''}${(ov.scoreChange * 100).toFixed(1)}%`} hint="较上学期" />
-        <StatCard label="分析覆盖率" value={`${(ov.coverageRate * 100).toFixed(0)}%`} hint={`${ov.analyzedSessions}/${ov.totalSessions} 节`} />
-        <StatCard label="活跃教师" value={`${ov.activeTeachers} 名`} />
-        <StatCard label="活跃班级" value={`${ov.activeClasses} 个`} />
+      {/* 顶部概览栏 —— 移动端横滑 */}
+      <div className="flex gap-2 overflow-x-auto" style={{ flexWrap: isMobile ? 'nowrap' : 'wrap', scrollbarWidth: 'none' }}>
+        {statCards}
       </div>
 
-      {/* 中部三栏 */}
-      <div className="flex gap-2" style={{ minHeight: '240px' }}>
-        {/* 左栏：图表 */}
-        <div className="flex flex-col gap-2" style={{ flex: '0 0 42%' }}>
-          <div className="win-fieldset">
-            <legend>📈 学期趋势</legend>
-            <TrendChart data={trendData} height={120} />
+      {isMobile ? (
+        <>
+          <MobileTabBar
+            tabs={[
+              { id: 'charts', label: '图表', icon: '📈' },
+              { id: 'agent', label: 'Agent', icon: '🤖' },
+              { id: 'compare', label: '对比', icon: '📊' },
+            ]}
+            activeId={mobileTab}
+            onChange={setMobileTab}
+          />
+          <div className="flex-1 min-h-0 overflow-auto">
+            {mobileTab === 'charts' && <div className="flex flex-col gap-2">{chartsPanel}</div>}
+            {mobileTab === 'agent' && (
+              <div className="flex flex-col gap-2">
+                {agentBriefingPanel}
+                {agentChatPanel}
+              </div>
+            )}
+            {mobileTab === 'compare' && (
+              <div className="flex flex-col gap-2">
+                {classRankPanel}
+                {teacherRadarPanel}
+              </div>
+            )}
           </div>
-          <div className="win-fieldset">
-            <legend>📚 学科均分对比</legend>
-            <BarChart data={subjectData} height={120} />
+        </>
+      ) : (
+        <>
+          {/* 中部三栏 */}
+          <div className="flex gap-2" style={{ minHeight: '240px' }}>
+            {chartsPanel}
+            {agentBriefingPanel}
+            {agentChatPanel}
           </div>
-        </div>
 
-        {/* 中栏：Agent 洞察流 */}
-        <div className="win-fieldset flex flex-col" style={{ flex: '0 0 30%' }}>
-          <legend>🤖 Agent 治理简报</legend>
-          <AgentInsightStream chunks={briefingChunks} loading={briefingLoading} />
-        </div>
-
-        {/* 右栏：Agent 对话 */}
-        <div style={{ flex: '1 1 26%' }}>
-          <GovernanceChat ctx={ctx} />
-        </div>
-      </div>
-
-      {/* 底部双栏 */}
-      <div className="flex gap-2">
-        <div className="win-fieldset" style={{ flex: '1 1 50%' }}>
-          <legend>🏫 班级综合排名</legend>
-          <BarChart data={classData} height={160} layout="horizontal" />
-        </div>
-        <div className="win-fieldset" style={{ flex: '1 1 50%' }}>
-          <legend>👨‍🏫 教师能力对比（选 {selectedTeachers.length}/3）</legend>
-          <div className="flex flex-wrap gap-1 mb-1">
-            {teachers.map((t) => (
-              <button
-                key={t.teacherId}
-                className="win-button"
-                style={{
-                  fontSize: '10px',
-                  padding: '1px 6px',
-                  background: selectedTeachers.includes(t.teacherId) ? '#000080' : undefined,
-                  color: selectedTeachers.includes(t.teacherId) ? '#fff' : undefined,
-                }}
-                onClick={() => toggleTeacher(t.teacherId)}
-              >
-                {t.teacherName}
-              </button>
-            ))}
+          {/* 底部双栏 */}
+          <div className="flex gap-2">
+            {classRankPanel}
+            {teacherRadarPanel}
           </div>
-          <MultiRadarChart series={radarSeries} height={140} />
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

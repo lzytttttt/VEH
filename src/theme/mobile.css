@@ -1,0 +1,89 @@
+/* ============================================================
+   移动端 CSS 覆盖层 —— 仅在 768px 以下生效
+   覆盖 Win95 tokens 变量 + 触控优化 + 安全区域
+   桌面端样式完全不受影响
+   ============================================================ */
+
+@media (max-width: 767px) {
+  :root {
+    /* 移动端任务栏/导航栏更高，适配触控 */
+    --win-taskbar-h: 48px;
+    /* 移动端标题栏更高，触控更易点击 */
+    --win-titlebar-h: 28px;
+  }
+
+  /* 全局触控优化：禁用双击缩放、移除点击高亮 */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    /* 允许触摸平移但禁止双击缩放 */
+    touch-action: manipulation;
+    /* 移动端关闭用户选中（桌面 OS 风格一致性） */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* —— 移动端触控目标放大 —— */
+
+  /* Win95 按钮：移动端最小高度 36px（Win95 密集按钮的触控折中，低于 WCAG 44px 但保持风格） */
+  .win-button {
+    min-height: 36px;
+    font-size: var(--win-fs-md);
+  }
+
+  /* 标题栏按钮：移动端放大到 28x28px（桌面端 16x14px） */
+  .win-titlebar-btn {
+    width: 28px;
+    height: 24px;
+  }
+
+  /* 任务栏按钮：移动端去除固定 min-width，改为弹性适配 */
+  .win-taskbar-btn {
+    min-width: auto;
+    max-width: none;
+    height: 36px;
+    flex: 0 0 auto;
+  }
+
+  /* 开始菜单项：移动端增大点击区域 */
+  .win-menu-item {
+    padding: 8px 12px;
+    font-size: var(--win-fs-md);
+  }
+
+  /* 桌面图标：移动端无需特别处理（由 MobileHomeScreen 单独管理） */
+
+  /* 输入框：移动端增大高度，避免 iOS 自动放大（字号≥16px） */
+  .win-input {
+    min-height: 36px;
+    font-size: 16px;
+  }
+
+  /* 滚动条：移动端隐藏以节省空间（依赖原生惯性滚动） */
+  *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--win-btn-shadow);
+    box-shadow: none;
+  }
+  *::-webkit-scrollbar-button:single-button {
+    display: none;
+  }
+
+  /* —— 移动导航栏安全区域 —— */
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}

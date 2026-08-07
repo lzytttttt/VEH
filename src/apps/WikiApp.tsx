@@ -4,6 +4,8 @@ import type { ScenarioType, WikiContainer, WikiNode } from '../harness/types';
 import WikiTree from '../components/WikiTree';
 import ChatAssistant from '../components/ChatAssistant';
 import KnowledgeGraph from '../components/KnowledgeGraph';
+import MobileTabBar from '../components/MobileTabBar';
+import { useIsMobile } from '../lib/useIsMobile';
 
 interface Props {
   initialScenario?: ScenarioType;
@@ -23,6 +25,8 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
   const [scenario, setScenario] = useState<ScenarioType>(initialScenario);
   const [wiki, setWiki] = useState<WikiContainer | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const isMobile = useIsMobile();
+  const [mobileTab, setMobileTab] = useState('tree');
 
   // 经 CapabilityProvider 异步加载 wiki（Mock 等价于原 getScript，adapter 预留真实模型 API）
   useEffect(() => {
@@ -71,12 +75,12 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
   return (
     <div className="flex flex-col h-full bg-win-gray">
       {/* 顶部场景选择器 */}
-      <div className="flex items-center gap-2 px-2 py-1" style={{ fontSize: '11px', background: '#c0c0c0', borderBottom: '1px solid #808080' }}>
-        <span className="win-text-bold">📖 LLM WIKI</span>
-        <span className="text-gray-600">|</span>
-        <span>课程场景:</span>
+      <div className="flex items-center gap-2 px-2 py-1 overflow-x-auto" style={{ fontSize: '11px', background: '#c0c0c0', borderBottom: '1px solid #808080', scrollbarWidth: 'none' }}>
+        <span className="win-text-bold shrink-0">📖 LLM WIKI</span>
+        <span className="text-gray-600 shrink-0">|</span>
+        <span className="shrink-0">课程场景:</span>
         <select
-          className="win-input"
+          className="win-input shrink-0"
           value={scenario}
           onChange={(e) => handleScenarioChange(e.target.value as ScenarioType)}
           style={{ fontSize: '11px', padding: '1px 4px' }}
@@ -88,36 +92,69 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
           ))}
         </select>
         <div className="flex-1" />
-        <span className="win-text-disabled">{wiki.nodes.length} 节点 / {wiki.assistantScript.length} 问答</span>
+        <span className="win-text-disabled shrink-0">{wiki.nodes.length} 节点 / {wiki.assistantScript.length} 问答</span>
       </div>
 
-      {/* 三栏布局 */}
-      <div className="flex-1 flex gap-1 p-1 overflow-hidden">
-        {/* 左：知识树 */}
-        <div style={{ width: '240px' }} className="min-h-0">
-          <WikiTree nodes={wiki.nodes} selectedId={selectedId} onSelect={setSelectedId} />
-        </div>
-
-        {/* 中：知识详情 */}
-        <div className="flex-1 min-h-0 overflow-auto">
-          {selectedNode ? (
-            <NodeDetail node={selectedNode} allNodes={wiki.nodes} onSelectNode={setSelectedId} />
-          ) : (
-            <div className="win-sunken p-3 text-gray-500 italic" style={{ fontSize: '12px' }}>
-              ▌未选择知识点
-            </div>
-          )}
-        </div>
-
-        {/* 右：AI 助手 */}
-        <div style={{ width: '300px' }} className="min-h-0">
-          <ChatAssistant
-            script={wiki.assistantScript}
-            currentNode={selectedNode}
-            onSeekClassroom={handleSeek}
+      {/* 主内容区 —— 移动端 Tab 切换 / 桌面端三栏 */}
+      {isMobile ? (
+        <>
+          <MobileTabBar
+            tabs={[
+              { id: 'tree', label: '知识树', icon: '🌳' },
+              { id: 'detail', label: '详情', icon: '📖' },
+              { id: 'assistant', label: '助手', icon: '🤖' },
+            ]}
+            activeId={mobileTab}
+            onChange={setMobileTab}
           />
+          <div className="flex-1 min-h-0 overflow-hidden p-1">
+            {mobileTab === 'tree' && (
+              <div className="h-full min-h-0">
+                <WikiTree nodes={wiki.nodes} selectedId={selectedId} onSelect={setSelectedId} />
+              </div>
+            )}
+            {mobileTab === 'detail' && (
+              <div className="h-full min-h-0 overflow-auto">
+                {selectedNode ? (
+                  <NodeDetail node={selectedNode} allNodes={wiki.nodes} onSelectNode={setSelectedId} />
+                ) : (
+                  <div className="win-sunken p-3 text-gray-500 italic" style={{ fontSize: '12px' }}>
+                    ▌未选择知识点
+                  </div>
+                )}
+              </div>
+            )}
+            {mobileTab === 'assistant' && (
+              <div className="h-full min-h-0">
+                <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} onSeekClassroom={handleSeek} />
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="flex-1 flex gap-1 p-1 overflow-hidden">
+          {/* 左：知识树 */}
+          <div style={{ width: '240px' }} className="min-h-0">
+            <WikiTree nodes={wiki.nodes} selectedId={selectedId} onSelect={setSelectedId} />
+          </div>
+
+          {/* 中：知识详情 */}
+          <div className="flex-1 min-h-0 overflow-auto">
+            {selectedNode ? (
+              <NodeDetail node={selectedNode} allNodes={wiki.nodes} onSelectNode={setSelectedId} />
+            ) : (
+              <div className="win-sunken p-3 text-gray-500 italic" style={{ fontSize: '12px' }}>
+                ▌未选择知识点
+              </div>
+            )}
+          </div>
+
+          {/* 右：AI 助手 */}
+          <div style={{ width: '300px' }} className="min-h-0">
+            <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} onSeekClassroom={handleSeek} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

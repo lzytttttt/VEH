@@ -7,6 +7,7 @@ import BarChart from '../components/BarChart';
 import PieChart, { type PieDatum } from '../components/PieChart';
 import TrendChart from '../components/TrendChart';
 import AgentInsightStream from '../components/AgentInsightStream';
+import { useIsMobile } from '../lib/useIsMobile';
 
 const SHORT_TERM: Record<string, string> = {
   'term-2024-fall': '24秋',
@@ -21,6 +22,7 @@ const SHORT_TERM: Record<string, string> = {
 export default function GradeAnalysisApp() {
   const buildCtx = useGovernanceStore((s) => s.buildGovernanceContext);
   const ctx: GovernanceContext = useMemo(() => buildCtx(), [buildCtx]);
+  const isMobile = useIsMobile();
 
   const classes = ctx.aggregates.classComparison;
   const subjects = ctx.aggregates.subjectComparison;
@@ -82,12 +84,12 @@ export default function GradeAnalysisApp() {
       </div>
 
       {/* 双栏：学科对比 + 群体分布 */}
-      <div className="flex gap-2">
-        <div className="win-fieldset" style={{ flex: '1 1 50%' }}>
+      <div className="flex gap-2" style={{ flexDirection: isMobile ? 'column' : 'row' }}>
+        <div className="win-fieldset" style={{ flex: isMobile ? undefined : '1 1 50%' }}>
           <legend>📚 学科均分对比</legend>
           <BarChart data={subjectData} height={180} />
         </div>
-        <div className="win-fieldset" style={{ flex: '1 1 50%' }}>
+        <div className="win-fieldset" style={{ flex: isMobile ? undefined : '1 1 50%' }}>
           <legend>🎯 班级群体分布</legend>
           <PieChart data={distribution} height={180} />
         </div>

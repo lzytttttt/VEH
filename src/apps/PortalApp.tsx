@@ -12,6 +12,7 @@ import { useWindowStore } from '../stores/windowStore';
 import { findApp } from './registry';
 import { launchApp } from './launcher';
 import StatCard from '../components/StatCard';
+import { useIsMobile } from '../lib/useIsMobile';
 
 const ROLE_TITLE: Record<UserRole, string> = {
   teacher: '教师工作台',
@@ -49,6 +50,7 @@ const CHUNK_STYLE: Record<PortalNavChunkType, { bg: string; border: string; icon
 export default function PortalApp() {
   const user = useAuthStore((s) => s.user)!;
   const role = user.role;
+  const isMobile = useIsMobile();
   const buildCtx = usePortalStore((s) => s.buildPortalContext);
   const ctx: PortalContext = useMemo(() => buildCtx(role), [buildCtx, role]);
   const openWindow = useWindowStore((s) => s.openWindow);
@@ -130,7 +132,7 @@ export default function PortalApp() {
       className="flex flex-col"
       style={{
         height: '100%',
-        overflow: 'hidden',
+        overflow: isMobile ? 'auto' : 'hidden',
         padding: '4px',
         gap: '6px',
         fontSize: '12px',
@@ -257,15 +259,16 @@ export default function PortalApp() {
       {/* —— 功能网格 + 数据卡片 —— flex:1 min-height:0 行容器 —— */}
       <div
         style={{
-          flex: '1 1 auto',
+          flex: isMobile ? '0 0 auto' : '1 1 auto',
           minHeight: 0,
           display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
           gap: '6px',
           overflow: 'hidden',
         }}
       >
         {/* 功能入口 —— flex 60% */}
-        <div className="win-fieldset" style={{ ...fieldsetStyle, flex: '6 1 0', maxWidth: '62%' }}>
+        <div className="win-fieldset" style={{ ...fieldsetStyle, flex: isMobile ? undefined : '6 1 0', maxWidth: isMobile ? 'none' : '62%' }}>
           <legend>🗂️ 功能入口</legend>
           <div
             style={{ ...scrollStyle, padding: '4px' }}
@@ -303,7 +306,7 @@ export default function PortalApp() {
         </div>
 
         {/* 数据概览 —— flex 40% */}
-        <div className="win-fieldset" style={{ ...fieldsetStyle, flex: '4 1 0', minWidth: '240px' }}>
+        <div className="win-fieldset" style={{ ...fieldsetStyle, flex: isMobile ? undefined : '4 1 0', minWidth: isMobile ? '0' : '240px' }}>
           <legend>📊 数据概览</legend>
           <div style={{ ...scrollStyle, padding: '4px' }}>
             <div

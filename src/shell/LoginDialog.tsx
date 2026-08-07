@@ -27,7 +27,6 @@ function AccountCard({
       className={`win-raised text-left flex items-center gap-3 p-3 cursor-pointer w-full ${
         selected ? 'ring-2 ring-win-navy ring-inset' : ''
       }`}
-      style={{ minWidth: '240px' }}
     >
       <div
         className="w-10 h-10 flex items-center justify-center text-white"
@@ -76,7 +75,7 @@ function SSOProgressDialog({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.25)', zIndex: 50 }}>
-      <div className="win-window" style={{ width: '360px' }}>
+      <div className="win-window" style={{ width: 'min(360px, calc(100vw - 16px))' }}>
         <div className="win-titlebar" style={{ cursor: 'default' }}>
           <div className="flex items-center gap-[5px]">
             <span style={{ fontSize: '12px' }}>🔐</span>
@@ -137,7 +136,7 @@ export default function LoginDialog() {
     <div className="absolute inset-0 win-desktop-bg flex items-center justify-center animate-fade-in">
       {ssoActive && <SSOProgressDialog onDone={handleSSODone} />}
       {configOpen && <ApiConfigPanel onClose={() => setConfigOpen(false)} />}
-      <div className="win-window" style={{ width: '520px' }}>
+      <div className="win-window" style={{ width: 'min(520px, calc(100vw - 16px))' }}>
         {/* 标题栏 */}
         <div className="win-titlebar" style={{ cursor: 'default' }}>
           <div className="flex items-center gap-[5px]">
@@ -176,10 +175,10 @@ export default function LoginDialog() {
           </div>
 
           {/* 按钮栏 */}
-          <div className="flex items-center justify-between gap-2 pt-2">
-            <div className="flex gap-2">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-2 pt-2">
+            <div className="flex flex-col gap-2 md:flex-row">
               <button
-                className="win-button"
+                className="win-button flex-1 md:flex-none"
                 onClick={handleSSO}
                 style={{ minWidth: '120px' }}
                 title="模拟学校统一身份认证(CAS/LDAP)登录"
@@ -187,7 +186,7 @@ export default function LoginDialog() {
                 🔐 统一身份认证(SSO)
               </button>
               <button
-                className="win-button"
+                className="win-button flex-1 md:flex-none"
                 onClick={() => setConfigOpen(true)}
                 style={{ minWidth: '120px' }}
                 title="图形化配置 VLM/LLM API 接入（6 个 Provider 独立切换）"
@@ -197,14 +196,14 @@ export default function LoginDialog() {
             </div>
             <div className="flex gap-2">
               <button
-                className={`win-button ${selected ? 'is-default' : ''}`}
+                className={`win-button flex-1 md:flex-none ${selected ? 'is-default' : ''}`}
                 onClick={handleOk}
                 disabled={!selected}
                 style={{ minWidth: '90px', fontWeight: 'bold' }}
               >
                 确定
               </button>
-              <button className="win-button" disabled style={{ minWidth: '90px' }}>
+              <button className="win-button flex-1 md:flex-none" disabled style={{ minWidth: '90px' }}>
                 取消
               </button>
             </div>

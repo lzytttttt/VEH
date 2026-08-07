@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getGovernanceProvider } from '../harness/providerRegistry';
+import { useIsMobile } from '../lib/useIsMobile';
 import { useGovernanceStore } from '../stores/governanceStore';
 import type { AnomalyAlert, GovernanceContext, ResearchSuggestion } from '../harness/types';
 
@@ -37,6 +38,7 @@ export default function AdminConsoleApp() {
   const classes = ctx.aggregates.classComparison;
 
   const [tab, setTab] = useState<Tab>('teachers');
+  const isMobile = useIsMobile();
   const [alerts, setAlerts] = useState<AnomalyAlert[]>([]);
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<ResearchSuggestion | null>(null);
@@ -71,15 +73,16 @@ export default function AdminConsoleApp() {
 
   return (
     <div className="flex flex-col p-2 gap-2" style={{ fontSize: '11px', height: '100%' }}>
-      {/* Tab 栏 */}
-      <div className="flex gap-1">
+      {/* Tab 栏 —— 移动端横滑 + 触控放大 */}
+      <div className="flex gap-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
         {tabs.map((t) => (
           <button
             key={t.id}
-            className="win-button"
+            className="win-button shrink-0"
             style={{
-              fontSize: '11px',
-              padding: '3px 12px',
+              fontSize: '12px',
+              padding: isMobile ? '6px 14px' : '3px 12px',
+              minHeight: isMobile ? '36px' : undefined,
               background: tab === t.id ? '#000080' : undefined,
               color: tab === t.id ? '#fff' : undefined,
               fontWeight: tab === t.id ? 'bold' : undefined,
@@ -94,6 +97,27 @@ export default function AdminConsoleApp() {
       {/* Tab 内容 */}
       <div className="win-sunken bg-white p-2 flex-1 overflow-auto" style={{ minHeight: '0' }}>
         {tab === 'teachers' && (
+          isMobile ? (
+            <div className="flex flex-col gap-2">
+              {teachers.map((t) => (
+                <div key={t.teacherId} className="win-raised p-2" style={{ background: selectedTeacherId === t.teacherId ? '#ffffe0' : '#c0c0c0' }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="win-text-bold" style={{ fontSize: '13px' }}>{t.teacherName}</span>
+                    <span style={{ fontSize: '10px', color: '#808080' }}>{t.subject} · {ctx.raw.teachers.find((x) => x.id === t.teacherId)?.department ?? '-'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span style={{ fontSize: '11px' }}>
+                      综合 <span style={{ color: t.avgScore >= 0.85 ? '#008000' : t.avgScore >= 0.75 ? '#808000' : '#FF0000', fontWeight: 'bold' }}>{(t.avgScore * 100).toFixed(1)}%</span>
+                      {' · '}授课 {t.sessionCount}
+                    </span>
+                    <button className="win-button" style={{ fontSize: '11px', padding: '4px 10px', minHeight: '32px' }} onClick={() => handleSelectTeacher(t.teacherId)}>
+                      🤖 AI教研建议
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <table className="w-full" style={{ fontSize: '11px', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#c0c0c0' }}>
@@ -122,9 +146,28 @@ export default function AdminConsoleApp() {
               ))}
             </tbody>
           </table>
+          )
         )}
 
         {tab === 'classes' && (
+          isMobile ? (
+            <div className="flex flex-col gap-2">
+              {[...classes].sort((a, b) => b.avgScore - a.avgScore).map((c) => (
+                <div key={c.classId} className="win-raised p-2" style={{ background: '#c0c0c0' }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="win-text-bold" style={{ fontSize: '13px' }}>{c.className}</span>
+                    <span style={{ fontSize: '11px' }}>
+                      班均 <span style={{ color: c.avgScore >= 0.85 ? '#008000' : c.avgScore >= 0.75 ? '#808000' : '#FF0000', fontWeight: 'bold' }}>{(c.avgScore * 100).toFixed(1)}%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between" style={{ fontSize: '11px', color: '#808080' }}>
+                    <span>学生 {c.studentCount} · 授课 {c.sessionCount}</span>
+                    <span style={{ color: c.trend >= 0 ? '#008000' : '#FF0000' }}>{c.trend >= 0 ? '↑' : '↓'} {c.trend >= 0 ? '+' : ''}{(c.trend * 100).toFixed(1)}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <table className="w-full" style={{ fontSize: '11px', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#c0c0c0' }}>
@@ -147,6 +190,7 @@ export default function AdminConsoleApp() {
               ))}
             </tbody>
           </table>
+          )
         )}
 
         {tab === 'integration' && (
@@ -155,7 +199,7 @@ export default function AdminConsoleApp() {
               {INTEGRATIONS.map((it) => {
                 const meta = STATUS_META[it.status];
                 return (
-                  <div key={it.id} className="win-raised" style={{ padding: '8px', minWidth: '180px' }}>
+                  <div key={it.id} className="win-raised" style={{ padding: '8px', minWidth: isMobile ? '0' : '180px', flex: isMobile ? '1 1 calc(50% - 4px)' : undefined }}>
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: '18px' }}>{it.icon}</span>
                       <span className="win-text win-text-bold">{it.name}</span>

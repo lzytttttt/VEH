@@ -84,6 +84,16 @@
 | 🧠 **GovernanceProvider 编排** | 第三编排器，与 VLMProvider/CapabilityProvider 并列，`streamBriefing` / `streamInsight` 流式 + `detectAnomalies` / `suggestResearch` Promise，Mock→Adapter 切换零业务代码改动 |
 | 📑 **四层数据治理** | Raw(AI 消费) → Aggregated(AI+用户共用) → Agent Output(AI 产出) → Presentation(图表/卡片/对话)，数据流向可审计 |
 
+### 📱 移动端原生体验（本阶段新增 🆕）
+
+| 模块 | 说明 |
+| --- | --- |
+| 🎯 **768px 断点自动切换** | 768px 以下自动从桌面 OS 切换为移动原生 Shell，桌面端零改动、完全不受影响 |
+| 📲 **移动原生 Shell** | App 抽屉（4 列图标网格，单击打开）+ 全屏单 App 视图 + 底部导航栏（替代任务栏），保留 Win95 视觉风格但用移动交互范式 |
+| 📑 **多栏 Tab 化** | ScenarioApp / DashboardApp / LessonPlanApp / WikiApp / SlidesApp 等多栏布局转为纵向堆叠 + Tab 分段切换，信息不丢失；PortalApp 双栏纵向堆叠，ReportApp 等 grid 响应式收列 |
+| 👆 **触控友好** | 触控目标放大（按钮 ≥36px）、禁用窗口拖拽与重叠、防双击缩放、安全区域（viewport-fit=cover）适配 |
+| 🔧 **复用现有架构** | 复用 windowStore 窗口栈逻辑（移动端仅展示栈顶全屏、minimize=返回抽屉），新增 `useIsMobile` Hook + `mobile.css` 覆盖层，桌面端代码一行不改 |
+
 ---
 
 ## 🖼️ 项目截图 {#screenshots} · [↗ English](README_EN.md#screenshots)
@@ -309,6 +319,7 @@
 │  Shell 层（Win95 拟态桌面 · 三角色登录）                     │
 │  BootScreen · LoginDialog · Desktop · Window · Taskbar    │
 │  🆕 SSO 模拟认证进度对话框 · 管理岗位入口                   │
+│  🆕 MobileShell（移动原生：App 抽屉 + 全屏单 App + 底部导航）│
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
@@ -394,6 +405,7 @@ npm run preview
 ```
 src/
 ├── shell/           # Win95 拟态：桌面、窗口、任务栏、登录、开机
+│   └── mobile/      # 🆕 移动原生 Shell：MobileShell · MobileHomeScreen · MobileAppView · MobileNavBar
 ├── apps/            # 业务应用
 │   ├── scenarios/   # 五大场景：classroom / pe / lab / workshop / microlesson
 │   ├── drill/       # 🆕 教师演练：VirtualStudent · Classroom3DScene · DrillController
@@ -417,7 +429,8 @@ src/
 │   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
 │   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent 流式组件
 │   ├── TypingStream.tsx · ChatAssistant.tsx
-│   └── WikiTree.tsx
+│   ├── WikiTree.tsx
+│   └── MobileTabBar.tsx     # 🆕 移动端可复用分段控件（多栏 App Tab 切换）
 ├── harness/         # 编排层（六 Provider）
 │   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider + 🆕 PortalProvider + 🆕 LessonPlanGenProvider + 🆕 SlidesGenProvider
 │   ├── MockVLMProvider.ts · MockCapabilityProvider.ts
@@ -437,8 +450,9 @@ src/
 │   ├── governanceStore.ts   # 🆕 v0.3.0 治理聚合计算（Layer2 Aggregated）
 │   ├── wikiStore.ts · authStore.ts · sessionStore.ts · ...
 ├── data/            # 种子数据 + LocalStorage 持久化
-├── theme/           # Win95 主题样式
-├── App.tsx
+├── theme/           # Win95 主题样式（含 🆕 mobile.css 移动端覆盖层）
+├── lib/             # 🆕 useIsMobile.ts（matchMedia 设备检测 Hook，768px 断点）
+├── App.tsx          # 🆕 按设备分流：移动端渲染 MobileShell，桌面端保持原有 Shell
 └── main.tsx
 ```
 

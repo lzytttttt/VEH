@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { getCapabilityProvider } from '../harness/providerRegistry';
 import type { ScenarioType, VirtualStudentState } from '../harness/types';
 import DrillController from './drill/DrillController';
+import { useIsMobile } from '../lib/useIsMobile';
 
 // Three.js 场景懒加载，避免 ~600KB three 污染首屏
 const Classroom3DScene = lazy(() => import('./drill/Classroom3DScene'));
@@ -19,6 +20,7 @@ export default function TeacherDrillApp() {
   const [students, setStudents] = useState<VirtualStudentState[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [score, setScore] = useState({ cur: 0, max: 0 });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     let cancelled = false;
@@ -51,13 +53,13 @@ export default function TeacherDrillApp() {
         <span className="win-text-disabled">得分 {score.cur}/{score.max || '—'} · 可拖拽旋转 3D 视角</span>
       </div>
 
-      <div className="flex-1 flex gap-1 p-1 overflow-hidden">
-        <div className="flex-1 min-h-0 win-sunken" style={{ background: '#0a0a2a', overflow: 'hidden' }}>
+      <div className="flex-1 flex gap-1 p-1 overflow-hidden" style={{ flexDirection: isMobile ? 'column' : 'row' }}>
+        <div className="min-h-0 win-sunken" style={{ background: '#0a0a2a', overflow: 'hidden', flex: isMobile ? '1 1 50%' : '1', minHeight: isMobile ? '180px' : undefined }}>
           <Suspense fallback={<div className="flex items-center justify-center h-full" style={{ color: '#c0c0c0', fontSize: '12px' }}>▌ 加载 3D 教室...</div>}>
             <Classroom3DScene students={students} highlightId={activeId} />
           </Suspense>
         </div>
-        <div style={{ width: '320px' }} className="min-h-0">
+        <div style={{ width: isMobile ? '100%' : '320px' }} className="min-h-0">
           <DrillController
             key={scenario}
             scenario={scenario}

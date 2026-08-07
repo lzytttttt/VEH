@@ -119,10 +119,10 @@ function NoteCard({ note, onTogglePin, onDelete }: {
       <div className="flex items-center justify-between mb-1">
         <span style={{ fontSize: '10px', color: '#808080' }}>{note.scenarioLabel} · t={note.t}s</span>
         <div className="flex gap-1">
-          <button className="win-button" style={{ padding: '0 4px', fontSize: '10px', minWidth: '20px' }} onClick={() => onTogglePin(note.id)} title={note.pinned ? '取消置顶' : '置顶'}>
+          <button className="win-button" style={{ padding: '4px 8px', fontSize: '12px', minWidth: '32px', minHeight: '32px' }} onClick={() => onTogglePin(note.id)} title={note.pinned ? '取消置顶' : '置顶'}>
             📌
           </button>
-          <button className="win-button" style={{ padding: '0 4px', fontSize: '10px', minWidth: '20px' }} onClick={() => onDelete(note.id)} title="删除">
+          <button className="win-button" style={{ padding: '4px 8px', fontSize: '14px', minWidth: '32px', minHeight: '32px' }} onClick={() => onDelete(note.id)} title="删除">
             ×
           </button>
         </div>

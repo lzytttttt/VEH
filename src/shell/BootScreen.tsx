@@ -69,7 +69,7 @@ export default function BootScreen() {
       className={`fixed inset-0 bg-black text-white font-mono ${
         phase === 'fade' ? 'animate-fade-in opacity-100' : 'opacity-100'
       }`}
-      style={{ fontSize: '14px', lineHeight: '1.5' }}
+      style={{ fontSize: 'clamp(11px, 3.5vw, 14px)', lineHeight: '1.5' }}
     >
       {phase === 'bios' && (
         <div className="p-6 whitespace-pre-wrap">
@@ -104,7 +104,7 @@ export default function BootScreen() {
                 <span className="text-white" style={{ fontSize: '15px', letterSpacing: '1px' }}>
                   Microsoft<span style={{ fontSize: '10px', verticalAlign: 'super' }}>®</span>
                 </span>
-                <span className="text-white" style={{ fontSize: '54px', fontWeight: 300, lineHeight: 1.05 }}>
+                <span className="text-white" style={{ fontSize: 'clamp(32px, 13vw, 54px)', fontWeight: 300, lineHeight: 1.05 }}>
                   Windows
                   <span style={{ fontWeight: 700, marginLeft: '10px' }}>95</span>
                 </span>

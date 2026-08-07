@@ -127,7 +127,7 @@ function TeacherReport({ script, scenarioOpt, totalScore }: {
       </div>
 
       {/* 指标卡片 */}
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         {cards.map((c) => (
           <div key={c.label} className="win-raised p-2 text-center">
             <div style={{ fontSize: '11px', color: '#808080' }}>{c.label}</div>
@@ -151,7 +151,7 @@ function TeacherReport({ script, scenarioOpt, totalScore }: {
 
       <div className="win-fieldset">
         <legend>学生参与度分析</legend>
-        <div className="grid grid-cols-2 gap-2" style={{ fontSize: '11px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2" style={{ fontSize: '11px' }}>
           {script.students.map((s) => {
             const avg = s.timeline.reduce((a, p) => a + p.attention, 0) / s.timeline.length;
             return (
@@ -226,7 +226,7 @@ function StudentReport({ script, scenarioOpt }: {
 
       <div className="win-fieldset">
         <legend>我的状态时间线</legend>
-        <div className="grid grid-cols-5 gap-1" style={{ fontSize: '11px' }}>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-1" style={{ fontSize: '11px' }}>
           {me?.timeline.map((p, i) => (
             <div key={i} className="win-sunken bg-white p-1 text-center">
               <div style={{ fontSize: '10px', color: '#808080' }}>{Math.floor(p.t / 60)}:{(p.t % 60).toString().padStart(2, '0')}</div>
