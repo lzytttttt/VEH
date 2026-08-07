@@ -1,0 +1,8 @@
+# Cloudflare Pages 项目声明
+# 让 `npx wrangler deploy` 识别为 Pages 静态站点，而非 Worker，
+# 避免触发 Vite 版本自动检测（Cloudflare 要求 Vite >= 6，本项目用 Vite 5）。
+# 配合面板 deploy command: npx wrangler pages deploy dist --project-name veh
+
+name = "veh"
+compatibility_date = "2026-08-07"
+pages_build_output_dir = "dist"
