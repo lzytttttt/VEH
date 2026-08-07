@@ -12,10 +12,29 @@
 [![Tailwind](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Three.js](https://img.shields.io/badge/Three.js-r169-000000?logo=threedotjs&logoColor=white)](https://threejs.org)
 [![License](https://img.shields.io/badge/License-CC_BY--NC_4.0-EF9421?logo=creative-commons&logoColor=white)](#-license)
+[![🚀 Live Demo](https://img.shields.io/badge/🚀_Live_Demo-vca--brown.vercel.app-00C7B7?logo=vercel&logoColor=white)](https://vca-brown.vercel.app/)
 
 [中文文档](README.md) · **English**
 
 </div>
+
+---
+
+## 🎯 Why This Project Exists {#why-this-exists} · [↗ 中文](README.md#why-this-exists)
+
+**The pain of education AI adoption:**
+
+1. **Expensive** — traditional lecture analysis needs ASR + CV + NLP multi-model procurement; school budgets are tight, small institutions simply can't afford it
+2. **High barrier** — every education AI demo requires a real model API: network, API keys, token costs, and a live demo can fail at any moment
+3. **Siloed** — the analysis ends when the class ends; reports sit in a corner, and teachers and students get nothing usable
+
+**How VEH answers:**
+
+- 💡 **One VLM replaces a five-stage pipeline** — multi-model procurement becomes a single model call
+- 🧪 **Runs fully on Mock** — no API key, offline, out-of-the-box; see the complete AI workflow within 30 seconds of opening the page, zero demo risk
+- 🔄 **Closed loop from analysis to intervention** — analysis → knowledge graph → teacher drill → student games → lesson plans/slides; AI doesn't just watch classes, it produces usable teaching assets
+
+> **It's not another PPT — it's an education AI computer you can switch on and demo on the spot.**
 
 ---
 

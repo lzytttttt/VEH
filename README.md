@@ -12,10 +12,29 @@
 [![Tailwind](https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Three.js](https://img.shields.io/badge/Three.js-r169-000000?logo=threedotjs&logoColor=white)](https://threejs.org)
 [![License](https://img.shields.io/badge/License-CC_BY--NC_4.0-EF9421?logo=creative-commons&logoColor=white)](#-许可证)
+[![🚀 在线 Demo](https://img.shields.io/badge/🚀_在线_Demo-vca--brown.vercel.app-00C7B7?logo=vercel&logoColor=white)](https://vca-brown.vercel.app/)
 
 [**中文文档**](README.md) · [English](README_EN.md)
 
 </div>
+
+---
+
+## 🎯 为什么做这个项目？ {#why-this-exists} · [↗ English](README_EN.md#why-this-exists)
+
+**教育 AI 的落地困局：**
+
+1. **贵** —— 传统课堂录播分析是 ASR + CV + NLP 多模型采购，一套下来学校预算吃紧，小机构根本用不起
+2. **门槛高** —— 教育 AI 产品演示都要连真实模型 API：网络、key、token 成本，现场随时翻车
+3. **孤岛化** —— 课堂分析完就完了，分析报告躺在角落里，老师和学生拿不到任何可用的东西
+
+**VEH 的答案：**
+
+- 💡 **单颗 VLM 替换五段式流水线** —— 把多模型采购变成一次模型调用
+- 🧪 **全 Mock 可跑** —— 无 key、离线、开箱即用，打开页面 30 秒看到完整 AI 流程，演示零翻车
+- 🔄 **从分析到干预的闭环** —— 分析 → 知识图谱 → 教师演练 → 学生闯关 → 教案/课件，AI 不只看课，更产出可用的教学资产
+
+> **它不是又一张 PPT，而是一台能当场开机演示的教育 AI 电脑。**
 
 ---
 
