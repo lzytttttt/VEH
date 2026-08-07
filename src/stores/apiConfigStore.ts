@@ -77,9 +77,10 @@ export const DEFAULT_CONFIGS: Record<ProviderKey, ProviderConfig> = {
 
 /** VLM 子适配器切换时套用的预设（openai/qwen/vllm 各 Provider 仓库默认） */
 export const VLM_PRESETS: Record<string, Partial<ProviderConfig>> = {
-  openai: { baseURL: '/api/llm', model: 'gpt-4o', apiKey: '' },
+  // opencode.ai 网关不提供 gpt-4o（ModelError），改用其实际支持的 deepseek-v4-pro
+  openai: { baseURL: '/api/llm', model: 'deepseek-v4-pro', apiKey: '' },
   qwen: { baseURL: 'https://dashscope.aliyuncs.com/api/v1', model: 'qwen-vl-max', apiKey: '' },
-  vllm: { baseURL: 'http://localhost:8000/v1', model: 'Qwen/Qwen2-VL-7B-Instruct', apiKey: 'EMPTY' },
+  vllm: { baseURL: 'http://localhost:8000/v1', model: 'Qwen/Qwen2-VL-7B-Instruct', apiKey: '' },
 };
 
 /** 每个 Provider 允许的 active 取值（对齐各 REGISTRY 注册项） */

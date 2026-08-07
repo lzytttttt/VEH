@@ -66,6 +66,35 @@ export function createAbortController(): AbortController {
   return new AbortController();
 }
 
+/** 默认请求超时（毫秒）：LLM 网关响应慢/挂起时不再让 UI 无限 loading */
+const DEFAULT_TIMEOUT_MS = 60000;
+
+/**
+ * 把外部 signal + 超时合并成一个 signal。
+ * 返回 { signal, cleanup }：cleanup 必须在请求结束后调用（清 timer + 解绑监听）。
+ */
+export function withTimeout(
+  outer?: AbortSignal,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): { signal: AbortSignal; cleanup: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort(new DOMException(`LLM 请求超时（${Math.round(timeoutMs / 1000)}s）`, 'TimeoutError'));
+  }, timeoutMs);
+  const onOuterAbort = () => controller.abort(outer?.reason);
+  if (outer) {
+    if (outer.aborted) controller.abort(outer.reason);
+    else outer.addEventListener('abort', onOuterAbort, { once: true });
+  }
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      clearTimeout(timer);
+      outer?.removeEventListener('abort', onOuterAbort);
+    },
+  };
+}
+
 /**
  * 规范化 markdown：强制在 #/##/### 标题与 --- 分隔符前后补 `\n\n`，
  * 解决某些 LLM（特别是推理型）把所有 markdown 挤成一行无换行符的问题。
@@ -80,12 +109,15 @@ export function createAbortController(): AbortController {
 export function normalizeMarkdown(md: string): string {
   if (!md) return '';
   let s = md.replace(/\r\n/g, '\n');
-  // 在 # 标题前补 \n\n（如果前面不是 \n / 行首）
-  s = s.replace(/([^\n])\s*(#{1,6}\s)/g, '$1\n\n$2');
+  // 在 # 标题前补 \n\n（如果前面不是 \n / 行首 / 另一个 #）
+  // 注意 [^\n#]：排除行首已是 # 的情况，避免把 "## 标题" 误拆成 "#" + "# 标题"
+  s = s.replace(/([^\n#])\s*(#{1,6}\s)/g, '$1\n\n$2');
   // 在行首 # 标题前加一个 \n\n（仅前面有内容时，避免文末加多余空）
   s = s.replace(/\n(#{1,6}\s)/g, '\n\n$1');
+  // 标题行后补 \n\n（标题与正文之间至少一个空行，保证 parseBlocks 分块干净）
+  s = s.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
   // HR (---) 前后补 \n\n
-  s = s.replace(/([^\n])\s*(---+\s*$)/gm, '$1\n\n$2');
+  s = s.replace(/([^\n])\s*(---+)\s*$/gm, '$1\n\n$2');
   s = s.replace(/(^---+\s*$\n)(?!\n)/gm, '$1\n');
   // 折叠 3+ 连续换行为 \n\n
   s = s.replace(/\n{3,}/g, '\n\n');
@@ -99,9 +131,13 @@ export function normalizeMarkdown(md: string): string {
  * 行为：
  * - 收到含 \n 的 buf 后按行 flush，每行末尾带 \n 一起 yield（保留段落结构）
  * - 空行保留为 \n（编辑器 parseBlocks 靠空行分块）
- * - 当 buf 积累超过 300 字符仍无 \n 时，尝试 normalize 并 flush（应对 LLM 不输出 \n）
+ * - 当 buf 积累超过 FLUSH_LIMIT 字符仍无 \n 时，**无条件** normalize 并 flush
+ *   （旧实现仅当 normalize 有变化才 flush，LLM 无换行输出时会一直憋到流结束）
+ * - 检测到 # 或 --- 标记时立即 flush，让用户尽快看到分段效果
  * - 流结束时 flush 剩余 buf（normalize 后 yield）
  */
+const NO_NEWLINE_FLUSH_LIMIT = 300;
+
 export async function* normalizeMarkdownStream(
   tokens: AsyncIterable<string>,
   signal?: AbortSignal,
@@ -111,6 +147,8 @@ export async function* normalizeMarkdownStream(
     for await (const tok of tokens) {
       if (signal?.aborted) break;
       buf += tok;
+
+      // 优先按行 flush（保留段落结构）
       if (buf.includes('\n')) {
         const lines = buf.split('\n');
         buf = lines.pop() ?? '';
@@ -122,14 +160,29 @@ export async function* normalizeMarkdownStream(
             if (fixed) yield fixed;
           }
         }
+        continue;
       }
-      // LLM 不输出 \n 时，buf 会无限增长。
-      // 检测到 # 或 --- 标记时，normalize 并 flush，让用户看到分段效果
-      if (buf.length > 300 && !buf.includes('\n')) {
-        const normalized = normalizeMarkdown(buf);
-        if (normalized !== buf) {
+
+      // 无换行时：检测到结构性标记（# 标题 / --- 分隔）立即 flush
+      if (/#{1,6}\s|^---+$/.test(buf)) {
+        const fixed = normalizeMarkdown(buf);
+        if (fixed) {
           buf = '';
-          yield normalized;
+          yield fixed;
+        }
+        continue;
+      }
+
+      // 无换行且积累超过阈值：无条件 flush，避免憋到流结束
+      if (buf.length > NO_NEWLINE_FLUSH_LIMIT) {
+        const fixed = normalizeMarkdown(buf);
+        if (fixed) {
+          buf = '';
+          yield fixed;
+        } else {
+          // normalize 后为空也不丢内容：直接 yield 原文
+          buf = '';
+          yield '\n';
         }
       }
     }
@@ -185,29 +238,34 @@ export async function* streamChatCompletion(
   opts: StreamChatOptions,
 ): AsyncIterable<string> {
   const url = buildChatCompletionsURL(opts.baseURL);
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(opts.apiKey ? { Authorization: `Bearer ${opts.apiKey}` } : {}),
-    },
-    body: JSON.stringify({
-      model: opts.model,
-      messages: opts.messages,
-      stream: true,
-      ...(opts.bodyOverrides ?? {}),
-    }),
-    signal: opts.signal,
-  });
+  const { signal, cleanup } = withTimeout(opts.signal);
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(opts.apiKey ? { Authorization: `Bearer ${opts.apiKey}` } : {}),
+      },
+      body: JSON.stringify({
+        model: opts.model,
+        messages: opts.messages,
+        stream: true,
+        ...(opts.bodyOverrides ?? {}),
+      }),
+      signal,
+    });
 
-  if (!resp.ok) {
-    const body = await resp.text().catch(() => '');
-    throw new Error(`LLM API ${resp.status} ${resp.statusText}: ${body.slice(0, 500)}`);
-  }
+    if (!resp.ok) {
+      const body = await resp.text().catch(() => '');
+      throw new Error(`LLM API ${resp.status} ${resp.statusText}: ${body.slice(0, 500)}`);
+    }
 
-  for await (const chunk of parseSSE(resp, opts.signal)) {
-    const token = extractDeltaText(chunk);
-    if (token) yield token;
+    for await (const chunk of parseSSE(resp, signal)) {
+      const token = extractDeltaText(chunk);
+      if (token) yield token;
+    }
+  } finally {
+    cleanup();
   }
 }
 
@@ -223,6 +281,7 @@ export async function testChatCompletion(opts: {
 }): Promise<{ ok: true; preview: string; elapsedMs: number; url: string } | { ok: false; error: string; elapsedMs: number; url: string }> {
   const start = performance.now();
   const url = buildChatCompletionsURL(opts.baseURL);
+  const { signal, cleanup } = withTimeout(opts.signal);
   try {
     const resp = await fetch(url, {
       method: 'POST',
@@ -236,7 +295,7 @@ export async function testChatCompletion(opts: {
         max_tokens: 16,
         stream: false,
       }),
-      signal: opts.signal,
+      signal,
     });
     if (!resp.ok) {
       const body = await resp.text().catch(() => '');
@@ -252,6 +311,8 @@ export async function testChatCompletion(opts: {
       ? `（疑似 CORS：浏览器禁止跨源直连，请改用 /api/llm 代理）`
       : '';
     return { ok: false, error: `${msg}${hint}`, elapsedMs: performance.now() - start, url };
+  } finally {
+    cleanup();
   }
 }
 
@@ -274,6 +335,7 @@ export async function chatCompletionJSON<T = unknown>(opts: {
   signal?: AbortSignal;
 }): Promise<T | null> {
   const url = buildChatCompletionsURL(opts.baseURL);
+  const { signal, cleanup } = withTimeout(opts.signal);
   try {
     // 第一次尝试：response_format=json_object
     const resp = await fetch(url, {
@@ -288,7 +350,7 @@ export async function chatCompletionJSON<T = unknown>(opts: {
         stream: false,
         response_format: { type: 'json_object' },
       }),
-      signal: opts.signal,
+      signal,
     });
     if (!resp.ok) {
       // 第二次尝试：不带 response_format（某些兼容服务不支持）
@@ -303,7 +365,7 @@ export async function chatCompletionJSON<T = unknown>(opts: {
           messages: opts.messages,
           stream: false,
         }),
-        signal: opts.signal,
+        signal,
       });
       if (!resp2.ok) return null;
       const data2 = await resp2.json();
@@ -313,6 +375,8 @@ export async function chatCompletionJSON<T = unknown>(opts: {
     return extractJSON<T>(data?.choices?.[0]?.message?.content ?? '');
   } catch {
     return null;
+  } finally {
+    cleanup();
   }
 }
 

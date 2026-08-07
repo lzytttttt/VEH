@@ -150,6 +150,147 @@ export class CapabilityAdapter implements CapabilityProvider {
     );
   }
 
+  /**
+   * 宽松解析 WikiContainer：LLM 输出字段有缺失/类型不对时用默认值补齐，
+   * 而不是整包拒绝降级 Mock。仅当 nodes 完全缺失或为空数组时返回 null（由调用方降级）。
+   */
+  private sanitizeWiki(obj: unknown): WikiContainer | null {
+    if (!obj || typeof obj !== 'object') return null;
+    const w = obj as Partial<WikiContainer>;
+    if (!Array.isArray(w.nodes) || w.nodes.length === 0) return null;
+
+    const nodes: WikiContainer['nodes'] = w.nodes.map((n, i) => {
+      const raw = (n ?? {}) as Partial<WikiContainer['nodes'][number]>;
+      const refs = Array.isArray(raw.classroomRefs)
+        ? raw.classroomRefs
+            .filter((r): r is { t: number; type: string; label: string } => !!r && typeof r === 'object')
+            .map((r) => ({
+              t: typeof r.t === 'number' ? r.t : 0,
+              type: typeof r.type === 'string' ? r.type : '课堂片段',
+              label: typeof r.label === 'string' ? r.label : '',
+            }))
+        : [];
+      return {
+        id: typeof raw.id === 'string' && raw.id ? raw.id : `n${i + 1}`,
+        title: typeof raw.title === 'string' && raw.title ? raw.title : `知识点 ${i + 1}`,
+        category: typeof raw.category === 'string' && raw.category ? raw.category : '未分类',
+        summary: typeof raw.summary === 'string' ? raw.summary : '',
+        details: typeof raw.details === 'string' ? raw.details : '',
+        related: Array.isArray(raw.related) ? raw.related.filter((r): r is string => typeof r === 'string') : [],
+        classroomRefs: refs,
+      };
+    });
+
+    const assistantScript: WikiContainer['assistantScript'] = Array.isArray(w.assistantScript)
+      ? w.assistantScript
+          .filter((s): s is { q: string; a: string; keywords?: string[] } => !!s && typeof s === 'object')
+          .map((s) => ({
+            q: typeof s.q === 'string' ? s.q : '',
+            a: typeof s.a === 'string' ? s.a : '',
+            keywords: Array.isArray(s.keywords) ? s.keywords.filter((k): k is string => typeof k === 'string') : undefined,
+          }))
+          .filter((s) => s.q && s.a)
+      : [];
+
+    return { nodes, assistantScript };
+  }
+
+  /** 宽松解析 SimulationScript：缺字段补默认值，仅 branches 为空才降级 */
+  private sanitizeSimulation(obj: unknown): SimulationScript | null {
+    if (!obj || typeof obj !== 'object') return null;
+    const s = obj as Partial<SimulationScript>;
+    if (!Array.isArray(s.branches) || s.branches.length === 0) return null;
+
+    const students: SimulationScript['students'] = Array.isArray(s.students)
+      ? (s.students as unknown[])
+          .filter((st): st is object => !!st && typeof st === 'object')
+          .map((st, i) => {
+            const raw = st as Record<string, unknown>;
+            return {
+              id: typeof raw.id === 'string' && raw.id ? raw.id : `s${i + 1}`,
+              name: typeof raw.name === 'string' && raw.name ? raw.name : `学生 ${i + 1}`,
+              avatarColor: '#c0c0c0',
+              triggerT: 0,
+              state: 'attentive' as const,
+              prompt: '',
+            };
+          })
+      : [];
+
+    const branches: SimulationScript['branches'] = Array.isArray(s.branches)
+      ? (s.branches as unknown[])
+          .filter((b): b is object => !!b && typeof b === 'object')
+          .map((b, i) => {
+            const raw = b as Record<string, unknown>;
+            const options = Array.isArray(raw.options)
+              ? (raw.options as unknown[])
+                  .filter((o): o is object => !!o && typeof o === 'object')
+                  .map((o, j) => {
+                    const oraw = o as Record<string, unknown>;
+                    return {
+                      id: typeof oraw.id === 'string' && oraw.id ? oraw.id : `o${i}-${j}`,
+                      label: typeof oraw.label === 'string' ? oraw.label : `选项 ${j + 1}`,
+                      feedback: typeof oraw.feedback === 'string' ? oraw.feedback : '',
+                      score: typeof oraw.score === 'number' ? oraw.score : 0,
+                    };
+                  })
+              : [];
+            return {
+              id: `b${i + 1}`,
+              situation: typeof raw.situation === 'string' && raw.situation ? raw.situation : `情境 ${i + 1}`,
+              options,
+            };
+          })
+          .filter((b) => b.options.length > 0)
+      : [];
+
+    if (branches.length === 0) return null;
+
+    return {
+      scenario: typeof s.scenario === 'string' ? (s.scenario as SimulationScript['scenario']) : 'classroom',
+      classroomTitle: typeof s.classroomTitle === 'string' && s.classroomTitle ? s.classroomTitle : '虚拟课堂',
+      students,
+      branches,
+    };
+  }
+
+  /** 宽松解析 GameModule[]：仅空数组才降级 */
+  private sanitizeGames(obj: unknown): GameModule[] | null {
+    if (!Array.isArray(obj) || obj.length === 0) return null;
+    const games: GameModule[] = [];
+    for (const g of obj) {
+      if (!g || typeof g !== 'object') continue;
+      const raw = g as Record<string, unknown>;
+      const questions: GameModule['questions'] = Array.isArray(raw.questions)
+        ? (raw.questions as unknown[])
+            .filter((q): q is object => !!q && typeof q === 'object')
+            .map((q, i) => {
+              const qraw = q as Record<string, unknown>;
+              const type = (['choice', 'match', 'connect'].includes(String(qraw.type)) ? String(qraw.type) : 'choice') as GameModule['type'];
+              return {
+                id: typeof qraw.id === 'string' && qraw.id ? qraw.id : `q${games.length}-${i}`,
+                type,
+                prompt: typeof qraw.prompt === 'string' && qraw.prompt ? qraw.prompt : `题目 ${i + 1}`,
+                options: Array.isArray(qraw.options) ? qraw.options.filter((o): o is string => typeof o === 'string') : [],
+                answer: '',
+                wikiNodeId: '',
+                explain: undefined,
+                pairs: undefined,
+              };
+            })
+        : [];
+      if (questions.length === 0) continue;
+      const type = (['choice', 'match', 'connect'].includes(String(raw.type)) ? String(raw.type) : 'choice') as GameModule['type'];
+      games.push({
+        id: typeof raw.id === 'string' && raw.id ? raw.id : `g${games.length + 1}`,
+        title: typeof raw.title === 'string' && raw.title ? raw.title : `游戏 ${games.length + 1}`,
+        type,
+        questions,
+      });
+    }
+    return games.length > 0 ? games : null;
+  }
+
   async getWiki(scenario: ScenarioType): Promise<WikiContainer> {
     // 缓存命中（同一会话内同场景不重复调用）
     const cached = this.wikiCache.get(scenario);
@@ -157,7 +298,7 @@ export class CapabilityAdapter implements CapabilityProvider {
 
     try {
       const { baseURL, apiKey, model } = this.cfg();
-      const wiki = await chatCompletionJSON<WikiContainer>({
+      const wiki = await chatCompletionJSON<unknown>({
         baseURL,
         apiKey,
         model,
@@ -199,9 +340,10 @@ JSON Schema：
           },
         ],
       });
-      if (wiki && this.validateWiki(wiki)) {
-        this.wikiCache.set(scenario, wiki);
-        return wiki;
+      const parsed = this.sanitizeWiki(wiki);
+      if (parsed) {
+        this.wikiCache.set(scenario, parsed);
+        return parsed;
       }
       console.warn('CapabilityAdapter.getWiki LLM JSON invalid, fallback to Mock', { scenario });
     } catch (e) {
@@ -263,9 +405,10 @@ JSON Schema：
           },
         ],
       });
-      if (sim && this.validateSimulation(sim)) {
-        this.simulationCache.set(scenario, sim);
-        return sim;
+      if (sim && this.sanitizeSimulation(sim)) {
+        const parsed = this.sanitizeSimulation(sim)!;
+        this.simulationCache.set(scenario, parsed);
+        return parsed;
       }
       console.warn('CapabilityAdapter.getSimulation LLM JSON invalid, fallback to Mock', { scenario });
     } catch (e) {
@@ -325,9 +468,10 @@ JSON Schema（数组）：
           },
         ],
       });
-      if (games && this.validateGames(games)) {
-        this.gamesCache.set(scenario, games);
-        return games;
+      if (games && this.sanitizeGames(games)) {
+        const parsed = this.sanitizeGames(games)!;
+        this.gamesCache.set(scenario, parsed);
+        return parsed;
       }
       console.warn('CapabilityAdapter.getGames LLM JSON invalid, fallback to Mock', { scenario });
     } catch (e) {
