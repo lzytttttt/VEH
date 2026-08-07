@@ -5,6 +5,7 @@ import type {
   ScenarioType,
   VLMProvider,
 } from './types';
+import { lookupMockImage, isKnownMockImage, getMockImageLabel } from './MockImageResolver';
 import classroomScript from './scripts/classroom.json';
 import peScript from './scripts/pe.json';
 import labScript from './scripts/lab.json';
@@ -32,10 +33,11 @@ const ACTIVE_SESSIONS = new Set<string>();
  * - 读取预制剧本 JSON（含 frames/transcript/analysis_script/students/wiki）
  * - 按时间戳增量 yield chunk，模拟真实 VLM 的 token 级流式输出
  * - 支持 realtime / playback 模式
- * - 支持 teacher / student 视角（学生视角聚焦特定 studentId，过滤 student chunk 与 wiki）
+ * - 支持 teacher / student 视角（学生视角聚焦特定 studentId，过滤学生 chunk 与 wiki）
+ * - [P3] 支持预制图片识别：上传 素材/mock-*.png 时，自动注入"图片识别摘要"chunk 前缀
  */
 export class MockVLMProvider implements VLMProvider {
-  readonly name = 'MockVLMProvider (Scripted)';
+  readonly name = 'MockVLMProvider (Scripted + Image Mock)';
 
   async *analyzeStream(input: AnalysisInput): AsyncIterable<AnalysisChunk> {
     const script = SCRIPTS[input.scenario];
@@ -49,6 +51,46 @@ export class MockVLMProvider implements VLMProvider {
 
     const speed = input.speed && input.speed > 0 ? input.speed : 1;
     const startFrom = input.startFrom ?? 0;
+
+    // —— P3：检查是否有已知 mock 图片，有则先产出"图片识别摘要"前缀 ——
+    const imageFrame = input.frames.find((f) => f.imageData);
+    if (imageFrame) {
+      const lookup = lookupMockImage(imageFrame.imageFileSize, imageFrame.imageData);
+      if (lookup.known) {
+        // 先产出一条说明 chunk（标注是 Mock 识别）
+        yield {
+          type: 'text',
+          content: `[Mock 图片识别] ${lookup.label}`,
+          timestamp: 1,
+          confidence: 0,
+          label: 'Mock 图片识别',
+        };
+        // 逐条产出预制识别摘要 chunk
+        for (const rc of lookup.chunks) {
+          if (!ACTIVE_SESSIONS.has(sessionId)) return;
+          await sleep(150);
+          yield { ...rc, timestamp: rc.timestamp + startFrom };
+        }
+        // 图片识别摘要与后续文本分析之间稍作停顿
+        await sleep(400);
+        yield {
+          type: 'text',
+          content: '（以下为文本快照分析，未对图片内容逐像素识别）',
+          timestamp: startFrom + 25,
+          confidence: 0,
+          label: 'Mock 图片识别',
+        };
+        await sleep(200);
+      } else if (lookup.chunks.length > 0) {
+        // 未知图片但有降级提示
+        for (const rc of lookup.chunks) {
+          if (!ACTIVE_SESSIONS.has(sessionId)) return;
+          await sleep(150);
+          yield { ...rc, timestamp: rc.timestamp + startFrom };
+        }
+        await sleep(300);
+      }
+    }
 
     // 过滤剧本：仅保留 >= startFrom 的 chunks
     const filtered = script.analysisScript.filter((c) => c.timestamp >= startFrom);

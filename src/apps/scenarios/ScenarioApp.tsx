@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getProvider } from '../../harness/providerRegistry';
 import { getScript } from '../../harness/MockVLMProvider';
+import { isKnownMockImage, getMockImageLabel } from '../../harness/MockImageResolver';
+import { getProviderConfig } from '../../stores/apiConfigStore';
 import type { AnalysisChunk, AnalysisMode, ScenarioType, UserRole } from '../../harness/types';
 import { useSessionStore } from '../../stores/sessionStore';
 import { useProfileStore } from '../../stores/profileStore';
@@ -36,6 +38,28 @@ export default function ScenarioApp({ config, role, studentId, onOpenWiki }: Pro
   const rafRef = useRef<number | null>(null);
   const recordSession = useSessionStore((s) => s.recordSession);
   const refreshProfile = useProfileStore((s) => s.refresh);
+  // 真实课堂图片（base64 + 原始文件大小），有值时注入 VLM 多模态分析
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFileSize, setUploadedFileSize] = useState<number | null>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // 限制大小（建议 <3MB，超出提示压缩）
+    if (file.size > 5 * 1024 * 1024) {
+      alert('图片过大（>5MB），请压缩后上传（建议 <3MB）');
+      e.target.value = '';
+      return;
+    }
+    const fileSize = file.size;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setUploadedImage(typeof reader.result === 'string' ? reader.result : null);
+      setUploadedFileSize(fileSize);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
 
   // 当前帧
   const currentFrame = script.frames
@@ -72,7 +96,10 @@ export default function ScenarioApp({ config, role, studentId, onOpenWiki }: Pro
         mode,
         role,
         studentId,
-        frames: script.frames,
+        // 有上传图片时，注入首帧 imageData + imageFileSize（VLM api 模式走多模态；Mock 模式触发 MockImageResolver）
+        frames: uploadedImage
+          ? script.frames.map((f, i) => (i === 0 ? { ...f, imageData: uploadedImage, imageFileSize: uploadedFileSize ?? undefined } : f))
+          : script.frames,
         transcript: script.transcript,
         startFrom: currentTime,
         speed,
@@ -89,7 +116,7 @@ export default function ScenarioApp({ config, role, studentId, onOpenWiki }: Pro
     } catch (e) {
       console.error('Stream error', e);
     }
-  }, [config.scenario, mode, role, studentId, currentTime, speed, script.frames, script.transcript, enqueue]);
+  }, [config.scenario, mode, role, studentId, currentTime, speed, uploadedImage, uploadedFileSize, script.frames, script.transcript, enqueue]);
 
   // 播放/暂停控制
   useEffect(() => {
@@ -224,7 +251,24 @@ export default function ScenarioApp({ config, role, studentId, onOpenWiki }: Pro
         <span className="text-gray-600 shrink-0">|</span>
         <span className="win-text-disabled shrink-0">{mode === 'realtime' ? 'VLM 实时分析中' : '基于已存数据分析'}</span>
         <div className="flex-1" />
-        <span className="win-text-disabled shrink-0">Provider: MockVLMProvider</span>
+        <label className="win-button shrink-0" style={{ padding: '1px 6px', fontSize: '10px', cursor: 'pointer' }} title="上传真实课堂图片，VLM api 模式下走多模态识别">
+          📷 上传图片
+          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} />
+        </label>
+        {uploadedImage && (
+          <button className="win-button shrink-0" style={{ padding: '1px 6px', fontSize: '10px' }} onClick={() => { setUploadedImage(null); setUploadedFileSize(null); }} title="清除图片">
+            ✕ 清除
+          </button>
+        )}
+        <span className="win-text-disabled shrink-0">
+          {uploadedImage
+            ? (isKnownMockImage(uploadedFileSize)
+              ? `📷 Mock 图片识别 · ${getMockImageLabel(uploadedFileSize)}`
+              : '📷 已加载图片（非预置）')
+            : (getProviderConfig('vlm').active === 'mock'
+              ? 'Provider: MockVLMProvider'
+              : `Provider: ${getProviderConfig('vlm').active}`)}
+        </span>
       </div>
 
       {/* 主内容区 —— 移动端 Tab 切换 / 桌面端三栏 */}

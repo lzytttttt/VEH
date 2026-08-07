@@ -18,7 +18,9 @@ export type ProviderKey =
   | 'governance'
   | 'portal'
   | 'lessonPlan'
-  | 'slides';
+  | 'slides'
+  | 'agent'
+  | 'rag';
 
 export interface ProviderConfig {
   /** vlm: 'mock'|'openai'|'qwen'|'vllm'；其余: 'mock'|'api' */
@@ -73,6 +75,18 @@ export const DEFAULT_CONFIGS: Record<ProviderKey, ProviderConfig> = {
     apiKey: '',
     model: 'deepseek-v4-flash',
   },
+  agent: {
+    active: 'mock',
+    baseURL: '/api/llm',
+    apiKey: '',
+    model: 'deepseek-v4-flash',
+  },
+  rag: {
+    active: 'mock',
+    baseURL: '/api/llm',
+    apiKey: '',
+    model: 'text-embedding-3-small',
+  },
 };
 
 /** VLM 子适配器切换时套用的预设（openai/qwen/vllm 各 Provider 仓库默认） */
@@ -111,6 +125,14 @@ export const PROVIDER_OPTIONS: Record<ProviderKey, { id: string; label: string }
     { id: 'mock', label: 'Mock（课件模板）' },
     { id: 'api', label: 'LLM API' },
   ],
+  agent: [
+    { id: 'mock', label: 'Mock Agent（预制剧本）' },
+    { id: 'api', label: 'Agent Orchestrator（function-calling）' },
+  ],
+  rag: [
+    { id: 'mock', label: 'Mock Retriever（BM25）' },
+    { id: 'api', label: 'Semantic Retriever（embedding）' },
+  ],
 };
 
 export const PROVIDER_META: Record<ProviderKey, { title: string; desc: string; modelType: 'VLM' | 'LLM' }> = {
@@ -120,6 +142,8 @@ export const PROVIDER_META: Record<ProviderKey, { title: string; desc: string; m
   portal: { title: '门户导航', desc: 'AI 检索导航 / 快捷入口', modelType: 'LLM' },
   lessonPlan: { title: '教案生成', desc: '教案草稿流式生成与微调', modelType: 'LLM' },
   slides: { title: '课件生成', desc: '课件草稿按页流式生成与微调', modelType: 'LLM' },
+  agent: { title: 'Agent 编排', desc: '目标→规划→执行→反思 Agent 循环', modelType: 'LLM' },
+  rag: { title: 'RAG 知识库', desc: '语义检索注入上下文（embedding/BM25）', modelType: 'LLM' },
 };
 
 function cloneDefaults(): Record<ProviderKey, ProviderConfig> {

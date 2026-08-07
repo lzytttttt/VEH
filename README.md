@@ -2,9 +2,9 @@
 
 # 🏫 VLM 教育赋能中枢
 
-### Windows 95 Nostalgia OS Edition · v0.3.0 (Build 1995)
+### Windows 95 Nostalgia OS Edition · v0.4.0 (Build 1995)
 
-**课堂分析 · 学生自主学习 · 教师能力提升 · 学校治理 —— 四位一体的 VLM 教育赋能平台。**
+**课堂分析 · 学生自主学习 · 教师能力提升 · 学校治理 · AI Native Agent —— 五位一体的 VLM 教育赋能平台。**
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -45,6 +45,8 @@
 - 📖 **知识 WIKI**：交互式力导向知识图谱，拖拽缩放、点击聚焦，AI 助手随问随答
 
 而本阶段（🆕 v0.3.0）我们更进一步 —— 让 AI Agent 从课堂走进**学校治理**：为校长 / 教务 / 年级组长提供专属的**管理岗位**登录入口，**GovernanceProvider**（与 VLMProvider / CapabilityProvider 并列的第三编排器）持续产出治理简报、异常预警与教研建议，数据按 **Raw → Aggregated → Agent Output → Presentation** 四层流向清晰可审计，**AI 消费的数据**与**用户呈现的数据**严格分层。
+
+而最新一版（🆕 v0.4.0）—— **AI Native 升级** —— 把项目从「AI 增强应用」推进到「AI Agent 产品」阵营：新增 **Agent 编排内核**（Plan→Act→Reflect 循环，原生 function-calling 优先 + Plan-JSON 降级）、**Wiki 助手接真 LLM**（streamChatCompletion + 节点上下文）、**RAG 知识库**（Embedding + BM25 降级，三点透明注入）、**真多模态 VLM**（图片上传 + image_url 注入 + 5 张拟真课堂图片 Mock 识别）、**AI 输出质量评估闭环**（规则 + LLM 双通道 + 趋势追踪）。所有新能力均带 Mock 兜底，**8 个 Provider 各自独立切换 mock↔api**，离线可演示全流程，接入真实 API 时业务代码一行不改。
 
 它不是真的在云端跑大模型 —— 项目内置了一套**预制剧本 + 增量流式 Mock Provider**，让前端体验与真实 VLM 几乎一致；等你接入真实接口时，只需替换 Adapter，无需改动任何业务代码。
 
@@ -94,12 +96,37 @@
 | 👆 **触控友好** | 触控目标放大（按钮 ≥36px）、禁用窗口拖拽与重叠、防双击缩放、安全区域（viewport-fit=cover）适配 |
 | 🔧 **复用现有架构** | 复用 windowStore 窗口栈逻辑（移动端仅展示栈顶全屏、minimize=返回抽屉），新增 `useIsMobile` Hook + `mobile.css` 覆盖层，桌面端代码一行不改 |
 
+### 🤖 AI Native 升级（本阶段新增 🆕 v0.4.0）
+
+| 模块 | 说明 |
+| --- | --- |
+| 🧠 **Agent 编排内核** | Plan→Act→Reflect 循环，**原生 function-calling 优先**（OpenAI 兼容 `tools` 字段，支持并行调用）+ **Plan-JSON 自解析降级**（模型不支持 tools 时自动解析 `{steps:[{tool,args}]}`）；7 个工具封装现有 Provider（analyzeClassroom/getWiki/getSimulation/getGames/generateLessonPlan/generateSlides/governanceInsight）；MockOrchestrator 4 条预制剧本走查 |
+| 💬 **Wiki 助手接真 LLM** | ChatAssistant 双模式：useLLM 走 streamChatCompletion + 当前节点 details + 关联节点摘要 + 历史 10 轮上下文；失败自动降级关键词匹配（零阻断）；system prompt 末尾自动注入 RAG 检索结果 |
+| 📚 **RAG 知识库** | 浏览器端向量库（Embedder + VectorStore + Indexer + Retriever），**三点透明注入**：Wiki 回答 / 教案生成 / 治理问答；MockRetriever 用 BM25 关键词近似降级；生成内容自动回写入库供后续检索复用 |
+| 🖼️ **真多模态 VLM** | FrameSample 增加 `imageData` 字段，OpenAIAdapter 自动注入 ≤8 帧 `image_url`；ScenarioApp 图片上传 UI（base64 + 5MB 限制）；**5 张拟真课堂图片**（素材/mock-*.png）+ MockImageResolver 指纹匹配，上传已知图片自动产出"图片识别摘要"chunk 前缀（诚实标注 `confidence: 0`） |
+| 🔍 **AI 输出质量评估闭环** | 规则 + LLM 双通道 Evaluator（5 类对象：教案/课件/Wiki/题目/治理简报）；EvalPanel 展示综合分 / 维度分数 / 问题清单 / 质量趋势柱状图；FeedbackBar 收集用户反馈写入 MemoryStore 偏好；不合格自动提示重生成 |
+| 🔌 **8 Provider 独立切换** | vlm / capability / governance / portal / lessonPlan / slides / **agent**（🆕）/ **rag**（🆕）各自独立 mock↔api，可只接一部分其余保持 Mock；统一 API 配置面板管理 |
+
 ---
 
 ## 🖼️ 项目截图 {#screenshots} · [↗ English](README_EN.md#screenshots)
 
 > 所有截图均来自项目实际运行界面，复古的像素感与现代化能力并存 ✨
 > 👆 **点击任一截图可查看高清原图**。
+
+---
+
+### 🤖 AI Native 升级总览 · v0.4.0
+
+本次迭代把项目从「AI 增强应用」推进到「AI Agent 产品」—— 一图看懂四大升级：**Agent 编排内核**（Plan→Act→Reflect 循环）、**Wiki 接真 LLM**、**RAG 知识库**、**多模态 VLM**、**质量评估闭环**。所有新能力均带 Mock 兜底，8 个 Provider 各自独立切换 mock↔api。
+
+<div align="center">
+  <a href="素材/1.png" target="_blank">
+    <img src="素材/1.png" width="85%" alt="AI Native 升级总览 · v0.4.0" />
+  </a>
+  <br/>
+  <sub>🤖 图 1 · AI Native 升级总览 · Agent 编排 + Wiki LLM + RAG 知识库 + 多模态 VLM + 质量评估闭环</sub>
+</div>
 
 ---
 
@@ -312,6 +339,57 @@
 
 ---
 
+## 🤖 AI Native 升级（本阶段新增 🆕 v0.4.0）
+
+从「AI 增强应用」到「AI Agent 产品」—— 本阶段完成 **5 大升级**，让 AI 从「单次直调」进化为「自主规划→执行→反思」的闭环 Agent，并补齐知识检索、真多模态、质量评估三块短板。**所有新能力均带 Mock 兜底**，离线可演示全流程，接入真实 API 时业务代码一行不改。
+
+**五大升级一览：**
+
+| 升级点 | 说明 |
+| --- | --- |
+| 🧠 **Agent 编排内核**（P1） | `harness/agent/` 自包含 Harness：Orchestrator 实现 **Plan→Act→Reflect 循环**，**原生 function-calling 优先**（OpenAI 兼容 `tools` 字段，解析 `delta.tool_calls` 流式累积，支持并行调用）+ **Plan-JSON 自解析降级**（模型不支持 tools 时自动解析 `{steps:[{tool,args}]}`）；7 个工具封装现有 Provider；MockOrchestrator 4 条预制剧本走查 + 单步降级 |
+| 💬 **Wiki 助手接真 LLM**（P2a） | ChatAssistant 双模式：useLLM 走 streamChatCompletion + 当前节点 details + 关联节点摘要 + 历史 10 轮上下文；失败自动降级关键词匹配（零阻断）；RAG 检索结果自动注入 system prompt |
+| 📚 **RAG 知识库**（P2b） | `harness/rag/` 自包含 Harness：Embedder + VectorStore + Indexer + Retriever，**三点透明注入**（Wiki 回答 / 教案生成 / 治理问答）；MockRetriever 用 BM25 关键词近似降级；生成内容自动回写入库供后续检索复用 |
+| 🖼️ **真多模态 VLM**（P3） | FrameSample 增加 `imageData` 字段，OpenAIAdapter 自动注入 ≤8 帧 `image_url`；ScenarioApp 图片上传 UI（base64 + 5MB 限制）；**5 张拟真课堂图片**（`素材/mock-*.png`）+ MockImageResolver 指纹匹配，上传已知图片自动产出"图片识别摘要"chunk 前缀 |
+| 🔍 **AI 输出质量评估闭环**（P4） | `harness/eval/` 自包含 Harness：规则 + LLM 双通道 Evaluator（5 类对象）；EvalPanel 展示综合分 / 维度分数 / 问题清单 / 质量趋势柱状图；FeedbackBar 收集用户反馈写入 MemoryStore 偏好 |
+
+### 🤖 AI 助理 · Agent 编排内核
+
+打开桌面「🤖 AI 助理」应用，输入自然语言目标（如「整理这节课知识点并出题」），Agent 自主规划 → 调用工具 → 反思结果，**流式渲染全过程**：
+
+- 📋 **蓝色 Plan 条**：拆解为 N 步计划
+- 🔧 **黄色 Tool Call 条**：LLM 自主选择工具（function-calling）或代码解析 Plan-JSON（降级）
+- ✓ **绿色 Tool Result 条**：工具真实返回（可展开查看 JSON）
+- ⬜ **白色 Reflect 条**：LLM 校验结果完整性
+- ✅ **绿色 Done 条**：完成总结
+
+Mock 模式内置 4 条预制剧本（整理知识点出题 / 生成教案 / 分析课堂 / 出演练剧本）+ 单步降级（任何输入都有响应）；API 模式走真实 function-calling，支持并行调用多工具。
+
+### 🖼️ 多模态 VLM · 拟真课堂图片识别
+
+预置 5 张拟真课堂图片在 `素材/` 文件夹，覆盖 5 大场景：
+
+| 图片 | 场景 | Mock 识别摘要示例 |
+| --- | --- | --- |
+| `mock-classroom-physics.png` | 物理课 — 牛顿第二定律 | 黑板书写"F=ma"，25 名学生，前排 5 人举手 |
+| `mock-pe-basketball.png` | 体育课 — 篮球运球 | 室外篮球场，教师示范运球，学生两人一组练习 |
+| `mock-lab-titration.png` | 实验课 — 酸碱中和滴定 | 6 个实验台，滴定管+锥形瓶，全员佩戴护目镜 |
+| `mock-workshop-lathe.png` | 实操课 — 普通车削 | 金工车间，8 台车床，教师演示刀具调整 |
+| `mock-microlesson-math.png` | 微课 — 函数单调性 | 交互白板显示坐标图，三脚架摄像机录制 |
+
+上传已知图片 → MockVLMProvider 自动产出 3 条"图片识别摘要"chunk 前缀（标注 `confidence: 0` + `Mock 图片识别`，诚实告知非真实识别），再走文本快照分析；上传非预置图片 → 给出降级提示，不报错不卡死。
+
+### 🔍 AI 质量自评闭环
+
+教案 / 课件生成后，底部自动出现「🔍 AI 自评」面板：
+
+- **规则检查**（5 类对象）：教案缺标题扣分 / 课件分页不足扣分 / Wiki related 不闭环扣分 / 题目答案为空扣分 / 治理简报 refId 引用值与真实值不符扣分
+- **LLM 双通道**：API 模式下额外调用 LLM 打分（复用对应生成 Provider 配置）
+- **质量趋势**：evalStore 记录每次评分到 LocalStorage，画柱状图展示改进曲线
+- **用户反馈**：👍/👎 反馈写入 MemoryStore 偏好，影响后续生成
+
+---
+
 ## 🏗️ 架构 {#architecture} · [↗ English](README_EN.md#architecture)
 
 ```
@@ -327,24 +405,30 @@
 │  ┌──────────────┬───────────────┬──────────────────────┐ │
 │  │ 课堂分析       │ 能力提升（🆕）  │ 学校治理（🆕 v0.3.0）│ │
 │  │ 5场景+报告+画像│ WIKI+演练+游戏│ 驾驶舱+教务+年级    │ │
-│  └──────────────┴───────────────┴──────────────────────┘ │
+│  ├──────────────┼───────────────┴──────────────────────┤ │
+│  │ 教案+课件（🆕）│ 🤖 AI 助理（🆕 v0.4.0 Agent 编排）   │ │
+│  └──────────────┴───────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Harness 层（四 Provider 编排）                              │
-│  VLMProvider · CapabilityProvider（🆕）· GovernanceProvider │
-│  · PortalProvider（🆕 v0.3.0）                              │
-│  Mock 规则引擎 × 4 · Adapter 预留真实 API × 4                │
+│  Harness 层（八 Provider 编排 · 各自独立 mock↔api）         │
+│  VLMProvider · CapabilityProvider · GovernanceProvider   │
+│  · PortalProvider · LessonPlanGen · SlidesGen            │
+│  🆕 v0.4.0: AgentOrchestrator · RAGRetriever             │
+│  🆕 v0.4.0: Evaluator（规则+LLM 双通道，无独立配置）       │
+│  Mock 规则引擎 × 8 · Adapter 预留真实 API × 8             │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
 │  Data 层（LocalStorage 持久化 · StorageSchema v1→v2 渐进迁移）│
 │  🆕 组织架构：学校/学期/年级/班级/学科实体                   │
-│  🆕 多学期多教师多班级真实感种子数据（约 36 条）               │
+│  🆕 v0.4.0: evalStore 质量趋势 · agent MemoryStore 偏好    │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数，`GovernanceProvider`（🆕 v0.3.0）负责管理岗位的治理简报 / 对话问答 / 异常预警 / 教研建议，`PortalProvider`（🆕 v0.3.0）负责登录后默认门户的 AI Agent 检索导航与角色级快捷入口，`LessonPlanGenProvider`（🆕）负责教案草稿流式生成与微调，`SlidesGenProvider`（🆕）负责课件（3 套 design）草稿流式生成与微调——后两者**物理隔离**为 `harness/lessonPlan/` 与 `harness/slides/` 子目录（含 `designs/` 三套独立渲染组件），各自自包含注册函数 `getLessonPlanGenProvider` / `getSlidesGenProvider`；治理数据按 **Raw → Aggregated → Agent Output → Presentation** 四层分层治理，**AI 消费的数据**与**用户呈现的数据**严格分离。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
+**关键设计理念**：Harness 层与 Apps 层完全解耦。`VLMProvider` 负责流式课堂分析，`CapabilityProvider`（🆕）负责知识 WIKI / 虚拟演练 / 互动游戏的取数，`GovernanceProvider`（🆕 v0.3.0）负责管理岗位的治理简报 / 对话问答 / 异常预警 / 教研建议，`PortalProvider`（🆕 v0.3.0）负责登录后默认门户的 AI Agent 检索导航与角色级快捷入口，`LessonPlanGenProvider`（🆕）负责教案草稿流式生成与微调，`SlidesGenProvider`（🆕）负责课件（3 套 design）草稿流式生成与微调——后两者**物理隔离**为 `harness/lessonPlan/` 与 `harness/slides/` 子目录（含 `designs/` 三套独立渲染组件），各自自包含注册函数 `getLessonPlanGenProvider` / `getSlidesGenProvider`。
+
+🆕 **v0.4.0 新增三个自包含 Harness**（遵循同样的物理隔离模式）：`harness/agent/`（AgentOrchestrator 编排内核 + 7 工具 + MockOrchestrator + MemoryStore）、`harness/rag/`（Embedder + VectorStore + Indexer + Retriever + MockRetriever）、`harness/eval/`（规则+LLM 双通道 Evaluator + evalStore 趋势 + MockEvaluator）。**8 个 Provider 各自独立切换 mock↔api**，可只接一部分其余保持 Mock；治理数据按 **Raw → Aggregated → Agent Output → Presentation** 四层分层治理，**AI 消费的数据**与**用户呈现的数据**严格分离。今天用 Mock 跑预制剧本，明天换成 Adapter 调真实 API —— **业务代码一行不改**。
 
 ---
 
@@ -371,7 +455,8 @@ npm run preview
 2. 🔐 **LoginDialog** —— 选择「教师登录」/「学生登录」/「管理岗位登录」（🆕 含 SSO 模拟认证进度对话框）
 3. 🪟 **Desktop** —— 桌面图标 + 开始菜单 + 任务栏（教师/学生/管理岗位看到不同应用，**管理岗位进入「学校治理」分组**）
 4. 🚪 **PortalApp** —— 登录后默认弹出的角色自适应管理门户（顶部 AI Agent 检索导航直达功能/数据）
-5. 🎯 双击图标打开任意 App 窗口
+5. 🤖 **AgentApp**（🆕 v0.4.0）—— 桌面「AI 助理」图标，输入自然语言目标，Agent 自主规划→执行→反思
+6. 🎯 双击图标打开任意 App 窗口
 
 ---
 
@@ -381,7 +466,7 @@ npm run preview
 
 📖 **完整接入指南**：[API_INTEGRATION_GUIDE.md](API_INTEGRATION_GUIDE.md)（中文） · [API_INTEGRATION_GUIDE_EN.md](API_INTEGRATION_GUIDE_EN.md)（English）
 
-指南涵盖：6 个 Provider 的接口契约与 Adapter 位置、VLM 与 LLM 的区别与场景、环境变量与后端代理配置、SSE 流式解析工具、端到端 OpenAIAdapter 完整实现示例、安全注意事项与常见问题。
+指南涵盖：8 个 Provider 的接口契约与 Adapter 位置、VLM 与 LLM 的区别与场景、环境变量与后端代理配置、SSE 流式解析工具（含 🆕 v0.4.0 function-calling tool_calls 流式累积）、端到端 OpenAIAdapter 完整实现示例、安全注意事项与常见问题。
 
 ---
 
@@ -393,7 +478,7 @@ npm run preview
 | 构建 | Vite 5 |
 | 样式 | Tailwind CSS 3 + 自研 Win95 组件样式（`.win-text` / `.win-sunken` / `.win-fieldset`） |
 | 3D 渲染 🆕 | Three.js r169 + @react-three/fiber v8 + @react-three/drei v9 |
-| 状态 | Zustand（auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal 多 Store 分治） |
+| 状态 | Zustand（auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal / 🆕 v0.4.0 eval 多 Store 分治） |
 | 图标 | lucide-react + react-icons |
 | 图表 | recharts（雷达图 / 折线图） |
 | 持久化 | 浏览器 LocalStorage（开箱即用、无需后端） |
@@ -428,13 +513,26 @@ src/
 │   ├── Timeline.tsx · StudentTimeline.tsx · RadarChart.tsx · TrendChart.tsx
 │   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
 │   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent 流式组件
+│   ├── AgentChatPanel.tsx  # 🆕 v0.4.0 AI 助理 Agent 编排面板（Plan→Tool→Done 流式渲染）
+│   ├── EvalPanel.tsx · FeedbackBar.tsx  # 🆕 v0.4.0 AI 自评面板 + 用户反馈栏
 │   ├── TypingStream.tsx · ChatAssistant.tsx
 │   ├── WikiTree.tsx
 │   └── MobileTabBar.tsx     # 🆕 移动端可复用分段控件（多栏 App Tab 切换）
-├── harness/         # 编排层（六 Provider）
-│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider + 🆕 PortalProvider + 🆕 LessonPlanGenProvider + 🆕 SlidesGenProvider
+├── harness/         # 编排层（八 Provider）
+│   ├── types.ts             # VLMProvider + CapabilityProvider + GovernanceProvider + PortalProvider + LessonPlanGenProvider + SlidesGenProvider + 🆕 v0.4.0 Agent/RAG/Eval 类型
 │   ├── MockVLMProvider.ts · MockCapabilityProvider.ts
 │   ├── MockGovernanceProvider.ts · MockPortalProvider.ts
+│   ├── MockImageResolver.ts  # 🆕 v0.4.0 P3 多模态 mock 图片指纹匹配
+│   ├── agent/               # 🆕 v0.4.0 Agent 编排内核（自包含 Harness）
+│   │   ├── types.ts · Orchestrator.ts · MockOrchestrator.ts
+│   │   ├── ToolRegistry.ts · MemoryStore.ts · index.ts
+│   │   └── tools/           # 7 工具封装现有 Provider
+│   ├── rag/                 # 🆕 v0.4.0 RAG 知识库（自包含 Harness）
+│   │   ├── types.ts · Embedder.ts · VectorStore.ts
+│   │   ├── Indexer.ts · Retriever.ts · MockRetriever.ts · index.ts
+│   ├── eval/                # 🆕 v0.4.0 质量评估闭环（自包含 Harness）
+│   │   ├── types.ts · ruleChecks.ts · llmScorer.ts
+│   │   ├── Evaluator.ts · MockEvaluator.ts · evalStore.ts · index.ts
 │   ├── lessonPlan/          # 🆕 教案独立 Harness（物理隔离）
 │   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
 │   ├── slides/              # 🆕 课件独立 Harness（含 3 套 design）
@@ -442,7 +540,7 @@ src/
 │   │   └── designs/         # 🆕 3 套结构差异 design（classic/modern/dataviz）
 │   │       └── classic.tsx · modern.tsx · dataviz.tsx · index.tsx
 │   ├── providerRegistry.ts  # 四 Provider 统一注册 + 切换
-│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter + 🆕 PortalAdapter + 🆕 LessonPlanGenAdapter + 🆕 SlidesGenAdapter）
+│   ├── adapters/            # 真实模型 API 桩（OpenAI / Qwen / VLLM + CapabilityAdapter + GovernanceAdapter + PortalAdapter + LessonPlanGenAdapter + SlidesGenAdapter）
 │   └── scripts/             # 预制剧本（classroom.json 含 🆕 simulation + games 数据）
 ├── stores/          # Zustand 状态管理
 │   ├── gameStore.ts         # 🆕 游戏最佳得分持久化
@@ -482,6 +580,7 @@ src/
 
 - 致敬 **Microsoft Windows 95** —— 一个定义了"个人电脑桌面"的伟大产品
 - 致敬所有开源的 **VLM / Qwen-VL / GPT-4V** —— 让"让 AI 看懂世界"成为可能
+- 致敬 **ReAct / Reflexion 范式** 与 **OpenAI function-calling 协议** —— Agent 自主规划与反思的理论与实践基础
 - 致敬 **OpenMAIC（THU-MAIC）** —— 深度交互形态（3D 可视化 / 游戏化学习）的灵感来源
 - 致敬像素艺术、致敬复古 UI、致敬所有让软件重新变得有趣的人
 

@@ -7,14 +7,39 @@
 
 /** OpenAI 兼容聊天的单条消息 */
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | ChatContentPart[];
+  /** assistant 消息携带的工具调用（function-calling 路径） */
+  tool_calls?: ChatToolCall[];
+  /** role='tool' 时必填：对应对话中 assistant 的 tool_call.id */
+  tool_call_id?: string;
 }
 
 export interface ChatContentPart {
   type: 'text' | 'image_url';
   text?: string;
   image_url?: { url: string };
+}
+
+/** 工具调用函数部分（完整态） */
+export interface ChatToolCallFunction {
+  name: string;
+  arguments: string; // JSON 字符串（流式期间可能不完整）
+}
+
+/** 一次完整的工具调用 */
+export interface ChatToolCall {
+  id: string;
+  type: 'function';
+  function: ChatToolCallFunction;
+}
+
+/** 流式增量工具调用（SSE delta 中的片段，按 index 累积） */
+export interface ChatToolCallDelta {
+  index: number;
+  id?: string;
+  type?: 'function';
+  function?: { name?: string; arguments?: string };
 }
 
 /** 读取 fetch Response 的流，逐行产出 SSE 的 data 段（已 JSON.parse） */
@@ -59,6 +84,56 @@ export async function* parseSSE<T = any>(
 export function extractDeltaText(chunk: any): string {
   // OpenAI / vLLM / 多数兼容服务的字段
   return chunk?.choices?.[0]?.delta?.content ?? '';
+}
+
+/**
+ * 从 SSE chunk 提取增量 tool_calls 片段（与 extractDeltaText 并行使用）。
+ *
+ * OpenAI 兼容协议在开启 tools 时，模型会把工具调用拆成多个 delta：
+ * 首个 delta 携带 id + function.name，后续 delta 按 index 追加 function.arguments。
+ * 本函数仅做"取出本帧的 delta 数组"，累积由 accumulateToolCalls 完成。
+ */
+export function extractToolCalls(chunk: any): ChatToolCallDelta[] {
+  const deltas = chunk?.choices?.[0]?.delta?.tool_calls;
+  return Array.isArray(deltas) ? deltas : [];
+}
+
+/**
+ * 把流式 tool_calls delta 累积成完整工具调用列表。
+ *
+ * 用法：在 SSE 循环里每帧调用 `accumulateToolCalls(acc, extractToolCalls(chunk))`，
+ * acc 是跨帧复用的 Map<index, ChatToolCall>；流结束时 acc 即为完整结果。
+ * 同一 index 的 function.name / function.arguments 会被字符串拼接（OpenAI 分片下发）。
+ *
+ * @returns 当前累积结果的快照数组（按 index 升序）
+ */
+export function accumulateToolCalls(
+  acc: Map<number, ChatToolCall>,
+  deltas: ChatToolCallDelta[],
+): ChatToolCall[] {
+  for (const d of deltas) {
+    const existing = acc.get(d.index);
+    if (!existing) {
+      acc.set(d.index, {
+        id: d.id ?? '',
+        type: 'function',
+        function: {
+          name: d.function?.name ?? '',
+          arguments: d.function?.arguments ?? '',
+        },
+      });
+    } else {
+      if (d.id) existing.id = d.id;
+      if (d.function?.name) existing.function.name += d.function.name;
+      if (d.function?.arguments) existing.function.arguments += d.function.arguments;
+    }
+  }
+  return [...acc.entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v);
+}
+
+/** 取 SSE chunk 的 finish_reason（'stop' | 'tool_calls' | 'length' | ...），无则 null */
+export function extractFinishReason(chunk: any): string | null {
+  return chunk?.choices?.[0]?.finish_reason ?? null;
 }
 
 /** 创建 AbortController，用于 Provider.cancel() */

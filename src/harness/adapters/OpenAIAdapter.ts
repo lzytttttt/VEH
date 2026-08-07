@@ -1,5 +1,6 @@
 import type { AnalysisChunk, AnalysisInput, VLMProvider } from '../types';
 import { parseSSE, extractDeltaText, createAbortController, buildChatCompletionsURL } from './sseUtils';
+import type { ChatContentPart } from './sseUtils';
 import { getProviderConfig } from '../../stores/apiConfigStore';
 
 /**
@@ -114,7 +115,7 @@ export class OpenAIAdapter implements VLMProvider {
     }
   }
 
-  /** 组装多模态 messages：system + 用户消息（含帧描述/转录） */
+  /** 组装多模态 messages：system + 用户消息（含帧描述/转录 + 可选真实图片） */
   private buildMessages(input: AnalysisInput) {
     const sceneDesc = input.frames
       .map((f) => `[t=${f.t}s] ${f.snapshot}`)
@@ -123,23 +124,30 @@ export class OpenAIAdapter implements VLMProvider {
       .map((t) => `[t=${t.t}s][${t.speaker}] ${t.text}`)
       .join('\n');
 
+    const content: ChatContentPart[] = [
+      {
+        type: 'text',
+        text: `场景：${input.scenario}\n\n画面帧：\n${sceneDesc}\n\n转录：\n${transcript}`,
+      },
+    ];
+
+    // 有真实课堂图片时注入多模态 image_url（最多 8 帧，避免 token 爆炸）
+    const imageFrames = input.frames.filter((f) => f.imageData).slice(0, 8);
+    for (const f of imageFrames) {
+      content.push({ type: 'image_url', image_url: { url: f.imageData as string } });
+    }
+
     return [
       {
         role: 'system',
         content: `你是一位课堂观察专家。根据课堂画面描述与转录，按时间线流式产出分析。
+${imageFrames.length > 0 ? '本次含真实课堂图片，请结合图片内容识别事件/学生状态/板书等。' : ''}
 输出要求：每行一条分析，格式为 JSON：{"type":"text|event|metric","content":"...","timestamp":N}
 type 取值：text(分析文本)/event(关键事件)/metric(指标快照)。`,
       },
       {
         role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: `场景：${input.scenario}\n\n画面帧：\n${sceneDesc}\n\n转录：\n${transcript}`,
-          },
-          // 如果有真实课堂图片，可加 image_url：
-          // { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,...' } },
-        ],
+        content,
       },
     ];
   }

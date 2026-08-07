@@ -28,6 +28,8 @@ const PROVIDER_ORDER: ProviderKey[] = [
   'portal',
   'lessonPlan',
   'slides',
+  'agent',
+  'rag',
 ];
 
 function isMock(active: string): boolean {

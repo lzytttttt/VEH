@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import WysiwygEditor from '../components/WysiwygEditor';
 import ContentGenAssistant from '../components/ContentGenAssistant';
 import MobileTabBar from '../components/MobileTabBar';
+import EvalPanel from '../components/EvalPanel';
 import { useIsMobile } from '../lib/useIsMobile';
 import { getSlidesGenProvider } from '../harness/slides';
 import { renderSlide, SLIDE_DESIGNS } from '../harness/slides/designs';
@@ -435,6 +436,7 @@ export default function SlidesApp() {
             ▌ 请点击左侧「新建课件」开始
           </div>
         )}
+        {current && <EvalPanel target="slides" content={current.slides.join('\n\n---\n\n')} />}
       </div>
 
       {/* 右栏：生成助手 Agent */}

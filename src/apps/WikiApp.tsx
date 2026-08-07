@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getCapabilityProvider } from '../harness/providerRegistry';
 import type { ScenarioType, WikiContainer, WikiNode } from '../harness/types';
+import { useApiConfigStore } from '../stores/apiConfigStore';
 import WikiTree from '../components/WikiTree';
 import ChatAssistant from '../components/ChatAssistant';
 import KnowledgeGraph from '../components/KnowledgeGraph';
@@ -27,6 +28,8 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const isMobile = useIsMobile();
   const [mobileTab, setMobileTab] = useState('tree');
+  // capability active='api' 时，ChatAssistant 走真 LLM；否则关键词匹配
+  const useLLM = useApiConfigStore((s) => s.configs.capability.active) === 'api';
 
   // 经 CapabilityProvider 异步加载 wiki（Mock 等价于原 getScript，adapter 预留真实模型 API）
   useEffect(() => {
@@ -126,7 +129,7 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
             )}
             {mobileTab === 'assistant' && (
               <div className="h-full min-h-0">
-                <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} onSeekClassroom={handleSeek} />
+                <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} allNodes={wiki.nodes} useLLM={useLLM} onSeekClassroom={handleSeek} />
               </div>
             )}
           </div>
@@ -151,7 +154,7 @@ export default function WikiApp({ initialScenario = 'classroom', initialNodeId, 
 
           {/* 右：AI 助手 */}
           <div style={{ width: '300px' }} className="min-h-0">
-            <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} onSeekClassroom={handleSeek} />
+            <ChatAssistant script={wiki.assistantScript} currentNode={selectedNode} allNodes={wiki.nodes} useLLM={useLLM} onSeekClassroom={handleSeek} />
           </div>
         </div>
       )}

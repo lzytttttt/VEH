@@ -28,6 +28,9 @@ const GradeAnalysisApp = lazy(() => import('./GradeAnalysisApp'));
 // 管理门户 App 懒加载（登录后默认弹出，独立 chunk 不拖慢首屏）
 const PortalApp = lazy(() => import('./PortalApp'));
 
+// AI 助理 App 懒加载（Agent 编排内核，独立 chunk）
+const AgentApp = lazy(() => import('./AgentApp'));
+
 /**
  * 应用启动器：根据 appId 返回对应窗口内容。
  */
@@ -52,6 +55,12 @@ export function launchApp(
       return (
         <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载管理门户...</div>}>
           <PortalApp />
+        </Suspense>
+      );
+    case 'agent':
+      return (
+        <Suspense fallback={<div className="p-4" style={{ fontSize: '12px' }}>▌ 加载 AI 助理...</div>}>
+          <AgentApp />
         </Suspense>
       );
     case 'wiki':

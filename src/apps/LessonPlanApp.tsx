@@ -2,6 +2,7 @@ import { useState } from 'react';
 import WysiwygEditor from '../components/WysiwygEditor';
 import ContentGenAssistant from '../components/ContentGenAssistant';
 import MobileTabBar from '../components/MobileTabBar';
+import EvalPanel from '../components/EvalPanel';
 import { useIsMobile } from '../lib/useIsMobile';
 import { getLessonPlanGenProvider } from '../harness/lessonPlan';
 import { normalizeMarkdown } from '../harness/adapters/sseUtils';
@@ -201,6 +202,7 @@ export default function LessonPlanApp() {
       {/* 中栏：WYSIWYG 编辑器 */}
       <div className="flex flex-col gap-1" style={{ flex: 1, minWidth: 0 }}>
         {editorPanel}
+        {current && <EvalPanel target="lessonPlan" content={current.content} />}
       </div>
 
       {/* 右栏：生成助手 Agent（显眼位置） */}

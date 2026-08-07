@@ -36,7 +36,8 @@ export const APP_REGISTRY: AppMeta[] = [
   { id: 'admin-console', name: '教务管理台', icon: '🗂️', role: 'admin', category: 'governance', description: '教师/班级管理 · 系统集成 · SSO配置', width: 980, height: 640 },
   { id: 'grade-analysis', name: '年级分析台', icon: '📈', role: 'admin', category: 'governance', description: '班级对比 · 学科组分析 · 群体分布', width: 940, height: 620 },
   // 系统
-  { id: 'portal', name: '管理门户', icon: '🚪', role: 'both', category: 'system', description: '角色管理门户 · AI Agent 检索导航', width: 880, height: 580 },
+  { id: 'portal', name: '管理门户', icon: '🚪', role: 'both', category: 'system', description: '角色管理门户 · AI 助理智能入口（检索+任务执行）', width: 880, height: 580 },
+  { id: 'agent', name: 'AI 助理', icon: '🤖', role: 'both', category: 'system', description: 'Agent 全屏工作台 · 多轮对话+场景切换', width: 820, height: 600 },
   { id: 'about', name: '关于', icon: '💡', role: 'both', category: 'system', description: '关于本系统', width: 480, height: 360 },
 ];
 

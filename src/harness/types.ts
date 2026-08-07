@@ -19,6 +19,10 @@ export interface FrameSample {
   t: number; // 相对秒数
   snapshot: string; // 场景描述（驱动虚拟画面渲染）
   metrics?: Record<string, number>; // 帧级指标
+  /** 真实课堂图片 base64（data:image/...;base64,...），有值时 VLM 走多模态识别 */
+  imageData?: string;
+  /** 上传图片的原始文件大小（bytes），MockImageResolver 用于指纹匹配（P3 多模态 mock） */
+  imageFileSize?: number;
 }
 
 /** 转录行（音频转写） */

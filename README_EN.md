@@ -2,9 +2,9 @@
 
 # 🏫 VLM Edu Hub
 
-### Windows 95 Nostalgia OS Edition · v0.3.0 (Build 1995)
+### Windows 95 Nostalgia OS Edition · v0.4.0 (Build 1995)
 
-**Classroom Analysis · Student Self-Learning · Teacher Capability Uplift · School Governance — a four-in-one education empowerment hub powered by VLM.**
+**Classroom Analysis · Student Self-Learning · Teacher Capability Uplift · School Governance · AI Native Agent — a five-in-one education empowerment hub powered by VLM.**
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -46,6 +46,8 @@ But we go beyond analysis — **what happens after?** The answer: **interactive 
 
 And this phase (🆕 v0.3.0) goes one step further — letting the AI Agent step out of the classroom and into **school governance**: a dedicated **management-role** login for principals / academic affairs / grade heads, a **GovernanceProvider** (the third orchestrator alongside VLMProvider / CapabilityProvider) continuously producing governance briefings, anomaly alerts and teaching-research suggestions, with data flowing through **Raw → Aggregated → Agent Output → Presentation** in four clearly auditable layers — **data consumed by AI** and **data shown to users** are strictly separated.
 
+The latest release (🆕 v0.4.0) — **AI Native Upgrade** — propels the project from an "AI-enhanced app" into the "AI Agent product" camp: a new **Agent orchestration kernel** (Plan→Act→Reflect loop, native function-calling first + Plan-JSON fallback), **Wiki assistant wired to a real LLM** (streamChatCompletion + node context), a **RAG knowledge base** (Embedding + BM25 fallback, transparent injection at three points), **true multimodal VLM** (image upload + image_url injection + 5 photorealistic classroom images for Mock recognition), and an **AI output quality-evaluation closed loop** (rules + LLM dual-channel + trend tracking). All new capabilities ship with Mock fallbacks — **8 Providers each independently switchable between mock↔api** — so the full flow is demonstrable offline, and wiring real APIs requires zero business-code changes.
+
 It isn't actually running a giant model in the cloud — the project ships a **pre-scripted Mock Provider with incremental streaming** so the front-end feels just like a real VLM. When you're ready to wire up a real backend, you only swap the Adapter; **no business code needs to change**.
 
 ---
@@ -86,12 +88,37 @@ It isn't actually running a giant model in the cloud — the project ships a **p
 | 🧠 **GovernanceProvider Orchestration** | Third orchestrator alongside VLMProvider/CapabilityProvider — `streamBriefing` / `streamInsight` streaming + `detectAnomalies` / `suggestResearch` promises; Mock→Adapter swap with zero business-code changes |
 | 📑 **Four-Layer Data Governance** | Raw (AI consumed) → Aggregated (AI+user shared) → Agent Output (AI produced) → Presentation (charts/cards/chat); data flow is fully auditable |
 
+### 🤖 AI Native Upgrade (New 🆕 v0.4.0)
+
+| Module | Description |
+| --- | --- |
+| 🧠 **Agent Orchestration Kernel** | Plan→Act→Reflect loop, **native function-calling first** (OpenAI-compatible `tools` field, supports parallel calls) + **Plan-JSON self-parse fallback** (auto-parses `{steps:[{tool,args}]}` when the model lacks tools support); 7 tools wrap existing Providers; MockOrchestrator ships 4 canned task walkthroughs |
+| 💬 **Wiki Assistant on Real LLM** | ChatAssistant dual-mode: useLLM streams via streamChatCompletion with current-node details + related-node summaries + last-10-turn history; auto-falls back to keyword matching on failure (zero blocking); RAG retrieval auto-injected into the system prompt |
+| 📚 **RAG Knowledge Base** | In-browser vector store (Embedder + VectorStore + Indexer + Retriever), **transparent injection at three points**: Wiki answers / lesson-plan generation / governance Q&A; MockRetriever uses BM25 keyword approximation as fallback; generated content is auto-indexed for future retrieval |
+| 🖼️ **True Multimodal VLM** | FrameSample gains an `imageData` field; OpenAIAdapter auto-injects up to 8 `image_url` frames; ScenarioApp image-upload UI (base64 + 5MB cap); **5 photorealistic classroom images** (`素材/mock-*.png`) + MockImageResolver fingerprint matching — uploading a known image auto-produces "image recognition summary" chunk prefixes (honestly tagged `confidence: 0`) |
+| 🔍 **AI Output Quality-Eval Closed Loop** | Rules + LLM dual-channel Evaluator (5 object types: lesson plan / slides / Wiki / quiz / governance briefing); EvalPanel shows composite score / dimension scores / issue list / quality-trend bar chart; FeedbackBar collects user feedback into the MemoryStore preferences; sub-par results prompt regeneration |
+| 🔌 **8 Independently-Switchable Providers** | vlm / capability / governance / portal / lessonPlan / slides / **agent** (🆕) / **rag** (🆕) each switch mock↔api independently — you can wire only part and keep the rest on Mock; managed via the unified API config panel |
+
 ---
 
 ## 🖼️ Screenshots {#screenshots} · [↗ 中文](README.md#screenshots)
 
 > All screenshots are real captures from the running app — pixel-art nostalgia meets modern AI capability ✨
 > 👆 **Click any screenshot to view the full-resolution original.**
+
+---
+
+### 🤖 AI Native Upgrade Overview · v0.4.0
+
+This release propels the project from an "AI-enhanced app" into an "AI Agent product" — one picture shows the four big upgrades: **Agent orchestration kernel** (Plan→Act→Reflect loop), **Wiki on real LLM**, **RAG knowledge base**, **multimodal VLM**, and the **quality-eval closed loop**. All new capabilities ship with Mock fallbacks; 8 Providers each switch independently between mock↔api.
+
+<div align="center">
+  <a href="素材/1.png" target="_blank">
+    <img src="素材/1.png" width="85%" alt="AI Native Upgrade Overview · v0.4.0" />
+  </a>
+  <br/>
+  <sub>🤖 Fig. 1 · AI Native Upgrade Overview · Agent orchestration + Wiki LLM + RAG knowledge base + multimodal VLM + quality-eval closed loop</sub>
+</div>
 
 ---
 
@@ -266,6 +293,57 @@ Open "Academic Affairs Console" and switch to the "**System Integration**" tab: 
 
 ---
 
+## 🤖 AI Native Upgrade (New 🆕 v0.4.0)
+
+From an "AI-enhanced app" to an "AI Agent product" — this release delivers **5 major upgrades**, evolving AI from "single-shot direct calls" into a closed-loop Agent that autonomously **plans → acts → reflects**, and fills three gaps: knowledge retrieval, true multimodality, and quality evaluation. **All new capabilities ship with Mock fallbacks** — the full flow is demonstrable offline, and wiring real APIs requires zero business-code changes.
+
+**Five upgrades at a glance:**
+
+| Upgrade | Description |
+| --- | --- |
+| 🧠 **Agent Orchestration Kernel** (P1) | `harness/agent/` self-contained Harness: Orchestrator implements the **Plan→Act→Reflect loop**, **native function-calling first** (OpenAI-compatible `tools` field, parses `delta.tool_calls` with streaming accumulation, supports parallel calls) + **Plan-JSON self-parse fallback** (auto-parses `{steps:[{tool,args}]}` when the model lacks tools support); 7 tools wrap existing Providers; MockOrchestrator ships 4 canned walkthroughs + single-step fallback |
+| 💬 **Wiki Assistant on Real LLM** (P2a) | ChatAssistant dual-mode: useLLM streams via streamChatCompletion with current-node details + related-node summaries + last-10-turn history; auto-falls back to keyword matching on failure (zero blocking); RAG retrieval auto-injected into the system prompt |
+| 📚 **RAG Knowledge Base** (P2b) | `harness/rag/` self-contained Harness: Embedder + VectorStore + Indexer + Retriever, **transparent injection at three points** (Wiki answers / lesson-plan generation / governance Q&A); MockRetriever uses BM25 keyword approximation as fallback; generated content is auto-indexed for future retrieval |
+| 🖼️ **True Multimodal VLM** (P3) | FrameSample gains an `imageData` field; OpenAIAdapter auto-injects up to 8 `image_url` frames; ScenarioApp image-upload UI (base64 + 5MB cap); **5 photorealistic classroom images** (`素材/mock-*.png`) + MockImageResolver fingerprint matching — uploading a known image auto-produces "image recognition summary" chunk prefixes |
+| 🔍 **AI Output Quality-Eval Closed Loop** (P4) | `harness/eval/` self-contained Harness: rules + LLM dual-channel Evaluator (5 object types); EvalPanel shows composite score / dimension scores / issue list / quality-trend bar chart; FeedbackBar collects user feedback into the MemoryStore preferences |
+
+### 🤖 AI Assistant · Agent Orchestration Kernel
+
+Open the desktop "🤖 AI Assistant" app, type a natural-language goal (e.g. "organize this class's knowledge points and generate a review quiz"), and the Agent autonomously plans → calls tools → reflects, **streaming the entire process**:
+
+- 📋 **Blue Plan bar**: breaks the goal into N steps
+- 🔧 **Yellow Tool Call bar**: LLM picks tools (function-calling) or code parses Plan-JSON (fallback)
+- ✓ **Green Tool Result bar**: real tool returns (expandable JSON)
+- ⬜ **White Reflect bar**: LLM checks result completeness
+- ✅ **Green Done bar**: completion summary
+
+Mock mode ships 4 canned walkthroughs (organize knowledge + quiz / generate lesson plan / analyze class / generate drill script) + single-step fallback (any input gets a response); API mode uses real function-calling with parallel multi-tool calls.
+
+### 🖼️ Multimodal VLM · Photorealistic Classroom Image Recognition
+
+5 photorealistic classroom images are pre-staged in `素材/`, covering all 5 scenarios:
+
+| Image | Scenario | Mock Recognition Sample |
+| --- | --- | --- |
+| `mock-classroom-physics.png` | Physics — Newton's Second Law | Board shows "F=ma", 25 students, 5 in front raising hands |
+| `mock-pe-basketball.png` | PE — Basketball Dribbling | Outdoor court, teacher demos dribbling, students pair-practice |
+| `mock-lab-titration.png` | Lab — Acid-Base Titration | 6 stations, burette + Erlenmeyer flask, all wearing goggles |
+| `mock-workshop-lathe.png` | Workshop — Lathe Operation | Metalworking shop, 8 lathes, teacher demos tool adjustment |
+| `mock-microlesson-math.png` | Micro-lesson — Function Monotonicity | Interactive whiteboard with coordinate graph, camera on tripod |
+
+Uploading a known image → MockVLMProvider auto-produces 3 "image recognition summary" chunk prefixes (tagged `confidence: 0` + `Mock Image Recognition`, honestly noting it's not a real recognition), then continues with text-snapshot analysis; uploading an unknown image → graceful degradation prompt, no errors, no hangs.
+
+### 🔍 AI Quality Self-Eval Closed Loop
+
+After a lesson plan or slides deck is generated, an "🔍 AI Self-Eval" panel appears at the bottom:
+
+- **Rule checks** (5 object types): lesson plan missing headings / slides too few pages / Wiki `related` not bidirectional / quiz answers empty / governance briefing `refId` mismatched with real values
+- **LLM dual-channel**: API mode additionally calls an LLM for scoring (reusing the corresponding generation Provider config)
+- **Quality trend**: evalStore logs every score to LocalStorage and draws a bar chart showing the improvement curve
+- **User feedback**: 👍/👎 feedback is written to the MemoryStore preferences, influencing future generation
+
+---
+
 ## 🏗️ Architecture {#architecture} · [↗ 中文](README.md#architecture)
 
 ```
@@ -273,6 +351,8 @@ Open "Academic Affairs Console" and switch to the "**System Integration**" tab: 
 │  Shell layer (Win95-style desktop · three-role login)    │
 │  BootScreen · LoginDialog · Desktop · Window · Taskbar  │
 │  🆕 SSO simulated auth-progress dialog · management entry│
+│  🆕 MobileShell (native mobile: app drawer + full-screen  │
+│     single app + bottom nav bar)                          │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
@@ -282,26 +362,35 @@ Open "Academic Affairs Console" and switch to the "**System Integration**" tab: 
 │  │ Analysis     │ Building (🆕)  │ (🆕 v0.3.0)          │ │
 │  │ 5 scenarios  │ WIKI+Drill+    │ Cockpit+Academic+   │ │
 │  │ +report+prof │ Games          │ Grade Analysis       │ │
-│  └──────────────┴───────────────┴──────────────────────┘ │
+│  ├──────────────┼───────────────┴──────────────────────┤ │
+│  │ Lesson Plan  │ 🤖 AI Assistant (🆕 v0.4.0 Agent)     │ │
+│  │ + Slides(🆕) │   orchestration kernel                │ │
+│  └──────────────┴───────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
-│  Harness layer (six-Provider orchestration)              │
-│  VLMProvider · CapabilityProvider (🆕) · GovernanceProvider
-│  · PortalProvider (🆕 v0.3.0)                            │
-│  · LessonPlanGenProvider (🆕) · SlidesGenProvider (🆕+3 Designs)│
-│  Mock rules engines × 6 · Adapter slots for real APIs × 6 │
+│  Harness layer (eight-Provider orchestration · each      │
+│  independently switchable mock↔api)                      │
+│  VLMProvider · CapabilityProvider · GovernanceProvider   │
+│  · PortalProvider · LessonPlanGen · SlidesGen            │
+│  🆕 v0.4.0: AgentOrchestrator · RAGRetriever             │
+│  🆕 v0.4.0: Evaluator (rules + LLM dual-channel, no      │
+│             standalone config)                            │
+│  Mock rules engines × 8 · Adapter slots for real APIs × 8│
 └──────────────────────────────────────────────────────────┘
                             ↓
 ┌──────────────────────────────────────────────────────────┐
 │  Data layer (LocalStorage persistence · StorageSchema    │
 │  v1→v2 progressive migration)                            │
 │  🆕 Org structure: school/semester/grade/class/subject    │
-│  🆕 Multi-semester multi-teacher multi-class seed (~36)   │
+│  🆕 v0.4.0: evalStore quality trends · agent MemoryStore  │
+│             preferences                                    │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Key design principle**: The Harness layer is fully decoupled from the Apps layer. `VLMProvider` handles streaming classroom analysis; `CapabilityProvider` (🆕) handles data for knowledge WIKI / virtual drill / interactive games; `GovernanceProvider` (🆕 v0.3.0) handles governance briefings / Q&A / anomaly alerts / teaching-research suggestions for management roles; `PortalProvider` (🆕 v0.3.0) handles the AI Agent search navigation and role-based quick entries for the default post-login portal. Governance data follows the **Raw → Aggregated → Agent Output → Presentation** four-layer model — **data consumed by AI** and **data shown to users** are strictly separated. Today you use Mock providers to run scripted events; tomorrow swap in Adapters for real APIs. **Zero business-code changes required.**
+**Key design principle**: The Harness layer is fully decoupled from the Apps layer. `VLMProvider` handles streaming classroom analysis; `CapabilityProvider` (🆕) handles data for knowledge WIKI / virtual drill / interactive games; `GovernanceProvider` (🆕 v0.3.0) handles governance briefings / Q&A / anomaly alerts / teaching-research suggestions for management roles; `PortalProvider` (🆕 v0.3.0) handles the AI Agent search navigation and role-based quick entries for the default post-login portal; `LessonPlanGenProvider` (🆕) handles lesson-plan streaming generation and refinement; `SlidesGenProvider` (🆕) handles slides (3 designs) streaming generation and refinement — the latter two are **physically isolated** as `harness/lessonPlan/` and `harness/slides/` subfolders (with `designs/` for the three rendering components), each with its own self-contained registry function `getLessonPlanGenProvider` / `getSlidesGenProvider`.
+
+🆕 **v0.4.0 adds three more self-contained Harnesses** (following the same physical-isolation pattern): `harness/agent/` (AgentOrchestrator kernel + 7 tools + MockOrchestrator + MemoryStore), `harness/rag/` (Embedder + VectorStore + Indexer + Retriever + MockRetriever), `harness/eval/` (rules + LLM dual-channel Evaluator + evalStore trends + MockEvaluator). **All 8 Providers switch mock↔api independently** — you can wire only part and keep the rest on Mock; governance data follows the **Raw → Aggregated → Agent Output → Presentation** four-layer model — **data consumed by AI** and **data shown to users** are strictly separated. Today you use Mock providers to run scripted events; tomorrow swap in Adapters for real APIs. **Zero business-code changes required.**
 
 ---
 
@@ -328,7 +417,8 @@ After loading, you'll see:
 2. 🔐 **LoginDialog** — choose "Teacher Login" / "Student Login" / "Management Login" (🆕 with SSO simulated auth-progress dialog)
 3. 🪟 **Desktop** — desktop icons + Start menu + taskbar (different apps per role; **management role enters the "School Governance" group**)
 4. 🚪 **PortalApp** — the role-adaptive management portal that pops up by default after login (top AI Agent search navigation routes straight to functions/data)
-5. 🎯 Double-click any icon to open the corresponding App window
+5. 🤖 **AgentApp** (🆕 v0.4.0) — desktop "AI Assistant" icon; type a natural-language goal and the Agent autonomously plans → acts → reflects
+6. 🎯 Double-click any icon to open the corresponding App window
 
 ---
 
@@ -338,7 +428,7 @@ This project ships with a **scripted Mock Provider + incremental streaming** tha
 
 📖 **Full integration guide**: [API_INTEGRATION_GUIDE_EN.md](API_INTEGRATION_GUIDE_EN.md) (English) · [API_INTEGRATION_GUIDE.md](API_INTEGRATION_GUIDE.md)（中文）
 
-The guide covers: the 6 Providers' interface contracts & Adapter locations, VLM vs LLM differences and use cases, env vars & backend proxy setup, SSE streaming parser utility, an end-to-end OpenAIAdapter implementation example, security notes, and an FAQ.
+The guide covers: the 8 Providers' interface contracts & Adapter locations, VLM vs LLM differences and use cases, env vars & backend proxy setup, SSE streaming parser utility (incl. 🆕 v0.4.0 function-calling tool_calls streaming accumulation), an end-to-end OpenAIAdapter implementation example, security notes, and an FAQ.
 
 ---
 
@@ -350,7 +440,7 @@ The guide covers: the 6 Providers' interface contracts & Adapter locations, VLM 
 | Build | Vite 5 |
 | Styling | Tailwind CSS 3 + hand-rolled Win95 component styles (`.win-text` / `.win-sunken` / `.win-fieldset`) |
 | 3D Rendering 🆕 | Three.js r169 + @react-three/fiber v8 + @react-three/drei v9 |
-| State | Zustand (multiple stores: auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal) |
+| State | Zustand (multiple stores: auth / session / profile / wiki / game / window / 🆕 org / 🆕 governance / 🆕 portal / 🆕 v0.4.0 eval) |
 | Icons | lucide-react + react-icons |
 | Charts | recharts (radar / line) |
 | Persistence | Browser LocalStorage (zero-backend, works out of the box) |
@@ -384,12 +474,25 @@ src/
 │   ├── Timeline.tsx · StudentTimeline.tsx · RadarChart.tsx · TrendChart.tsx
 │   ├── StatCard.tsx · BarChart.tsx · MultiRadarChart.tsx · PieChart.tsx  # 🆕 v0.3.0
 │   ├── AgentInsightStream.tsx · GovernanceChat.tsx  # 🆕 v0.3.0 Agent streaming components
+│   ├── AgentChatPanel.tsx  # 🆕 v0.4.0 AI Assistant Agent panel (Plan→Tool→Done streaming render)
+│   ├── EvalPanel.tsx · FeedbackBar.tsx  # 🆕 v0.4.0 AI self-eval panel + user feedback bar
 │   ├── TypingStream.tsx · ChatAssistant.tsx
 │   └── WikiTree.tsx
-├── harness/         # Orchestration layer (six Providers)
-│   ├── types.ts             # VLMProvider + 🆕 CapabilityProvider + 🆕 GovernanceProvider + 🆕 PortalProvider + 🆕 LessonPlanGenProvider + 🆕 SlidesGenProvider
+├── harness/         # Orchestration layer (eight Providers)
+│   ├── types.ts             # VLMProvider + CapabilityProvider + GovernanceProvider + PortalProvider + LessonPlanGenProvider + SlidesGenProvider + 🆕 v0.4.0 Agent/RAG/Eval types
 │   ├── MockVLMProvider.ts · MockCapabilityProvider.ts
 │   ├── MockGovernanceProvider.ts · MockPortalProvider.ts
+│   ├── MockImageResolver.ts  # 🆕 v0.4.0 P3 multimodal mock image fingerprint matcher
+│   ├── agent/               # 🆕 v0.4.0 Agent orchestration kernel (self-contained Harness)
+│   │   ├── types.ts · Orchestrator.ts · MockOrchestrator.ts
+│   │   ├── ToolRegistry.ts · MemoryStore.ts · index.ts
+│   │   └── tools/           # 7 tools wrapping existing Providers
+│   ├── rag/                 # 🆕 v0.4.0 RAG knowledge base (self-contained Harness)
+│   │   ├── types.ts · Embedder.ts · VectorStore.ts
+│   │   ├── Indexer.ts · Retriever.ts · MockRetriever.ts · index.ts
+│   ├── eval/                # 🆕 v0.4.0 quality-eval closed loop (self-contained Harness)
+│   │   ├── types.ts · ruleChecks.ts · llmScorer.ts
+│   │   ├── Evaluator.ts · MockEvaluator.ts · evalStore.ts · index.ts
 │   ├── lessonPlan/          # 🆕 isolated Lesson Plan Harness (physically separate)
 │   │   ├── types.ts · scripts.ts · MockProvider.ts · adapter.ts · index.ts
 │   ├── slides/              # 🆕 isolated Slides Deck Harness (with 3 designs)
@@ -397,7 +500,7 @@ src/
 │   │   └── designs/         # 🆕 3 structurally-distinct designs (classic/modern/dataviz)
 │   │       └── classic.tsx · modern.tsx · dataviz.tsx · index.tsx
 │   ├── providerRegistry.ts  # Four-Provider unified registry + switching
-│   ├── adapters/            # Real API stubs (OpenAI / Qwen / VLLM + 🆕 CapabilityAdapter + 🆕 GovernanceAdapter + 🆕 PortalAdapter + 🆕 LessonPlanGenAdapter + 🆕 SlidesGenAdapter)
+│   ├── adapters/            # Real API stubs (OpenAI / Qwen / VLLM + CapabilityAdapter + GovernanceAdapter + PortalAdapter + LessonPlanGenAdapter + SlidesGenAdapter)
 │   └── scripts/             # Scripted scenarios (classroom.json with 🆕 simulation + games data)
 ├── stores/          # Zustand stores
 │   ├── gameStore.ts         # 🆕 Game best-score persistence
@@ -437,6 +540,7 @@ The full legal text is available in the [LICENSE](LICENSE) file.
 
 - Salute to **Microsoft Windows 95** — a product that defined what a "personal computer desktop" should be.
 - Salute to every open-source **VLM / Qwen-VL / GPT-4V** — for making "let AI see the world" possible.
+- Salute to the **ReAct / Reflexion paradigm** and the **OpenAI function-calling protocol** — the theory and practice behind autonomous Agent planning and reflection.
 - Salute to **OpenMAIC (THU-MAIC)** — the inspiration for deep interactive modes (3D visualization / gamified learning).
 - Salute to pixel art, retro UI, and everyone who makes software feel fun again.
 
