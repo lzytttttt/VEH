@@ -116,6 +116,9 @@ export function normalizeMarkdown(md: string): string {
   s = s.replace(/\n(#{1,6}\s)/g, '\n\n$1');
   // 标题行后补 \n\n（标题与正文之间至少一个空行，保证 parseBlocks 分块干净）
   s = s.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
+  // 补标题内部空格："#标题" / "##标题" → "# 标题"（parseBlocks 要求 # 后必须有空格）
+  // 仅匹配行首的 # 序列后紧跟非 # 非空白的字符，避免破坏 "###" 或已有空格的标题
+  s = s.replace(/^(#{1,6})(?=[^\s#])/gm, '$1 ');
   // HR (---) 前后补 \n\n
   s = s.replace(/([^\n])\s*(---+)\s*$/gm, '$1\n\n$2');
   s = s.replace(/(^---+\s*$\n)(?!\n)/gm, '$1\n');
@@ -326,6 +329,10 @@ export async function testChatCompletion(opts: {
  * 4. 提取首个 { ... } 子串
  *
  * 解析失败返回 null（调用方决定降级到 Mock）。
+ *
+ * ⚠️ 推理型模型（如 deepseek-v4-flash）的 reasoning_content 会抢占 token 预算，
+ * 若不设 max_tokens，长 JSON 正文容易被截断导致解析失败 → 静默降级 Mock。
+ * 因此默认给足 max_tokens（16000），可通过 opts.maxTokens 覆盖。
  */
 export async function chatCompletionJSON<T = unknown>(opts: {
   baseURL: string;
@@ -333,9 +340,11 @@ export async function chatCompletionJSON<T = unknown>(opts: {
   model: string;
   messages: ChatMessage[];
   signal?: AbortSignal;
+  maxTokens?: number;
 }): Promise<T | null> {
   const url = buildChatCompletionsURL(opts.baseURL);
   const { signal, cleanup } = withTimeout(opts.signal);
+  const maxTokens = opts.maxTokens ?? 16000;
   try {
     // 第一次尝试：response_format=json_object
     const resp = await fetch(url, {
@@ -348,6 +357,7 @@ export async function chatCompletionJSON<T = unknown>(opts: {
         model: opts.model,
         messages: opts.messages,
         stream: false,
+        max_tokens: maxTokens,
         response_format: { type: 'json_object' },
       }),
       signal,
@@ -364,6 +374,7 @@ export async function chatCompletionJSON<T = unknown>(opts: {
           model: opts.model,
           messages: opts.messages,
           stream: false,
+          max_tokens: maxTokens,
         }),
         signal,
       });
